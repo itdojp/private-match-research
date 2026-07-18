@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itdo.jp/schemas/private-match/research/public-use-case-finding-0.1.json",
+  "title": "Private Match public use-case finding v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_type", "identity", "observation", "study", "finding", "claim_types", "sources", "publication"],
+  "properties": {
+    "schema_version": {"const": "0.1"},
+    "record_type": {"const": "public-use-case-finding"},
+    "identity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "title", "domain"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[A-Z][A-Z0-9-]{2,}$"},
+        "title": {"type": "string", "minLength": 1},
+        "domain": {"type": "string", "minLength": 1}
+      }
+    },
+    "observation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["observed_at", "last_verified_at", "next_review_at", "source_status"],
+      "properties": {
+        "observed_at": {"type": "string", "format": "date"},
+        "last_verified_at": {"type": "string", "format": "date"},
+        "next_review_at": {"type": "string", "format": "date"},
+        "source_status": {"enum": ["current", "superseded", "unavailable"]}
+      }
+    },
+    "study": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evidence_level", "method", "sample_size", "population", "anonymization"],
+      "properties": {
+        "evidence_level": {"enum": ["E1", "E2", "E3", "E4", "E5"]},
+        "method": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "sample_size": {"type": "integer", "minimum": 1},
+        "population": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "anonymization": {"type": "string", "minLength": 1}
+      }
+    },
+    "finding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["buyer", "user", "trigger", "current_workflow", "minimum_useful_output", "unacceptable_disclosures", "disconfirming_findings", "limitations"],
+      "properties": {
+        "buyer": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "user": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "trigger": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "current_workflow": {"$ref": "#/$defs/stringArray"},
+        "minimum_useful_output": {"$ref": "#/$defs/stringArray"},
+        "unacceptable_disclosures": {"$ref": "#/$defs/stringArray"},
+        "disconfirming_findings": {"$ref": "#/$defs/stringArray"},
+        "limitations": {"$ref": "#/$defs/nonEmptyStringArray"}
+      }
+    },
+    "claim_types": {
+      "type": "object", "additionalProperties": false,
+      "required": ["facts", "inferences", "hypotheses"],
+      "properties": {
+        "facts": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "inferences": {"$ref": "#/$defs/stringArray"},
+        "hypotheses": {"$ref": "#/$defs/stringArray"}
+      }
+    },
+    "sources": {"$ref": "#/$defs/sources"},
+    "publication": {"$ref": "#/$defs/publication"}
+  },
+  "$defs": {
+    "stringArray": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "nonEmptyStringArray": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "sourceEntry": {
+      "oneOf": [
+        {"type": "string", "format": "uri", "pattern": "^https://"},
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["url"],
+          "properties": {
+            "url": {"type": "string", "format": "uri", "pattern": "^https://"},
+            "title": {"type": "string"},
+            "publisher": {"type": "string"},
+            "published_at": {"type": ["string", "null"], "format": "date"},
+            "accessed_at": {"type": ["string", "null"], "format": "date"}
+          }
+        }
+      ]
+    },
+    "sources": {
+      "type": "object", "additionalProperties": false,
+      "required": ["primary", "secondary"],
+      "properties": {
+        "primary": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sourceEntry"}},
+        "secondary": {"type": "array", "items": {"$ref": "#/$defs/sourceEntry"}}
+      }
+    },
+    "publication": {
+      "type": "object", "additionalProperties": false,
+      "required": ["classification", "source_check", "freshness_check", "ip_review", "security_review", "privacy_review", "claims_review", "anonymization_review"],
+      "properties": {
+        "classification": {"const": "public"},
+        "source_check": {"$ref": "#/$defs/reviewStatus"},
+        "freshness_check": {"$ref": "#/$defs/reviewStatus"},
+        "ip_review": {"$ref": "#/$defs/reviewStatus"},
+        "security_review": {"$ref": "#/$defs/reviewStatus"},
+        "privacy_review": {"$ref": "#/$defs/reviewStatus"},
+        "claims_review": {"$ref": "#/$defs/reviewStatus"},
+        "anonymization_review": {"$ref": "#/$defs/reviewStatus"}
+      }
+    },
+    "reviewStatus": {"enum": ["pending", "approved", "rejected", "not-required"]}
+  }
+}
