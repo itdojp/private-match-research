@@ -1,0 +1,73 @@
+schema_version: "0.1"
+record_type: competitor
+
+identity:
+  organization: ""
+  product: ""
+  canonical_url: ""
+  country_or_region: ""
+
+observation:
+  observed_at: "YYYY-MM-DD"
+  last_verified_at: "YYYY-MM-DD"
+  next_review_at: "YYYY-MM-DD"
+  source_status: current
+
+classification:
+  class: potential # direct | adjacent | substitute | building-block | potential
+  confidence: low # high | medium | low
+  rationale: ""
+
+market:
+  buyer: []
+  user: []
+  trigger: []
+  jobs_to_be_done: []
+  current_alternatives: []
+  pricing:
+    public: false
+    model: ""
+    amount: ""
+    source: ""
+  deployment_lead_time: unknown
+
+product:
+  inputs: []
+  outputs: []
+  workflow: []
+  deployment: []
+  prerequisites: []
+  data_movement: unknown
+  data_retention: unknown
+
+privacy_and_security:
+  published_technologies: []
+  trust_model: unknown
+  attacker_model: unknown
+  raw_data_access: unknown
+  metadata_leakage: []
+  repeated_query_controls: unknown
+  minimum_aggregation_controls: unknown
+  audit_and_assurance: []
+
+assessment:
+  strengths: []
+  limitations_or_unknowns: []
+  implications_for_private_match: []
+  claim_types:
+    facts: []
+    inferences: []
+    hypotheses: []
+
+sources:
+  primary: []
+  secondary: []
+
+publication:
+  classification: public
+  source_check: pending
+  freshness_check: pending
+  ip_review: pending
+  security_review: pending
+  privacy_review: pending
+  claims_review: pending
