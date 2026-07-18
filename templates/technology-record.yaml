@@ -1,0 +1,79 @@
+schema_version: "0.1"
+record_type: technology
+
+identity:
+  name: ""
+  category: "" # PSI | OPRF | MPC | ZKP | TEE | FHE | DP | VC | other
+  implementation_or_standard: ""
+  canonical_url: ""
+
+observation:
+  observed_at: "YYYY-MM-DD"
+  last_verified_at: "YYYY-MM-DD"
+  next_review_at: "YYYY-MM-DD"
+  maturity: unknown
+
+problem_fit:
+  supported_results: [] # membership | intersection | cardinality | sum | threshold | general-computation
+  party_model: [] # two-party | multi-party | client-server
+  data_profiles: [] # balanced | unbalanced | low-entropy-identifiers | large-set
+  target_use_cases: []
+  non_fit: []
+
+security:
+  security_model: unknown # semi-honest | malicious | trusted-hardware | hybrid
+  cryptographic_assumptions: []
+  trusted_components: []
+  collusion_threshold: unknown
+  input_authenticity: unknown
+  omission_resistance: unknown
+  replay_and_session_binding: unknown
+  metadata_leakage: []
+  repeated_query_risk: []
+  known_attacks_or_limitations: []
+
+engineering:
+  languages: []
+  platforms: []
+  deployment_models: []
+  computation_profile: unknown
+  communication_profile: unknown
+  artifact_size_profile: unknown
+  operational_complexity: unknown
+  key_or_setup_requirements: []
+
+assurance:
+  standards: []
+  papers: []
+  formal_analysis: []
+  external_audits: []
+  test_vectors: []
+  interoperability: []
+
+project_health:
+  license: unknown
+  patent_considerations: unknown
+  latest_release: unknown
+  maintenance_status: unknown
+  bus_factor: unknown
+  security_reporting: unknown
+
+assessment:
+  strengths: []
+  limitations_or_unknowns: []
+  recommended_experiments: []
+  private_match_fit: unknown
+  confidence: low
+
+sources:
+  primary: []
+  secondary: []
+
+publication:
+  classification: public
+  source_check: pending
+  freshness_check: pending
+  ip_review: pending
+  security_review: pending
+  privacy_review: pending
+  claims_review: pending
