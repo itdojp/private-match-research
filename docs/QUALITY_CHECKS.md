@@ -28,6 +28,14 @@ Install the validation dependencies:
 python -m pip install -r requirements-dev.txt
 ```
 
+## Dependency integrity policy (v0.1)
+
+`requirements-dev.txt` uses exact versions for the two direct validation dependencies but does not use pip hash checking in v0.1. A reviewed `--require-hashes` lock must include every transitive dependency and every artifact for each supported Python/platform combination. The project has not yet defined that support matrix or a reviewed lock-update procedure; committing a lock generated for one developer environment would provide incomplete reproducibility for the documented local and GitHub Actions workflows.
+
+The current compensating boundaries are a GitHub-hosted ephemeral runner, read-only `contents` permission, immutable action commit pins, disabled checkout credential persistence, and no publication, deployment, private-repository, or secret requirement in this workflow. These boundaries limit repository impact but do not establish package integrity.
+
+Residual risks remain explicit: transitive dependency versions and downloaded package bytes are not locked, dependency resolution may change without a direct-version change, and compromise of a package, publisher, or index could execute code in CI. Before expanding the workflow's permissions or treating its output as release evidence, define the supported Python/platform matrix, review and pin the complete transitive graph, record hashes for all permitted artifacts, install with `pip --require-hashes`, and document lock renewal and provenance review.
+
 Run unit tests:
 
 ```bash

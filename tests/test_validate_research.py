@@ -9,7 +9,12 @@ from pathlib import Path
 
 import yaml
 
-from scripts.validate_research import lint_claims, load_schemas, validate_records
+from scripts.validate_research import (
+    lint_claims,
+    load_schemas,
+    load_yaml,
+    validate_records,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -238,6 +243,21 @@ def public_finding_record() -> dict:
 
 
 class ResearchValidationTests(unittest.TestCase):
+    def test_custom_yaml_loader_does_not_change_safe_loader_dates(self) -> None:
+        with tempfile.TemporaryDirectory(
+            prefix=".codex-test-yaml-loader-", dir=ROOT
+        ) as tmp:
+            path = Path(tmp) / "date.yaml"
+            path.write_text("observed_at: 2026-07-18\n", encoding="utf-8")
+
+            custom = load_yaml(path)
+            standard = yaml.safe_load(path.read_text(encoding="utf-8"))
+
+        self.assertEqual(custom["observed_at"], "2026-07-18")
+        self.assertIsInstance(custom["observed_at"], str)
+        self.assertEqual(standard["observed_at"], dt.date(2026, 7, 18))
+        self.assertIsInstance(standard["observed_at"], dt.date)
+
     def test_schemas_are_valid(self) -> None:
         validators = load_schemas(ROOT)
         self.assertEqual(set(validators), {"competitor", "technology", "public-use-case-finding"})

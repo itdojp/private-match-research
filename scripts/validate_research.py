@@ -24,6 +24,10 @@ class NoDatesSafeLoader(yaml.SafeLoader):
     """Safe YAML loader that leaves ISO dates as strings for JSON Schema."""
 
 
+NoDatesSafeLoader.yaml_implicit_resolvers = {
+    first_char: list(resolvers)
+    for first_char, resolvers in yaml.SafeLoader.yaml_implicit_resolvers.items()
+}
 for first_char, resolvers in list(NoDatesSafeLoader.yaml_implicit_resolvers.items()):
     NoDatesSafeLoader.yaml_implicit_resolvers[first_char] = [
         entry for entry in resolvers if entry[0] != "tag:yaml.org,2002:timestamp"
