@@ -1,0 +1,49 @@
+schema_version: "0.1"
+record_type: public-use-case-finding
+
+identity:
+  id: "H1-FINDING-001"
+  title: ""
+  domain: ""
+
+observation:
+  observed_at: "YYYY-MM-DD"
+  last_verified_at: "YYYY-MM-DD"
+  next_review_at: "YYYY-MM-DD"
+  source_status: current
+
+study:
+  evidence_level: E1
+  method: []
+  sample_size: 1
+  population: []
+  anonymization: ""
+
+finding:
+  buyer: []
+  user: []
+  trigger: []
+  current_workflow: []
+  minimum_useful_output: []
+  unacceptable_disclosures: []
+  disconfirming_findings: []
+  limitations: []
+
+claim_types:
+  facts: []
+  inferences: []
+  hypotheses: []
+
+sources:
+  primary: []
+  secondary: []
+
+publication:
+  classification: public
+  source_check: pending
+  freshness_check: pending
+  ip_review: pending
+  security_review: pending
+  privacy_review: pending
+  claims_review: pending
+  anonymization_review: pending
