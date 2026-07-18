@@ -1,0 +1,115 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Datavant
+  product: Datavant Connect powered by AWS Clean Rooms
+  canonical_url: https://www.datavant.com/press-release/datavant-and-aws-transform-health-data-discovery-with-cloud-first-solution-backed-by-top-pharmaceutical-companies-and-industry-partners
+  country_or_region: United States / Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: adjacent
+  confidence: high
+  rationale: It combines healthcare tokenization and AWS Clean Rooms for real-world-data discovery and evaluation, a vertical
+    and broader workflow than generic bilateral preflight matching.
+market:
+  buyer:
+  - 'Published target buyer: life-sciences data buyer or healthcare data source'
+  user:
+  - 'Published user: real-world-data discovery or evidence analyst'
+  trigger:
+  - 'Published use case: a life-sciences organization needs to assess dataset fitness before purchase'
+  jobs_to_be_done:
+  - Tokenize and connect healthcare data
+  - Evaluate cohort or variable fitness
+  - Govern clean-room queries
+  current_alternatives:
+  - Manual data-sample diligence
+  - AWS Clean Rooms without Datavant
+  - Healthcare data broker
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Tokenized real-world healthcare data
+  - Buyer evaluation questions
+  outputs:
+  - Governed dataset-fit and cohort insights
+  workflow:
+  - Tokenize data
+  - Associate sources with AWS Clean Rooms
+  - Run approved discovery or evaluation
+  - Proceed to data purchase separately
+  deployment:
+  - Datavant connectivity tools integrated with AWS Clean Rooms
+  prerequisites:
+  - Datavant commercial engagement
+  - AWS environment
+  - Healthcare data governance and participant agreement
+  data_movement: Vendor describes cloud-first evaluation in which source data remains controlled in each owner's AWS environment
+    for the clean-room workflow.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Healthcare tokenization
+  - Identity resolution
+  - AWS Clean Rooms analysis rules
+  trust_model: Datavant tokenization and AWS Clean Rooms controls plus participating data-source governance.
+  attacker_model: unknown
+  raw_data_access: Vendor states evaluation produces governed insights without moving underlying source data to the buyer;
+    independently unverified.
+  metadata_leakage:
+  - Tokenized identity and dataset metadata
+  - Buyer question patterns and aggregate answers
+  repeated_query_controls: AWS analysis rules and data-source approvals; exact product budget unknown.
+  minimum_aggregation_controls: AWS and data-source configuration dependent.
+  audit_and_assurance:
+  - Dated Datavant announcement and AWS integration documentation were reviewed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Clear healthcare dataset-discovery trigger
+  - Combines identity resolution with a cloud data room
+  limitations_or_unknowns:
+  - Public price is unknown
+  - Healthcare-specific governance and commercial relationships are required
+  - Independent result validation was not reviewed
+  implications_for_private_match:
+  - Pre-purchase dataset fitness is a validated product-shaped trigger
+  - Private Match should test similarly concrete decision outputs outside or within a narrow domain
+  claim_types:
+    facts:
+    - Datavant announced broad availability of Datavant Connect powered by AWS Clean Rooms in November 2025.
+    - The announcement describes life-sciences data discovery and evaluation before purchase.
+    inferences:
+    - The product is adjacent because its tokenization, cloud, and healthcare network scope exceeds a bilateral match decision.
+    hypotheses:
+    - A domain-specific Private Match template could target pre-purchase fit without a full data marketplace relationship.
+sources:
+  primary:
+  - url: https://www.datavant.com/press-release/datavant-and-aws-transform-health-data-discovery-with-cloud-first-solution-backed-by-top-pharmaceutical-companies-and-industry-partners
+    title: Datavant and AWS transform health data discovery
+    publisher: Datavant
+    published_at: '2025-11-13'
+    accessed_at: '2026-07-18'
+  - url: https://www.datavant.com/partnerships/cloud-integrations
+    title: Cloud integrations
+    publisher: Datavant
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

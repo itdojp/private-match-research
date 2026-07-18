@@ -1,0 +1,119 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Snowflake
+  product: Secure Data Sharing
+  canonical_url: https://docs.snowflake.com/en/user-guide/data-sharing-intro
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: substitute
+  confidence: high
+  rationale: A provider can grant live read-only access to selected Snowflake objects, making private computation unnecessary
+    when controlled data access is acceptable.
+market:
+  buyer:
+  - 'Inferred buyer: Snowflake data owner or data-sharing leader; exact budget owner unknown'
+  user:
+  - 'Published user: Snowflake provider administrator and consumer analyst'
+  trigger:
+  - 'Published use case: a provider needs to grant selected database-object access to another Snowflake account'
+  jobs_to_be_done:
+  - Create a share
+  - Grant selected objects
+  - Import a read-only database
+  - Query shared data
+  current_alternatives:
+  - File export
+  - Snowflake Data Clean Rooms
+  - Data marketplace
+  pricing:
+    public: true
+    model: Consumer pays Snowflake compute for querying imported data; cross-region replication can add provider costs
+    amount: Usage dependent under the parties' Snowflake plans
+    source: https://docs.snowflake.com/en/user-guide/data-sharing-intro
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Selected Snowflake database objects
+  - Provider grants and consumer account
+  outputs:
+  - Live read-only access to shared objects
+  - Consumer query results
+  workflow:
+  - Provider creates share
+  - Grant objects and consumer account
+  - Consumer imports database
+  - Consumer queries data
+  deployment:
+  - Snowflake provider and consumer accounts
+  prerequisites:
+  - Snowflake accounts or supported reader account
+  - Provider sharing enabled
+  - Object and role configuration
+  data_movement: For same-platform sharing, Snowflake states no actual data is copied or transferred between accounts; cross-region
+    paths can require replication.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Snowflake shares
+  - Read-only imported database
+  - Role-based access control
+  - Views and object grants
+  trust_model: Provider trusts Snowflake and grants consumer read access to selected objects or views.
+  attacker_model: unknown
+  raw_data_access: Consumer can directly query shared tables or restricted views according to provider grants; this can reveal
+    row-level data if tables are shared.
+  metadata_leakage:
+  - Shared object metadata
+  - Consumer query and access metadata
+  - Content exposed by provider grants
+  repeated_query_controls: Provider grants and view logic; not a private-computation query budget.
+  minimum_aggregation_controls: Only if provider implements restricted views or functions; not intrinsic to direct table sharing.
+  audit_and_assurance:
+  - Snowflake product documentation and provider considerations were reviewed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Near-immediate access for existing Snowflake accounts
+  - No separate clean-room application required for ordinary sharing
+  limitations_or_unknowns:
+  - Requires controlled access to shared data rather than hiding it from the consumer
+  - Cross-region configuration can add replication
+  - Provider must validate views and grants
+  implications_for_private_match:
+  - Private Match is unnecessary where read-only disclosure is acceptable
+  - The target buyer must have a reason not to grant a share
+  claim_types:
+    facts:
+    - Snowflake states shares provide read-only selected-object access and do not copy data between same-platform accounts.
+    - Provider documentation warns that the provider is responsible for sharing configuration.
+    inferences:
+    - Data sharing is a lower-complexity non-PET substitute for trusted counterparties already on Snowflake.
+    hypotheses:
+    - Private Match is valuable only before parties are ready to expose rows or create durable data access.
+sources:
+  primary:
+  - url: https://docs.snowflake.com/en/user-guide/data-sharing-intro
+    title: About Secure Data Sharing
+    publisher: Snowflake
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://docs.snowflake.com/en/user-guide/data-sharing-provider
+    title: Create and configure shares
+    publisher: Snowflake
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

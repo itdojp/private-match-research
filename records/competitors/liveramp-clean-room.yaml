@@ -1,0 +1,117 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: LiveRamp
+  product: LiveRamp Clean Room
+  canonical_url: https://liveramp.com/our-platform/clean-rooms
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: adjacent
+  confidence: high
+  rationale: It combines identity resolution, governance, publisher connectivity, and measurement templates, broader and more
+    advertising-specific than a bilateral preflight decision.
+market:
+  buyer:
+  - 'Published target buyer: advertiser, publisher, retail-media, or marketing measurement leader'
+  user:
+  - 'Published user: marketing analyst or data collaboration operator'
+  trigger:
+  - 'Published use case: partners need audience overlap, frequency, incrementality, or attribution analysis'
+  jobs_to_be_done:
+  - Connect partner data
+  - Resolve identities
+  - Run measurement templates
+  - Review collaborative insights
+  current_alternatives:
+  - Publisher-specific room
+  - Cloud data room
+  - Identity and measurement vendor combination
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - First-, second-, or third-party audience data
+  - Partner agreement and governance configuration
+  outputs:
+  - Audience overlap and measurement results
+  - Template-specific insights
+  workflow:
+  - Invite or connect a partner
+  - Provision governed datasets
+  - Run template or approved question
+  - View report
+  deployment:
+  - LiveRamp data collaboration platform with cloud integrations
+  prerequisites:
+  - Commercial LiveRamp relationship
+  - Partner and dataset onboarding
+  - Identity and governance configuration
+  data_movement: Vendor pages describe cloud interoperability and a decentralized implementation path; exact movement depends
+    on partner integration.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Identity resolution
+  - Governance controls
+  - Cloud interoperability
+  - Measurement templates
+  trust_model: LiveRamp platform, identity layer, and participant-governed data connections.
+  attacker_model: unknown
+  raw_data_access: Vendor states underlying party data is not exposed through the room; independent reproduction was not reviewed.
+  metadata_leakage:
+  - Identity and collaboration metadata
+  - Template-specific result leakage
+  repeated_query_controls: Agreement, governance, and template dependent; exact public budget unknown.
+  minimum_aggregation_controls: Template dependent; exact public thresholds unknown.
+  audit_and_assurance:
+  - Vendor product page and partner implementation guide were reviewed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Large advertising collaboration scope
+  - Ready-to-use measurement templates
+  limitations_or_unknowns:
+  - Public price is unknown
+  - Identity and advertising scope may exceed the target workflow
+  - Exact threat model is unknown
+  implications_for_private_match:
+  - Audience overlap is already packaged with activation and measurement
+  - Private Match needs a non-advertising or smaller decision wedge
+  claim_types:
+    facts:
+    - LiveRamp lists audience overlap, optimal frequency, incrementality, and attribution templates.
+    - Vendor documentation describes identity resolution, governance, and cloud interoperability.
+    inferences:
+    - The product is adjacent for marketing collaboration but not a general pre-disclosure decision tool.
+    hypotheses:
+    - Private Match can serve bilateral decisions where activation and identity-network services are unnecessary.
+sources:
+  primary:
+  - url: https://liveramp.com/our-platform/clean-rooms
+    title: LiveRamp Clean Room
+    publisher: LiveRamp
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://docs.liveramp.com/connect/en/clean-room-partner-implementation-guide.html
+    title: Clean Room Partner Implementation Guide
+    publisher: LiveRamp
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

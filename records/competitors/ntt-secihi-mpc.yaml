@@ -1,0 +1,115 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: NTT DOCOMO BUSINESS
+  product: 析秘 (MPC)
+  canonical_url: https://www.ntt.com/business/services/secihi-mpc.html
+  country_or_region: Japan
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: adjacent
+  confidence: high
+  rationale: It is a Japanese multi-party computation cloud service for cross-organization statistics, broader than a fixed
+    match preflight.
+market:
+  buyer:
+  - 'Inferred buyer: Japanese enterprise data-utilization or governance leader; exact budget owner unknown'
+  user:
+  - 'Published user: business operator configuring analysis through a web interface'
+  trigger:
+  - 'Published use case: organizations need statistical analysis across separately held data'
+  jobs_to_be_done:
+  - Upload or register participant data
+  - Configure an MPC analysis
+  - Receive statistical output
+  current_alternatives:
+  - 析秘TEE
+  - Trusted third-party aggregation
+  - Manual statistics exchange
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Participant tabular data
+  - Supported statistical operation configuration
+  outputs:
+  - Supported statistical analysis result
+  workflow:
+  - Arrange service
+  - Configure participants and analysis
+  - Run the web-based job
+  - Retrieve results
+  deployment:
+  - NTT DOCOMO BUSINESS cloud service
+  prerequisites:
+  - Commercial application
+  - Supported data and analysis
+  - Participant coordination
+  data_movement: Vendor documentation describes data being processed as secret shares across the service; exact operational
+    topology is not fully public.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Multi-party computation
+  - Secret sharing
+  - Web-based workflow
+  trust_model: Vendor-operated MPC service with multiple computation servers; exact operator and collusion assumptions require
+    product-specific confirmation.
+  attacker_model: unknown
+  raw_data_access: Vendor states data is handled as secret shares during the computation; this was not independently reproduced.
+  metadata_leakage:
+  - Job and participant metadata
+  - Input-size and output-specific leakage are not fully documented publicly
+  repeated_query_controls: unknown
+  minimum_aggregation_controls: unknown
+  audit_and_assurance:
+  - Official service page and launch announcement were reviewed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Japanese enterprise service channel
+  - Web interface reduces command-line requirements
+  limitations_or_unknowns:
+  - Public current price was not confirmed
+  - Exact collusion and attacker model is unknown
+  - Deployment lead time is unknown
+  implications_for_private_match:
+  - MPC-based domestic analysis is an established purchase option
+  - Private Match must validate a smaller output and setup category
+  claim_types:
+    facts:
+    - NTT documentation describes 析秘 as an MPC cloud service for analysis across organizations.
+    - The 2021 launch announcement describes a web interface.
+    inferences:
+    - The service can substitute for broad statistical collaboration but may be heavier than a one-off preflight.
+    hypotheses:
+    - A protocol-led client workflow can reduce service onboarding for narrow match decisions.
+sources:
+  primary:
+  - url: https://www.ntt.com/business/services/secihi-mpc.html
+    title: 秘密計算クラウドサービス 析秘
+    publisher: NTT DOCOMO BUSINESS
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://www.ntt.com/about-us/press-releases/news/article/2021/0819.html
+    title: 析秘 launch announcement
+    publisher: NTT DOCOMO BUSINESS
+    published_at: '2021-08-19'
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

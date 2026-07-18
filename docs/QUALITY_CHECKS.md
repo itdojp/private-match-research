@@ -10,6 +10,7 @@ The command validates:
 
 - YAML syntax across the repository
 - structured records under `records/`
+- deterministic competitor-index generation and the 25-record acceptance floor
 - competitor, technology, and public use-case finding schemas
 - required observation and review dates
 - competitor classification and confidence vocabulary
@@ -32,6 +33,18 @@ Run unit tests:
 
 ```bash
 python -m unittest discover -s tests -p 'test_*.py'
+```
+
+Regenerate the structured competitor index after changing competitor records:
+
+```bash
+python scripts/generate_competitor_index.py --root .
+```
+
+Verify that the committed index is current:
+
+```bash
+python scripts/generate_competitor_index.py --root . --check
 ```
 
 Run required repository validation:

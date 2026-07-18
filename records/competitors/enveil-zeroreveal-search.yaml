@@ -1,0 +1,111 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Enveil
+  product: ZeroReveal Search
+  canonical_url: https://www.enveil.com/products/
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: potential
+  confidence: medium
+  rationale: It supports encrypted search and cross-match against data in another environment, but public pricing, exact output
+    constraints, and buyer workflow remain incomplete.
+market:
+  buyer:
+  - 'Published target buyer: financial-services, enterprise, or public-sector data leader; exact budget owner unknown'
+  user:
+  - 'Published user: investigator or analyst performing search, watchlist, or cross-match operations'
+  trigger:
+  - 'Published use case: an organization needs to query third-party or cross-boundary data while hiding search content'
+  jobs_to_be_done:
+  - Deploy client and server proxies
+  - Submit an encrypted search or cross-match
+  - Receive the permitted result
+  current_alternatives:
+  - Manual third-party query request
+  - PSI library
+  - Centralized data copy
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Search or cross-match terms
+  - Provider-resident data
+  outputs:
+  - Search or cross-match result returned through the ZeroReveal workflow
+  workflow:
+  - Deploy point-to-point client and server
+  - Integrate APIs
+  - Submit protected operation
+  - Return result
+  deployment:
+  - Two-party proxy layer with a client at the requester and a server where data resides
+  prerequisites:
+  - Commercial engagement
+  - Client and server integration
+  - Supported data-source API path
+  data_movement: Vendor states provider data can remain in its existing environment while encrypted operations pass through
+    the proxy layer.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Homomorphic encryption
+  - Two-party proxy architecture
+  - API integration
+  trust_model: Vendor-described requester client and data-location server; detailed current attacker model is not public in
+    the reviewed page.
+  attacker_model: unknown
+  raw_data_access: Vendor states the requester does not receive unrestricted underlying data and the provider does not learn
+    protected search content; independently unverified.
+  metadata_leakage:
+  - Request timing and endpoint metadata
+  - Result and volume leakage are operation dependent
+  repeated_query_controls: unknown
+  minimum_aggregation_controls: unknown
+  audit_and_assurance:
+  - Vendor cites NIAP Common Criteria certification; certificate scope was not independently assessed for this record.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Directly addresses hidden query intent
+  - Designed as an add-on proxy rather than a data warehouse
+  limitations_or_unknowns:
+  - Public price is unknown
+  - Exact repeated-query controls are unknown
+  - Certification scope and current product version require deeper review
+  implications_for_private_match:
+  - Query privacy and in-place deployment are relevant alternatives
+  - Private Match must specify who learns the output and query budget
+  claim_types:
+    facts:
+    - Enveil's product page describes ZeroReveal Search as a two-party client and server proxy layer.
+    - The vendor identifies homomorphic encryption as the underlying product technology.
+    inferences:
+    - The product could serve some match use cases, but public information is insufficient for a stronger classification.
+    hypotheses:
+    - A protocol with public vectors and a fixed result can be easier to independently evaluate.
+sources:
+  primary:
+  - url: https://www.enveil.com/products/
+    title: Enveil products
+    publisher: Enveil
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

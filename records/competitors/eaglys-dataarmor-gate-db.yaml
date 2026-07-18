@@ -1,0 +1,118 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: EAGLYS
+  product: DataArmor Gate DB
+  canonical_url: https://eaglys.co.jp/platform/gate-db/
+  country_or_region: Japan
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: adjacent
+  confidence: medium
+  rationale: It adds encrypted query processing to existing databases, enabling protected data use but not providing the complete
+    bilateral consent and session workflow proposed for Private Match.
+market:
+  buyer:
+  - 'Inferred buyer: enterprise database, data-platform, or information-governance leader; exact budget owner unknown'
+  user:
+  - 'Published user: database application operator or analyst'
+  trigger:
+  - 'Published use case: an organization needs to protect database fields while retaining supported query operations'
+  jobs_to_be_done:
+  - Add a gateway to an existing database
+  - Encrypt selected columns
+  - Run supported database operations
+  current_alternatives:
+  - Database tokenization
+  - TEE deployment
+  - Application-level encryption
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: Vendor states basic setup itself can be completed in less than half a day; total integration time
+    is unknown.
+product:
+  inputs:
+  - Existing relational database records
+  - Encryption and gateway configuration
+  outputs:
+  - Supported query results through the gateway
+  workflow:
+  - Install gateway components
+  - Configure database connection and fields
+  - Export or import protected data as needed
+  - Run application queries
+  deployment:
+  - Middleware or gateway added to supported databases
+  - Vendor page lists Docker as a dependency
+  prerequisites:
+  - Supported MySQL, SQL Server, or PostgreSQL environment
+  - Docker
+  - Database integration work
+  data_movement: Vendor documentation describes export and import when applying protection to an existing database; exact
+    application data flow depends on integration.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Homomorphic encryption
+  - Database gateway
+  - Column-level configuration
+  trust_model: Database and gateway deployment under customer control; cryptographic key and operator boundaries require implementation-specific
+    review.
+  attacker_model: unknown
+  raw_data_access: Depends on key ownership, gateway configuration, and authorized database paths; exact boundary is unknown.
+  metadata_leakage:
+  - Database schema and query metadata
+  - Encrypted-query leakage is operation and configuration dependent
+  repeated_query_controls: unknown
+  minimum_aggregation_controls: unknown
+  audit_and_assurance:
+  - Official product, technology, and commercial-launch pages were reviewed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Works with listed relational databases
+  - Can be added to an existing database architecture
+  limitations_or_unknowns:
+  - Public price is unknown
+  - It is a component rather than a complete bilateral workflow
+  - Vendor setup statements were not independently reproduced
+  implications_for_private_match:
+  - Database middleware is a build or buy alternative
+  - Private Match still needs consent, transcript, and output-policy layers
+  claim_types:
+    facts:
+    - EAGLYS lists MySQL, SQL Server, PostgreSQL, and Docker for DataArmor Gate DB.
+    - The vendor announced commercial provision in 2020.
+    inferences:
+    - The product is adjacent because it protects database computation but does not by itself define Private Match's bilateral
+      decision workflow.
+    hypotheses:
+    - Some customers will prefer a database add-on when recurring protected queries outweigh a bounded protocol product.
+sources:
+  primary:
+  - url: https://eaglys.co.jp/platform/gate-db/
+    title: DataArmor Gate DB
+    publisher: EAGLYS
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://eaglys.co.jp/resource/news/press-release/20200123
+    title: DataArmor Gate DB commercial launch
+    publisher: EAGLYS
+    published_at: '2020-01-23'
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

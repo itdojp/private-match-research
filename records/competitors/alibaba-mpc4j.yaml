@@ -1,0 +1,110 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Alibaba academic contributors
+  product: mpc4j
+  canonical_url: https://github.com/alibaba-edu/mpc4j
+  country_or_region: Open source / Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: building-block
+  confidence: high
+  rationale: It is a research-oriented Java library spanning MPC, HE, DP, and set operations, not a complete product workflow
+    for bilateral decisions.
+market:
+  buyer:
+  - 'Not a commercial product; inferred adopter: academic or protocol engineering team'
+  user:
+  - 'Published user: Java researcher or developer evaluating MPC, HE, DP, PSI, or related protocols'
+  trigger:
+  - 'Published use case: a team needs implementations for protocol study, comparison, or prototyping'
+  jobs_to_be_done:
+  - Select a protocol module
+  - Configure two party roles
+  - Run a benchmark or prototype
+  - Integrate communication APIs separately
+  current_alternatives:
+  - Single-purpose PSI library
+  - Commercial privacy-computing platform
+  - Implement paper reference code
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Protocol-specific files and configuration
+  - Java application integration
+  outputs:
+  - Protocol-specific PSI, set-operation, HE, MPC, or DP result
+  workflow:
+  - Build with JDK 17 or later
+  - Select module and configuration
+  - Run server and client
+  - Integrate required application controls
+  deployment:
+  - Self-hosted multi-module Java library with some native components
+  prerequisites:
+  - JDK 17 or later
+  - Protocol-specific network and configuration
+  - Additional application engineering
+  data_movement: Protocol-specific messages move between configured roles; the library does not define one deployment topology.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Multi-party computation
+  - Homomorphic encryption
+  - Differential privacy
+  - Private set operations
+  - OPRF and OT components
+  trust_model: Protocol dependent; the project states a strong never-crash, fully synchronized research system model.
+  attacker_model: Protocol dependent and must be mapped from each implementation and paper.
+  raw_data_access: Protocol and application dependent.
+  metadata_leakage:
+  - Protocol, configuration, and network dependent
+  repeated_query_controls: Application responsibility.
+  minimum_aggregation_controls: Protocol and application dependent.
+  audit_and_assurance:
+  - Apache-2.0 repository, papers, and academic implementations are public; no product-level audit was identified.
+  - 'Evidence reviewed: public source repository; the implementation was not benchmarked for this record.'
+assessment:
+  strengths:
+  - Wide protocol catalog for comparative experiments
+  - Project documents important system-model limitations
+  limitations_or_unknowns:
+  - Repository states additional engineering is needed for applications
+  - Strong synchronization assumptions differ from typical production systems
+  - Large scope raises protocol-selection risk
+  implications_for_private_match:
+  - It can accelerate technology comparison
+  - Private Match must not inherit research-only system assumptions without explicit handling
+  claim_types:
+    facts:
+    - The mpc4j README describes an academic Java library for MPC, HE, and DP.
+    - The project states a never-crash, fully synchronized system assumption and calls out additional engineering for applications.
+    inferences:
+    - The repository is an experiment and reference source, not a direct product alternative.
+    hypotheses:
+    - Selected PSI modules can provide comparative performance evidence after threat-model screening.
+sources:
+  primary:
+  - url: https://github.com/alibaba-edu/mpc4j
+    title: mpc4j
+    publisher: Alibaba academic contributors
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

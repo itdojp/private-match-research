@@ -1,0 +1,121 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Acompany
+  product: AutoPrivacy DataCleanRoom
+  canonical_url: https://service.acompany.tech/datacleanroom/solution/
+  country_or_region: Japan
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: adjacent
+  confidence: high
+  rationale: It provides cross-cloud protected ID matching and analysis in Japan, but as a broader managed data-room solution
+    rather than a fixed bilateral preflight product.
+market:
+  buyer:
+  - 'Inferred buyer: Japanese enterprise data collaboration, marketing, or governance leader; exact budget owner unknown'
+  user:
+  - 'Published user: business operator or analyst using no-code matching and analysis functions'
+  trigger:
+  - 'Published use case: companies need cross-organization matching or analysis across separate cloud environments'
+  jobs_to_be_done:
+  - Configure data collaboration
+  - Run private ID matching
+  - Use aggregation or anonymization functions
+  current_alternatives:
+  - Domestic cloud data room
+  - Trusted third-party analysis
+  - Direct data exchange
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Participant datasets and selected identifiers
+  - Analysis configuration
+  outputs:
+  - ID-match and analysis results permitted by the configured function
+  workflow:
+  - Connect data sources
+  - Configure a collaboration
+  - Run selected no-code function
+  - Review results
+  deployment:
+  - Vendor-managed cross-cloud solution supporting stated AWS, Google Cloud, Azure, and Snowflake paths
+  prerequisites:
+  - Commercial engagement
+  - Supported cloud data sources
+  - Participant agreement
+  data_movement: Vendor pages describe cross-cloud paths and function-specific processing; exact transfer topology is deployment
+    dependent.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Trusted execution environments
+  - Multi-party computation
+  - Private ID matching
+  - Policy and governance functions
+  trust_model: Technology and deployment-path dependent; vendor describes TEE and MPC choices.
+  attacker_model: unknown
+  raw_data_access: Vendor states protected matching avoids sharing raw identifiers between participants; independent reproduction
+    was not reviewed.
+  metadata_leakage:
+  - Deployment and function dependent
+  - Exact public disclosure is unknown
+  repeated_query_controls: Governance-function dependent; exact public query-budget behavior unknown.
+  minimum_aggregation_controls: Function dependent; exact public minimum unknown.
+  audit_and_assurance:
+  - Vendor product, function, and cross-cloud announcement pages were reviewed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Japanese commercial and governance context
+  - Multiple cloud and PET paths described
+  limitations_or_unknowns:
+  - Public price is unknown
+  - Exact attacker model is unknown
+  - Vendor performance claims were not independently reproduced
+  implications_for_private_match:
+  - Domestic protected ID matching already exists
+  - Private Match needs a buyer and setup advantage rather than TEE or MPC branding
+  claim_types:
+    facts:
+    - Acompany publishes private ID matching and analysis functions for AutoPrivacy DataCleanRoom.
+    - A 2025 vendor announcement lists AWS, Google Cloud, Azure, and Snowflake support.
+    inferences:
+    - The product is adjacent for Japanese cross-company matching but broader than a single decision session.
+    hypotheses:
+    - An auditable protocol and client surface can address teams that do not want a full managed data room.
+sources:
+  primary:
+  - url: https://service.acompany.tech/datacleanroom/solution/
+    title: AutoPrivacy DataCleanRoom solution
+    publisher: Acompany
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://service.acompany.tech/datacleanroom/function/
+    title: AutoPrivacy DataCleanRoom functions
+    publisher: Acompany
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://www.acompany.tech/news/25-0828-1
+    title: Cross-cloud support announcement
+    publisher: Acompany
+    published_at: '2025-08-28'
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

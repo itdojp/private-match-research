@@ -1,0 +1,111 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Google
+  product: Private Join and Compute
+  canonical_url: https://github.com/google/private-join-and-compute
+  country_or_region: Open source / Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: building-block
+  confidence: high
+  rationale: It implements a two-party private intersection-sum primitive but does not provide a complete commercial, consent,
+    policy, or evidence workflow.
+market:
+  buyer:
+  - 'Not a commercial product; inferred adopter: protocol engineering team'
+  user:
+  - 'Published user: C++ developer running server and client binaries'
+  trigger:
+  - 'Published use case: two parties need intersection cardinality and a sum over matching identifiers'
+  jobs_to_be_done:
+  - Build the C++ implementation
+  - Run server and client on input files
+  - Learn count and associated-value sum
+  current_alternatives:
+  - Implement PSI from a paper
+  - Use another PSI library
+  - Buy a data-room product
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Server identifier file
+  - Client identifier and integer-value file
+  outputs:
+  - Intersection cardinality
+  - Sum of client-associated values for matching identifiers
+  workflow:
+  - Build with Bazel
+  - Start server
+  - Run client
+  - Consume client output
+  deployment:
+  - Self-hosted C++ library and example binaries
+  prerequisites:
+  - Bazel
+  - C++ build environment
+  - Application transport and operational controls
+  data_movement: Protocol messages move between the two parties; deployment networking and storage are application responsibilities.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Private intersection-sum
+  - Commutative encryption
+  - Paillier-style additive homomorphic encryption
+  trust_model: Repository documentation describes an honest-but-curious two-party model for the implementation.
+  attacker_model: Malicious input authentication and broader endpoint compromise are not solved by the sample implementation.
+  raw_data_access: The client learns intersection size and sum rather than the individual matching identifiers in the documented
+    mode.
+  metadata_leakage:
+  - Input-size and transport metadata
+  - Small-intersection and repeated-execution risks documented by the project
+  repeated_query_controls: Application responsibility; not implemented as a product policy layer.
+  minimum_aggregation_controls: Application responsibility.
+  audit_and_assurance:
+  - Apache-2.0 repository, source, and tests are public; no external audit was identified in the reviewed README.
+  - 'Evidence reviewed: public source repository; the implementation was not benchmarked for this record.'
+assessment:
+  strengths:
+  - Output includes count and sum without returning matching identities
+  - Public source can support experiments
+  limitations_or_unknowns:
+  - Not an officially supported Google product
+  - Operational controls and malicious-input defenses require additional engineering
+  - No public commercial support or pricing
+  implications_for_private_match:
+  - It is a concrete protocol-bake-off baseline
+  - Private Match must add session, policy, evidence, and lifecycle layers
+  claim_types:
+    facts:
+    - The repository implements private intersection cardinality and associated-value sum for two input files.
+    - The repository is Apache-2.0 and uses Bazel for its documented build.
+    inferences:
+    - The code is a building block rather than a deployable product workflow.
+    hypotheses:
+    - A constrained Private Match count or band mode can reuse lessons from this implementation while adding stronger misuse
+      controls.
+sources:
+  primary:
+  - url: https://github.com/google/private-join-and-compute
+    title: Private Join and Compute
+    publisher: Google Open Source
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

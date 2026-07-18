@@ -1,0 +1,109 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Intapp
+  product: Intapp Conflicts
+  canonical_url: https://www.intapp.com/product/intapp-conflicts/
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: substitute
+  confidence: high
+  rationale: Professional-services firms can use an internal new-business and conflict-clearance workflow instead of bilateral
+    privacy-preserving matching.
+market:
+  buyer:
+  - 'Published target buyer: legal or professional-services risk and compliance leader'
+  user:
+  - 'Published user: conflict analyst, intake team, or professional'
+  trigger:
+  - 'Published use case: a firm receives a new matter, RFI, RFP, client, or engagement requiring clearance'
+  jobs_to_be_done:
+  - Search internal client and matter data
+  - Triage potential conflicts
+  - Route a decision to compliance
+  current_alternatives:
+  - Manual conflicts database search
+  - Bilateral name disclosure
+  - External conflict counsel
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Firm client, matter, relationship, and intake data
+  - New opportunity or party names
+  outputs:
+  - Conflict search and clearance workflow result
+  - Recommendation or handoff to compliance
+  workflow:
+  - Capture opportunity
+  - Search firm data
+  - Review hits
+  - Clear, reject, or escalate
+  deployment:
+  - Commercial professional-services software platform
+  prerequisites:
+  - Firm data integration
+  - Conflict policies and workflows
+  - Commercial subscription
+  data_movement: Firm and intake data are supplied to the configured Intapp deployment; cross-firm protected computation is
+    not the product's stated core workflow.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Conflict search
+  - Workflow automation
+  - AI-assisted clearance options
+  trust_model: Firm-authorized users and the configured commercial platform process internal conflict data.
+  attacker_model: unknown
+  raw_data_access: Authorized firm users can review internal conflict-search data according to platform permissions.
+  metadata_leakage:
+  - Matter, client, search, and user activity inside the firm workflow
+  repeated_query_controls: Firm access and workflow policy dependent.
+  minimum_aggregation_controls: Not applicable; the workflow can require item-level conflict review.
+  audit_and_assurance:
+  - Vendor product material was reviewed; privacy-preserving bilateral computation is not claimed as the core workflow.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Fits existing professional-services intake and clearance
+  - Can remove the need for bilateral computation when one firm's internal data is sufficient
+  limitations_or_unknowns:
+  - Public price is unknown
+  - Requires disclosure into an internal conflict process
+  - Does not solve cross-organization hidden-set comparison by itself
+  implications_for_private_match:
+  - Private Match may not be needed when internal conflict data and ordinary intake are sufficient
+  - H1 must show a pre-disclosure gap not covered by firm systems
+  claim_types:
+    facts:
+    - Intapp markets Conflicts for new-business acceptance and risk workflows in legal and professional services.
+    - The product page describes optional handoff to compliance for clearance.
+    inferences:
+    - An established internal conflict system is a non-PET substitute for many H1 cases.
+    hypotheses:
+    - Private Match is useful only when material counterpart data remains outside the firm's authorized conflict database.
+sources:
+  primary:
+  - url: https://www.intapp.com/product/intapp-conflicts/
+    title: Intapp Conflicts
+    publisher: Intapp
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

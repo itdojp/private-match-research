@@ -1,0 +1,118 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: SS&C Intralinks
+  product: VDRPro
+  canonical_url: https://support.intralinks.com/hc/en-us/articles/9188567366427-Introduction-VDRPro
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: substitute
+  confidence: high
+  rationale: A permissioned VDR lets counterparties disclose and review selected information directly, avoiding private matching
+    when conventional diligence is acceptable.
+market:
+  buyer:
+  - 'Inferred buyer: M&A deal or project owner; exact budget owner unknown'
+  user:
+  - 'Published user: VDR manager, publisher, or reviewer'
+  trigger:
+  - 'Published use case: a deal or project requires cross-organization document review and collaboration'
+  jobs_to_be_done:
+  - Create an online deal room
+  - Set document and role permissions
+  - Run Q&A and monitor diligence
+  current_alternatives:
+  - Datasite
+  - Email or file sharing
+  - Private matching before diligence
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Deal documents
+  - Participant roles and permissions
+  outputs:
+  - Permissioned document access
+  - Q&A and workflow records
+  - Access reports
+  workflow:
+  - Create VDR
+  - Add documents and groups
+  - Assign permissions
+  - Invite counterparties
+  - Review and collaborate
+  deployment:
+  - Vendor-hosted web VDR and client applications
+  prerequisites:
+  - Commercial quote or subscription
+  - Project administrator
+  - Prepared documents and reviewer list
+  data_movement: Documents are uploaded to the VDR and can be viewed or downloaded according to configured permissions.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Virtual data room
+  - Role and document permissions
+  - Information rights management
+  - Audit reports
+  trust_model: Participants trust SS&C Intralinks, VDR managers, identity controls, and configured document permissions.
+  attacker_model: unknown
+  raw_data_access: Authorized reviewers receive document-level access; administrators can revoke access within documented
+    product limits.
+  metadata_leakage:
+  - VDR membership, documents, and access activity according to roles
+  - Deal metadata
+  repeated_query_controls: Role and project policy dependent.
+  minimum_aggregation_controls: Not applicable to document review.
+  audit_and_assurance:
+  - Vendor product and support documentation were reviewed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Supports established cross-organization deal workflows
+  - Granular roles and document controls
+  limitations_or_unknowns:
+  - Public price is unknown
+  - Requires controlled disclosure rather than minimizing the computed output
+  - Document preparation and permissions add setup
+  implications_for_private_match:
+  - Private Match may not be needed when ordinary permissioned disclosure is acceptable
+  - A viable preflight must produce value before VDR invitation
+  claim_types:
+    facts:
+    - Intralinks documentation describes VDRPro as a web-based space for document sharing, workflows, and collaboration.
+    - Support documentation defines manager, publisher, and reviewer role capabilities.
+    inferences:
+    - VDRPro is a non-PET substitute for bilateral diligence after parties accept controlled disclosure.
+    hypotheses:
+    - A match decision can defer VDR cost and disclosure for low-probability opportunities.
+sources:
+  primary:
+  - url: https://support.intralinks.com/hc/en-us/articles/9188567366427-Introduction-VDRPro
+    title: Introduction to VDRPro
+    publisher: SS&C Intralinks
+    published_at: '2026-04-14'
+    accessed_at: '2026-07-18'
+  - url: https://support.intralinks.com/hc/en-us/articles/9344054808603-VDR-user-roles-VDRPro
+    title: VDR user roles
+    publisher: SS&C Intralinks
+    published_at: '2026-03-24'
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

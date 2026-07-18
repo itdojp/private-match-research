@@ -1,0 +1,125 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Amazon Web Services
+  product: Cryptographic Computing for Clean Rooms (C3R)
+  canonical_url: https://docs.aws.amazon.com/clean-rooms/latest/userguide/crypto-computing.html
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: adjacent
+  confidence: high
+  rationale: It is a client-side protected join capability within AWS Clean Rooms, while Private Match targets a narrower
+    product and protocol boundary.
+market:
+  buyer:
+  - 'Inferred buyer: AWS data collaboration owner; exact budget owner unknown'
+  user:
+  - 'Published user: data engineer preparing relational tables for a collaboration'
+  trigger:
+  - 'Published use case: collaborators need equality joins over protected columns in AWS Clean Rooms'
+  jobs_to_be_done:
+  - Protect selected columns before upload
+  - Join on protected identifiers
+  - Select permitted protected values
+  current_alternatives:
+  - AWS Clean Rooms without C3R
+  - PSI implementation
+  - Tokenization provider
+  pricing:
+    public: true
+    model: AWS Clean Rooms usage pricing; C3R client tool is used with the service
+    amount: Region and collaboration usage dependent
+    source: https://aws.amazon.com/clean-rooms/pricing/
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Relational tables
+  - Collaboration schema and encryption configuration
+  outputs:
+  - JOIN and SELECT results allowed by the C3R collaboration configuration
+  workflow:
+  - Agree schema
+  - Run the client-side encryption tool
+  - Upload prepared data
+  - Run supported queries
+  deployment:
+  - Client-side C3R tool plus AWS Clean Rooms
+  prerequisites:
+  - AWS Clean Rooms collaboration
+  - Shared schema agreement
+  - Supported SQL and column types
+  data_movement: The client tool transforms selected columns before prepared tables are supplied to the AWS workflow.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - AES-GCM sealed columns
+  - HMAC fingerprint columns
+  - Client-side preprocessing
+  trust_model: Two or more collaborators use client-side keys and AWS Clean Rooms; AWS documents capability-specific assumptions
+    and limitations.
+  attacker_model: AWS documentation discusses inference and metadata risks but does not provide one universal attacker model
+    for every deployment.
+  raw_data_access: Protected columns are transformed before the AWS collaboration; unprotected columns remain governed by
+    the collaboration configuration.
+  metadata_leakage:
+  - Table and column names
+  - Row count
+  - Value lengths in documented cases
+  - Query and timing information
+  repeated_query_controls: Must be addressed through collaboration configuration and query governance; C3R documentation warns
+    about inference risks.
+  minimum_aggregation_controls: Not intrinsic to every C3R query; analysis-rule configuration is required where applicable.
+  audit_and_assurance:
+  - AWS publishes implementation guidance and explicit considerations.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Documents residual leakage
+  - Provides a client-side preprocessing path for equality joins
+  limitations_or_unknowns:
+  - Supported relational operations are constrained
+  - Key management and schema agreement add prerequisites
+  - Deployment lead time is unknown
+  implications_for_private_match:
+  - Private Match should publish equally explicit leakage and query constraints
+  - A cloud-neutral path may differentiate only if operational demand is established
+  claim_types:
+    facts:
+    - AWS documents C3R as a capability for encrypting data before use in AWS Clean Rooms.
+    - AWS documents sealed and fingerprint column types and residual metadata considerations.
+    inferences:
+    - C3R is a closer technical alternative than the general AWS Clean Rooms query path, but it remains embedded in a broader
+      AWS workflow.
+    hypotheses:
+    - A smaller protocol with fixed outputs can reduce schema and query-governance work for bilateral preflight cases.
+sources:
+  primary:
+  - url: https://docs.aws.amazon.com/clean-rooms/latest/userguide/crypto-computing.html
+    title: Cryptographic Computing for Clean Rooms
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://docs.aws.amazon.com/clean-rooms/latest/userguide/crypto-computing-considerations.html
+    title: Considerations for Cryptographic Computing
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://aws.amazon.com/clean-rooms/pricing/
+    title: AWS Clean Rooms Pricing
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

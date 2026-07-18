@@ -1,0 +1,114 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Microsoft
+  product: APSI
+  canonical_url: https://github.com/microsoft/APSI
+  country_or_region: Open source / Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: building-block
+  confidence: high
+  rationale: It is an asymmetric PSI library for lookup workloads, not a complete bilateral product or policy workflow.
+market:
+  buyer:
+  - 'Not a commercial product; inferred adopter: cryptographic protocol engineering team'
+  user:
+  - 'Published user: C++ developer configuring sender, receiver, and PSI parameters'
+  trigger:
+  - 'Published use case: a receiver needs to look up a small set against a large sender set'
+  jobs_to_be_done:
+  - Configure BFV and PSI parameters
+  - Build sender database
+  - Submit receiver query
+  - Recover matched items or labels
+  current_alternatives:
+  - Balanced PSI implementation
+  - Private information retrieval
+  - Managed matching service
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Sender item or key-value set
+  - Receiver query items
+  - Explicit encryption and PSI parameters
+  outputs:
+  - Intersection items in unlabeled mode
+  - Matched labels in labeled mode
+  workflow:
+  - Build the C++ library
+  - Configure parameters
+  - Run sender and receiver
+  - Process result parts
+  deployment:
+  - Self-hosted C++ library and CLI
+  prerequisites:
+  - C++ toolchain
+  - Microsoft SEAL dependencies
+  - Application transport and key management
+  data_movement: Encrypted query and response messages move between receiver and sender; application integration is required.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Asymmetric private set intersection
+  - BFV homomorphic encryption
+  - Microsoft SEAL
+  trust_model: Sender hosts the larger set and receiver holds the decryption key for results; the sender set itself is not
+    hidden from the sender.
+  attacker_model: Repository documents functionality and parameters; application-level malicious behavior and endpoint compromise
+    require separate analysis.
+  raw_data_access: Receiver learns matches or labels; sender's full set and receiver nonmatches are not intended outputs under
+    the protocol model.
+  metadata_leakage:
+  - Upper bounds on set sizes are public
+  - Parameter and transport metadata
+  repeated_query_controls: Application responsibility.
+  minimum_aggregation_controls: Not applicable to item-returning APSI modes; application must constrain outputs if aggregation
+    is required.
+  audit_and_assurance:
+  - MIT-licensed source and protocol references are public; no current external audit was identified in the README.
+  - 'Evidence reviewed: public source repository; the implementation was not benchmarked for this record.'
+assessment:
+  strengths:
+  - Supports labeled and unlabeled asymmetric lookup
+  - Documents parameter trade-offs
+  limitations_or_unknowns:
+  - Returns item-level matches in common modes
+  - Parameter selection and integration require cryptographic engineering
+  - Latest repository push observed was 2023-12-30
+  implications_for_private_match:
+  - It is relevant to one-to-many or unbalanced experiments
+  - Private Match must constrain outputs and handle session abuse
+  claim_types:
+    facts:
+    - APSI's repository describes unlabeled and labeled asymmetric PSI based on BFV through Microsoft SEAL.
+    - The README states upper bounds on set sizes are public.
+    inferences:
+    - APSI is a building block whose default item-returning output may exceed Private Match's minimization goals.
+    hypotheses:
+    - An asymmetric mode may help later data profiles but should not be the default before buyer evidence.
+sources:
+  primary:
+  - url: https://github.com/microsoft/APSI
+    title: APSI
+    publisher: Microsoft
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
