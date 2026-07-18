@@ -1,0 +1,147 @@
+schema_version: "0.1"
+plan_id: PM-TECH-BAKEOFF-001
+observed_at: "2026-07-18"
+execution_boundary:
+  data_classification: synthetic-only
+  local_results_status: not-run
+  vendor_results_are_local_results: false
+  production_architecture_decision: false
+
+selected_tracks:
+  - id: TRACK-PSI
+    class: cryptographic
+    record: records/technologies/secretflow-psi.yaml
+    implementation: SecretFlow PSI using PROTOCOL_KKRT
+    source_revision: d7682707035d6b3e04cc09b8bfef629140641432
+    environment_authorization: local-container-host
+    selection_scope: First end-to-end two-party set experiment; semi-honest assumptions remain explicit.
+  - id: TRACK-VOPRF
+    class: cryptographic
+    record: records/technologies/rfc9497-circl-voprf.yaml
+    implementation: RFC 9497 VOPRF using Cloudflare CIRCL v1.6.4
+    source_revision: v1.6.4
+    environment_authorization: local-process
+    selection_scope: Primitive and test-vector path for low-entropy identifier preprocessing; not a complete PSI workflow.
+  - id: TRACK-TEE
+    class: tee
+    record: records/technologies/aws-nitro-enclaves.yaml
+    implementation: AWS Nitro Enclaves CLI v1.4.5 and NSM API v0.5.2
+    source_revision: cli-v1.4.5+nsm-v0.5.2
+    environment_authorization: human-approval-required-paid-aws
+    selection_scope: Attested minimum-result prototype after explicit cloud-cost and environment approval.
+
+experiments:
+  - id: EXP-001
+    requirement: small balanced sets
+    applicable_tracks: [TRACK-PSI, TRACK-TEE]
+    inputs:
+      generator: benchmarks/generate_inputs.py
+      left_distinct: 1000
+      right_distinct: 1000
+      intersection_distinct: 100
+      seed: 1001
+    repetitions: 5
+    measurements: [wall_time_ms, cpu_time_ms, peak_rss_bytes, bytes_sent_by_party, bytes_received_by_party]
+    observations: [party_output, result_symmetry, setup_steps, failure_status]
+    execution_status: not-run
+
+  - id: EXP-002
+    requirement: large balanced sets
+    applicable_tracks: [TRACK-PSI, TRACK-TEE]
+    inputs:
+      generator: benchmarks/generate_inputs.py
+      left_distinct: 1000000
+      right_distinct: 1000000
+      intersection_distinct: 10000
+      seed: 1002
+    repetitions: 3
+    measurements: [wall_time_ms, cpu_time_ms, peak_rss_bytes, bytes_sent_by_party, bytes_received_by_party]
+    observations: [disk_artifacts, setup_time_ms, failure_status]
+    execution_status: not-run
+
+  - id: EXP-003
+    requirement: highly unbalanced sets
+    applicable_tracks: [TRACK-PSI, TRACK-VOPRF, TRACK-TEE]
+    inputs:
+      generator: benchmarks/generate_inputs.py
+      left_distinct: 1000
+      right_distinct: 1000000
+      intersection_distinct: 100
+      seed: 1003
+      role_orientations: [small-left, small-right]
+    repetitions: 3
+    measurements: [wall_time_ms, peak_rss_bytes, bytes_sent_by_party, bytes_received_by_party]
+    observations: [role_cost_asymmetry, result_recipient, failure_status]
+    execution_status: not-run
+
+  - id: EXP-004
+    requirement: duplicate and normalization edge cases
+    applicable_tracks: [TRACK-PSI, TRACK-VOPRF, TRACK-TEE]
+    inputs:
+      left_fixture: benchmarks/fixtures/normalization-edge-left.csv
+      right_fixture: benchmarks/fixtures/normalization-edge-right.csv
+      profiles:
+        - id: byte-exact
+          expected_distinct_intersection: 1
+        - id: trim-casefold-nfkc
+          expected_distinct_intersection: 4
+      duplicate_policies: [reject, deduplicate, multiset-if-supported]
+    repetitions: 1
+    measurements: [wall_time_ms]
+    observations: [normalization_owner, duplicate_behavior, error_code, accepted_result]
+    execution_status: not-run
+
+  - id: EXP-005
+    requirement: no-match, one-match, and small-intersection cases
+    applicable_tracks: [TRACK-PSI, TRACK-TEE]
+    inputs:
+      generator: benchmarks/generate_inputs.py
+      left_distinct: 10000
+      right_distinct: 10000
+      intersection_variants: [0, 1, 3]
+      seed: 1005
+    repetitions: 5
+    measurements: [wall_time_ms, bytes_sent_by_party, bytes_received_by_party]
+    observations: [accepted_result, raw_intersection_visibility, small_intersection_leakage, failure_status]
+    execution_status: not-run
+
+  - id: EXP-006
+    requirement: repeated adaptive query attempts
+    applicable_tracks: [TRACK-PSI, TRACK-VOPRF, TRACK-TEE]
+    inputs:
+      generator: benchmarks/generate_inputs.py
+      fixed_reference_distinct: 10000
+      adaptive_sessions: 20
+      probes_per_session: 1
+      seed: 1006
+    repetitions: 1
+    measurements: [accepted_queries, rejected_queries, bytes_sent_by_party, wall_time_ms]
+    observations: [query_budget_enforcement, result_differential, retained_state, rate_limit_behavior]
+    stop_condition: Stop after 20 synthetic probes; do not increase the query count to obtain a positive result.
+    execution_status: not-run
+
+  - id: EXP-007
+    requirement: tampered messages and replay
+    applicable_tracks: [TRACK-PSI, TRACK-VOPRF, TRACK-TEE]
+    inputs:
+      baseline_case: EXP-001
+      tamper_cases: [truncate-message, flip-one-payload-byte, unknown-message-type]
+      replay_cases: [same-session-message, prior-session-transcript, stale-attestation-document]
+    repetitions: 1
+    measurements: [time_to_reject_ms, bytes_processed_before_reject]
+    observations: [error_code, fail_closed_behavior, output_written, session_binding, unsupported_hook]
+    stop_condition: If a public serialization hook is unavailable, record unsupported; do not bypass library protections.
+    execution_status: not-run
+
+  - id: EXP-008
+    requirement: packet capture and raw-data egress observation
+    applicable_tracks: [TRACK-PSI, TRACK-VOPRF, TRACK-TEE]
+    inputs:
+      baseline_case: EXP-001
+      capture_surfaces: [network-pcap, stdout, stderr, temporary-files, output-files, trace-files, parent-vsock-byte-count]
+      search_corpus: [raw-synthetic-identifiers, normalized-synthetic-identifiers]
+    repetitions: 1
+    measurements: [captured_network_bytes, artifact_bytes, matching_corpus_occurrences]
+    observations: [observable_raw_egress, metadata_shapes, endpoints, packet_sizes, timing]
+    limitation: Absence in captured artifacts does not establish absence from memory, side channels, endpoints, or unobserved channels.
+    execution_status: not-run

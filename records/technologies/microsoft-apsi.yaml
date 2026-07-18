@@ -1,0 +1,143 @@
+schema_version: '0.1'
+record_type: technology
+identity:
+  name: Microsoft APSI
+  category: PSI
+  implementation_or_standard: microsoft/APSI v0.11.0
+  canonical_url: https://github.com/microsoft/APSI
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  maturity: Public repository not archived; v0.11.0 published 2023-04-17 and last default-branch commit observed 2023-12-30
+problem_fit:
+  supported_results:
+  - membership
+  - intersection
+  party_model:
+  - client-server
+  - two-party
+  data_profiles:
+  - unbalanced
+  - large-set
+  - low-entropy-identifiers
+  target_use_cases:
+  - Small private receiver queries against a large sender database
+  - Unlabeled membership
+  - Labeled key-value retrieval
+  non_fit:
+  - Receiver owns result and optional labels, so result symmetry is not native
+  - Public upper bounds on set sizes and response structure remain metadata
+  - Not selected for the first balanced two-party experiment
+security:
+  security_model: HE/OPRF asymmetric PSI design; reviewed README does not establish a complete malicious-party model, so no
+    malicious claim is made
+  cryptographic_assumptions:
+  - BFV homomorphic encryption through Microsoft SEAL
+  - OPRF used to transform items and derive label keys
+  - Cuckoo hashing, symmetric label encryption, randomness, and selected parameters
+  trusted_components:
+  - Pinned APSI and Microsoft SEAL implementations
+  - Receiver key generation and sender OPRF/database setup
+  - HE parameter selection and network channel
+  collusion_threshold: Two-party sender/receiver service; no additional independent party
+  input_authenticity: Receiver query and sender database syntax can be validated, but real-world input truth is external
+  omission_resistance: Sender can build an incomplete database and receiver can omit queries; no dataset-completeness proof
+    is supplied
+  replay_and_session_binding: Request/response types are documented; Private Match session/version binding and authoritative
+    replay state are external
+  metadata_leakage:
+  - Upper bounds on set sizes
+  - HE and PSI parameters
+  - Bin bundle/result package counts, response sizes, timing, and endpoints
+  - Receiver-visible membership and labels
+  repeated_query_risk:
+  - Independent receiver queries create a membership service
+  - Low-entropy guesses require authentication, authorization, rate limits, and query budgets
+  known_attacks_or_limitations:
+  - HE parameter errors can affect correctness or intended security level
+  - Partial item collisions and label nonce handling require care
+  - No local malformed-query, replay, raw-egress, or side-channel result exists
+engineering:
+  languages:
+  - C++
+  platforms:
+  - CMake/vcpkg
+  - Microsoft SEAL
+  - ZeroMQ simple channel or custom channel
+  deployment_models:
+  - Long-lived sender database and independent receivers
+  - Local CLI or integrated library
+  computation_profile: Sender evaluates batched BFV matching polynomials and receiver decrypts results; parameter and size
+    dependent
+  communication_profile: OPRF exchange, encrypted queries/powers, query response, and result packages; local bytes unknown
+  artifact_size_profile: SenderDB, parameters, keys, encrypted queries, result packages, labels, logs, and binaries
+  operational_complexity: HE parameter selection, sender preprocessing, OPRF key lifecycle, channel deployment, and result
+    reconstruction
+  key_or_setup_requirements:
+  - Receiver HE keys
+  - Sender OPRF key and database
+  - Validated PSI/SEAL parameters
+  - Channel and query authorization
+assurance:
+  standards:
+  - No APSI protocol interoperability standard identified
+  papers:
+  - Labeled PSI from Homomorphic Encryption with Reduced Computation and Communication, ePrint 2021/1116
+  formal_analysis:
+  - Protocol paper; this record does not independently verify current implementation correspondence
+  external_audits:
+  - Unknown from reviewed primary pages
+  test_vectors:
+  - Repository tests and example data; no cross-implementation vector reviewed
+  interoperability:
+  - APSI-specific serialization/channel abstractions and parameter formats
+project_health:
+  license: MIT as published by the repository
+  patent_considerations: Unknown; no patent clearance performed
+  latest_release: v0.11.0 published 2023-04-17
+  maintenance_status: Not archived; last default-branch commit observed 2023-12-30
+  bus_factor: Unknown
+  security_reporting: Repository publishes SECURITY.md with Microsoft's reporting process
+assessment:
+  strengths:
+  - F — Purpose-built unbalanced unlabeled and labeled PSI library with detailed design documentation
+  - F — OPRF, HE parameters, query powers, response types, and metadata boundaries are visible
+  limitations_or_unknowns:
+  - U — Current malicious behavior, replay, query-budget, maintenance cadence, and external audit coverage are incomplete
+  - U — No local unbalanced or raw-egress result exists
+  recommended_experiments:
+  - H — Revisit for EXP-003 after the balanced baseline and compare both role orientations where meaningful
+  private_match_fit: I — Strong unbalanced reference, deferred because its receiver-only result is not the first core experiment
+  confidence: medium
+sources:
+  primary:
+  - url: https://github.com/microsoft/APSI
+    title: APSI C++ library
+    publisher: Microsoft
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://eprint.iacr.org/2021/1116
+    title: Labeled PSI from Homomorphic Encryption with Reduced Computation and Communication
+    publisher: Cryptology ePrint Archive
+    published_at: '2021-08-30'
+    accessed_at: '2026-07-18'
+  - url: https://github.com/microsoft/APSI/releases/tag/v0.11.0
+    title: APSI v0.11.0
+    publisher: Microsoft
+    published_at: '2023-04-17'
+    accessed_at: '2026-07-18'
+  - url: https://github.com/microsoft/APSI/blob/main/SECURITY.md
+    title: Microsoft APSI security policy
+    publisher: Microsoft
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: approved
+  security_review: approved
+  privacy_review: approved
+  claims_review: approved

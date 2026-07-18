@@ -1,0 +1,146 @@
+schema_version: '0.1'
+record_type: technology
+identity:
+  name: AWS Cryptographic Computing for Clean Rooms
+  category: other
+  implementation_or_standard: aws/c3r 3.0.5 and AWS Clean Rooms C3R workflow
+  canonical_url: https://github.com/aws/c3r
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  maturity: Active public repository and managed AWS Clean Rooms feature; C3R 3.0.5 published 2025-01-07
+problem_fit:
+  supported_results:
+  - intersection
+  - sum
+  - general-computation
+  party_model:
+  - multi-party
+  - client-server
+  data_profiles:
+  - balanced
+  - unbalanced
+  - low-entropy-identifiers
+  - large-set
+  target_use_cases:
+  - AWS Clean Rooms encrypted-column collaboration
+  - Client-side protected JOIN/SELECT reference
+  - Managed analysis-control comparison
+  non_fit:
+  - Only intended for AWS Clean Rooms according to repository notice
+  - Requires collaboration/query workflow rather than a standalone minimum-result protocol
+  - Shared-secret, schema, client endpoint, and AWS service trust differ from PSI
+security:
+  security_model: Client-side HMAC/AES-GCM preprocessing plus AWS Clean Rooms collaboration and application governance
+  cryptographic_assumptions:
+  - HMAC for fingerprint columns
+  - AES-GCM for sealed columns
+  - Shared-secret generation/storage and client runtime
+  - AWS Clean Rooms query/control behavior
+  trusted_components:
+  - Each C3R client environment
+  - Shared-secret custodians and schema
+  - AWS Clean Rooms service and configured collaboration/analysis controls
+  - Result recipient and decryption environment
+  collusion_threshold: Workflow-specific; parties sharing keys or result access can change disclosure boundary
+  input_authenticity: Client preprocessing does not prove that a complete or truthful dataset was encrypted
+  omission_resistance: Not supplied; rows can be omitted before preprocessing
+  replay_and_session_binding: Collaboration ID participates in processing, but Private Match session/replay/query-budget semantics
+    are not established
+  metadata_leakage:
+  - Table shape and row counts
+  - Column names/types, value lengths, schema, query/logging information, traffic and result sizes
+  - Permitted query outputs
+  repeated_query_risk:
+  - Repeated SQL analyses can accumulate disclosure
+  - Analysis controls must bound permitted templates and outputs
+  known_attacks_or_limitations:
+  - Repository warns Spark RPC/temporary data can expose secrets without separate Spark controls
+  - Client disk and runtime remain responsible for raw data and shared secret
+  - Not arbitrary encrypted SQL and not a standalone PSI result policy
+engineering:
+  languages:
+  - Java
+  - Spark integration
+  - AWS CLI/SDK workflow
+  platforms:
+  - AWS Clean Rooms
+  - JVM
+  - Optional Apache Spark
+  deployment_models:
+  - Client-side encryption/decryption plus managed collaboration
+  - CLI or SDK
+  computation_profile: Client preprocessing plus supported Clean Rooms queries; no local comparable result exists
+  communication_profile: Encrypted tabular upload, managed query execution, and encrypted/controlled result transfer
+  artifact_size_profile: Input/output tables, schema, encrypted columns, shared secret, query results, logs, temporary files,
+    and JARs
+  operational_complexity: AWS collaboration setup, party agreement, schema/key distribution, endpoint hardening, analysis
+    controls, query approval, and result decryption
+  key_or_setup_requirements:
+  - Base64-encoded 256-bit shared secret
+  - Collaboration ID and C3R schema
+  - AWS Clean Rooms collaboration and analysis rules
+  - Protected client and optional Spark environments
+assurance:
+  standards:
+  - Uses standard HMAC and AES-GCM primitives; workflow/API is AWS-specific
+  papers:
+  - No independent C3R protocol paper used as evidence in this record
+  formal_analysis:
+  - Official guidelines document limitations; no formal proof of the managed workflow was reviewed
+  external_audits:
+  - Unknown for the exact client/service/configuration combination
+  test_vectors:
+  - Repository tests/examples and release artifacts; no cross-platform Private Match vector
+  interoperability:
+  - Repository states intended use with AWS Clean Rooms; no standalone PSI interoperability
+project_health:
+  license: Apache-2.0 as published by aws/c3r; AWS service terms are separate
+  patent_considerations: Unknown; no patent or service-term legal clearance performed
+  latest_release: C3R 3.0.5 published 2025-01-07
+  maintenance_status: Active; last default-branch commit observed 2026-07-17
+  bus_factor: AWS-managed project; contributor bus factor not evaluated
+  security_reporting: AWS vulnerability reporting route applies
+assessment:
+  strengths:
+  - F — Published client/SDK, schema workflow, release artifacts, and detailed endpoint/metadata cautions
+  - F — Adjacent managed collaboration path demonstrates operational controls beyond a primitive
+  limitations_or_unknowns:
+  - U — No one-off setup, query-budget, symmetric-result, or comparable local cost result exists
+  - U — Client, service, secret, and collaboration trust exceed the first standalone experiment
+  recommended_experiments:
+  - H — Retain as an attributed managed-workflow reference and revisit only if AWS Clean Rooms is the target environment
+  private_match_fit: I — Adjacent reference rejected from the first reproduction because it is a broader managed query workflow
+  confidence: high
+sources:
+  primary:
+  - url: https://github.com/aws/c3r
+    title: Cryptographic Computing for Clean Rooms
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://docs.aws.amazon.com/clean-rooms/latest/userguide/crypto-computing.html
+    title: Cryptographic Computing for Clean Rooms
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://docs.aws.amazon.com/clean-rooms/latest/userguide/crypto-computing-guidelines.html
+    title: C3R guidelines
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://github.com/aws/c3r/releases/tag/3.0.5
+    title: C3R 3.0.5
+    publisher: Amazon Web Services
+    published_at: '2025-01-07'
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: approved
+  security_review: approved
+  privacy_review: approved
+  claims_review: approved
