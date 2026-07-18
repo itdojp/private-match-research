@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itdo.jp/schemas/private-match/research/technology-record-0.1.json",
+  "title": "Private Match technology research record v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_type", "identity", "observation", "problem_fit", "security", "engineering", "assurance", "project_health", "assessment", "sources", "publication"],
+  "properties": {
+    "schema_version": {"const": "0.1"},
+    "record_type": {"const": "technology"},
+    "identity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "category", "implementation_or_standard", "canonical_url"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "category": {"enum": ["PSI", "OPRF", "MPC", "ZKP", "TEE", "FHE", "DP", "VC", "other"]},
+        "implementation_or_standard": {"type": "string", "minLength": 1},
+        "canonical_url": {"type": "string", "format": "uri", "pattern": "^https://"}
+      }
+    },
+    "observation": {"$ref": "#/$defs/observation"},
+    "problem_fit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["supported_results", "party_model", "data_profiles", "target_use_cases", "non_fit"],
+      "properties": {
+        "supported_results": {"type": "array", "minItems": 1, "items": {"enum": ["membership", "intersection", "cardinality", "sum", "threshold", "general-computation"]}, "uniqueItems": true},
+        "party_model": {"type": "array", "minItems": 1, "items": {"enum": ["two-party", "multi-party", "client-server"]}, "uniqueItems": true},
+        "data_profiles": {"$ref": "#/$defs/stringArray"},
+        "target_use_cases": {"$ref": "#/$defs/stringArray"},
+        "non_fit": {"$ref": "#/$defs/stringArray"}
+      }
+    },
+    "security": {
+      "type": "object", "additionalProperties": false,
+      "required": ["security_model", "cryptographic_assumptions", "trusted_components", "collusion_threshold", "input_authenticity", "omission_resistance", "replay_and_session_binding", "metadata_leakage", "repeated_query_risk", "known_attacks_or_limitations"],
+      "properties": {
+        "security_model": {"type": "string", "minLength": 1},
+        "cryptographic_assumptions": {"$ref": "#/$defs/stringArray"},
+        "trusted_components": {"$ref": "#/$defs/stringArray"},
+        "collusion_threshold": {"type": "string"},
+        "input_authenticity": {"type": "string"},
+        "omission_resistance": {"type": "string"},
+        "replay_and_session_binding": {"type": "string"},
+        "metadata_leakage": {"$ref": "#/$defs/stringArray"},
+        "repeated_query_risk": {"$ref": "#/$defs/stringArray"},
+        "known_attacks_or_limitations": {"$ref": "#/$defs/stringArray"}
+      }
+    },
+    "engineering": {
+      "type": "object", "additionalProperties": false,
+      "required": ["languages", "platforms", "deployment_models", "computation_profile", "communication_profile", "artifact_size_profile", "operational_complexity", "key_or_setup_requirements"],
+      "properties": {
+        "languages": {"$ref": "#/$defs/stringArray"},
+        "platforms": {"$ref": "#/$defs/stringArray"},
+        "deployment_models": {"$ref": "#/$defs/stringArray"},
+        "computation_profile": {"type": "string"},
+        "communication_profile": {"type": "string"},
+        "artifact_size_profile": {"type": "string"},
+        "operational_complexity": {"type": "string"},
+        "key_or_setup_requirements": {"$ref": "#/$defs/stringArray"}
+      }
+    },
+    "assurance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["standards", "papers", "formal_analysis", "external_audits", "test_vectors", "interoperability"],
+      "properties": {
+        "standards": {"$ref": "#/$defs/stringArray"},
+        "papers": {"$ref": "#/$defs/stringArray"},
+        "formal_analysis": {"$ref": "#/$defs/stringArray"},
+        "external_audits": {"$ref": "#/$defs/stringArray"},
+        "test_vectors": {"$ref": "#/$defs/stringArray"},
+        "interoperability": {"$ref": "#/$defs/stringArray"}
+      }
+    },
+    "project_health": {
+      "type": "object", "additionalProperties": false,
+      "required": ["license", "patent_considerations", "latest_release", "maintenance_status", "bus_factor", "security_reporting"],
+      "properties": {
+        "license": {"type": "string", "minLength": 1},
+        "patent_considerations": {"type": "string"},
+        "latest_release": {"type": "string"},
+        "maintenance_status": {"type": "string"},
+        "bus_factor": {"type": ["string", "integer"]},
+        "security_reporting": {"type": "string"}
+      }
+    },
+    "assessment": {
+      "type": "object", "additionalProperties": false,
+      "required": ["strengths", "limitations_or_unknowns", "recommended_experiments", "private_match_fit", "confidence"],
+      "properties": {
+        "strengths": {"$ref": "#/$defs/stringArray"},
+        "limitations_or_unknowns": {"$ref": "#/$defs/stringArray"},
+        "recommended_experiments": {"$ref": "#/$defs/stringArray"},
+        "private_match_fit": {"type": "string", "minLength": 1},
+        "confidence": {"enum": ["high", "medium", "low"]}
+      }
+    },
+    "sources": {"$ref": "#/$defs/sources"},
+    "publication": {"$ref": "#/$defs/publication"}
+  },
+  "$defs": {
+    "stringArray": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "observation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["observed_at", "last_verified_at", "next_review_at", "maturity"],
+      "properties": {
+        "observed_at": {"type": "string", "format": "date"},
+        "last_verified_at": {"type": "string", "format": "date"},
+        "next_review_at": {"type": "string", "format": "date"},
+        "maturity": {"type": "string", "minLength": 1}
+      }
+    },
+    "sourceEntry": {
+      "oneOf": [
+        {"type": "string", "format": "uri", "pattern": "^https://"},
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["url"],
+          "properties": {
+            "url": {"type": "string", "format": "uri", "pattern": "^https://"},
+            "title": {"type": "string"},
+            "publisher": {"type": "string"},
+            "published_at": {"type": ["string", "null"], "format": "date"},
+            "accessed_at": {"type": ["string", "null"], "format": "date"}
+          }
+        }
+      ]
+    },
+    "sources": {
+      "type": "object", "additionalProperties": false,
+      "required": ["primary", "secondary"],
+      "properties": {
+        "primary": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sourceEntry"}},
+        "secondary": {"type": "array", "items": {"$ref": "#/$defs/sourceEntry"}}
+      }
+    },
+    "publication": {
+      "type": "object", "additionalProperties": false,
+      "required": ["classification", "source_check", "freshness_check", "ip_review", "security_review", "privacy_review", "claims_review"],
+      "properties": {
+        "classification": {"const": "public"},
+        "source_check": {"$ref": "#/$defs/reviewStatus"},
+        "freshness_check": {"$ref": "#/$defs/reviewStatus"},
+        "ip_review": {"$ref": "#/$defs/reviewStatus"},
+        "security_review": {"$ref": "#/$defs/reviewStatus"},
+        "privacy_review": {"$ref": "#/$defs/reviewStatus"},
+        "claims_review": {"$ref": "#/$defs/reviewStatus"}
+      }
+    },
+    "reviewStatus": {"enum": ["pending", "approved", "rejected", "not-required"]}
+  }
+}
