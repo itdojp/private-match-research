@@ -1,0 +1,71 @@
+schema_version: "0.1"
+record_type: use-case-hypothesis
+
+identity:
+  id: "H-XXX"
+  title: ""
+  domain: ""
+  owner: ""
+
+problem:
+  buyer: []
+  user: []
+  trigger: []
+  current_workflow: []
+  current_alternatives: []
+  cost_of_problem: []
+  why_now: []
+
+private_match_job:
+  participant_roles: []
+  private_inputs: []
+  public_inputs: []
+  required_output: []
+  outputs_not_required: []
+  post_match_disclosure: []
+  bilateral_consent_required: true
+
+privacy_and_abuse:
+  sensitive_assets: []
+  acceptable_leakage: []
+  unacceptable_leakage: []
+  minimum_set_size: unknown
+  minimum_intersection: unknown
+  exact_count_required: unknown
+  query_budget: unknown
+  input_authenticity_owner: unknown
+  abuse_cases: []
+
+commercial:
+  expected_frequency: unknown
+  urgency: unknown
+  willingness_to_pay: unknown
+  procurement_owner: unknown
+  deployment_constraints: []
+  integration_constraints: []
+
+validation:
+  evidence_level: E0
+  supporting_evidence: []
+  disconfirming_evidence: []
+  interviews_completed: 0
+  technical_poc_status: not-started
+  paid_validation_status: not-started
+  next_experiment: ""
+  go_criteria: []
+  no_go_criteria: []
+
+assessment:
+  value: unknown
+  technical_fit: unknown
+  business_difficulty: unknown
+  regulatory_difficulty: unknown
+  priority: unknown
+  confidence: low
+
+publication:
+  classification: private # private until anonymized and reviewed
+  anonymization_review: pending
+  ip_review: pending
+  privacy_review: pending
+  claims_review: pending
