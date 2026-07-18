@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itdo.jp/schemas/private-match/research/competitor-record-0.1.json",
+  "title": "Private Match competitor research record v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_type", "identity", "observation", "classification", "market", "product", "privacy_and_security", "assessment", "sources", "publication"],
+  "properties": {
+    "schema_version": {"const": "0.1"},
+    "record_type": {"const": "competitor"},
+    "identity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["organization", "product", "canonical_url", "country_or_region"],
+      "properties": {
+        "organization": {"type": "string", "minLength": 1},
+        "product": {"type": "string", "minLength": 1},
+        "canonical_url": {"type": "string", "format": "uri", "pattern": "^https://"},
+        "country_or_region": {"type": "string", "minLength": 1}
+      }
+    },
+    "observation": {"$ref": "#/$defs/observation"},
+    "classification": {
+      "type": "object", "additionalProperties": false,
+      "required": ["class", "confidence", "rationale"],
+      "properties": {
+        "class": {"enum": ["direct", "adjacent", "substitute", "building-block", "potential"]},
+        "confidence": {"enum": ["high", "medium", "low"]},
+        "rationale": {"type": "string", "minLength": 1}
+      }
+    },
+    "market": {
+      "type": "object", "additionalProperties": false,
+      "required": ["buyer", "user", "trigger", "jobs_to_be_done", "current_alternatives", "pricing", "deployment_lead_time"],
+      "properties": {
+        "buyer": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "user": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "trigger": {"$ref": "#/$defs/nonEmptyStringArray"},
+        "jobs_to_be_done": {"$ref": "#/$defs/stringArray"},
+        "current_alternatives": {"$ref": "#/$defs/stringArray"},
+        "pricing": {
+          "type": "object", "additionalProperties": false,
+          "required": ["public", "model", "amount", "source"],
+          "properties": {
+            "public": {"type": "boolean"},
+            "model": {"type": "string"},
+            "amount": {"type": "string"},
+            "source": {"type": "string"}
+          }
+        },
+        "deployment_lead_time": {"type": ["string", "number"]}
+      }
+    },
+    "product": {
+      "type": "object", "additionalProperties": false,
+      "required": ["inputs", "outputs", "workflow", "deployment", "prerequisites", "data_movement", "data_retention"],
+      "properties": {
+        "inputs": {"$ref": "#/$defs/stringArray"},
+        "outputs": {"$ref": "#/$defs/stringArray"},
+        "workflow": {"$ref": "#/$defs/stringArray"},
+        "deployment": {"$ref": "#/$defs/stringArray"},
+        "prerequisites": {"$ref": "#/$defs/stringArray"},
+        "data_movement": {"type": "string"},
+        "data_retention": {"type": "string"}
+      }
+    },
+    "privacy_and_security": {
+      "type": "object", "additionalProperties": false,
+      "required": ["published_technologies", "trust_model", "attacker_model", "raw_data_access", "metadata_leakage", "repeated_query_controls", "minimum_aggregation_controls", "audit_and_assurance"],
+      "properties": {
+        "published_technologies": {"$ref": "#/$defs/stringArray"},
+        "trust_model": {"type": "string"},
+        "attacker_model": {"type": "string"},
+        "raw_data_access": {"type": "string"},
+        "metadata_leakage": {"$ref": "#/$defs/stringArray"},
+        "repeated_query_controls": {"type": "string"},
+        "minimum_aggregation_controls": {"type": "string"},
+        "audit_and_assurance": {"$ref": "#/$defs/stringArray"}
+      }
+    },
+    "assessment": {
+      "type": "object", "additionalProperties": false,
+      "required": ["strengths", "limitations_or_unknowns", "implications_for_private_match", "claim_types"],
+      "properties": {
+        "strengths": {"$ref": "#/$defs/stringArray"},
+        "limitations_or_unknowns": {"$ref": "#/$defs/stringArray"},
+        "implications_for_private_match": {"$ref": "#/$defs/stringArray"},
+        "claim_types": {
+          "type": "object", "additionalProperties": false,
+          "required": ["facts", "inferences", "hypotheses"],
+          "properties": {
+            "facts": {"$ref": "#/$defs/stringArray"},
+            "inferences": {"$ref": "#/$defs/stringArray"},
+            "hypotheses": {"$ref": "#/$defs/stringArray"}
+          }
+        }
+      }
+    },
+    "sources": {"$ref": "#/$defs/sources"},
+    "publication": {"$ref": "#/$defs/publication"}
+  },
+  "$defs": {
+    "stringArray": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "nonEmptyStringArray": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "observation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["observed_at", "last_verified_at", "next_review_at", "source_status"],
+      "properties": {
+        "observed_at": {"type": "string", "format": "date"},
+        "last_verified_at": {"type": "string", "format": "date"},
+        "next_review_at": {"type": "string", "format": "date"},
+        "source_status": {"enum": ["current", "superseded", "unavailable"]}
+      }
+    },
+    "sourceEntry": {
+      "oneOf": [
+        {"type": "string", "format": "uri", "pattern": "^https://"},
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["url"],
+          "properties": {
+            "url": {"type": "string", "format": "uri", "pattern": "^https://"},
+            "title": {"type": "string"},
+            "publisher": {"type": "string"},
+            "published_at": {"type": ["string", "null"], "format": "date"},
+            "accessed_at": {"type": ["string", "null"], "format": "date"}
+          }
+        }
+      ]
+    },
+    "sources": {
+      "type": "object", "additionalProperties": false,
+      "required": ["primary", "secondary"],
+      "properties": {
+        "primary": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sourceEntry"}},
+        "secondary": {"type": "array", "items": {"$ref": "#/$defs/sourceEntry"}}
+      }
+    },
+    "publication": {
+      "type": "object", "additionalProperties": false,
+      "required": ["classification", "source_check", "freshness_check", "ip_review", "security_review", "privacy_review", "claims_review"],
+      "properties": {
+        "classification": {"const": "public"},
+        "source_check": {"$ref": "#/$defs/reviewStatus"},
+        "freshness_check": {"$ref": "#/$defs/reviewStatus"},
+        "ip_review": {"$ref": "#/$defs/reviewStatus"},
+        "security_review": {"$ref": "#/$defs/reviewStatus"},
+        "privacy_review": {"$ref": "#/$defs/reviewStatus"},
+        "claims_review": {"$ref": "#/$defs/reviewStatus"}
+      }
+    },
+    "reviewStatus": {"enum": ["pending", "approved", "rejected", "not-required"]}
+  }
+}
