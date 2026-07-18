@@ -1,0 +1,134 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Snowflake and bilateral counterparties (workflow class)
+  product: Direct warehouse sharing with external agreement
+  canonical_url: https://docs.snowflake.com/en/user-guide/data-sharing-intro
+  country_or_region: Global / agreement jurisdiction-dependent
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: substitute
+  confidence: high
+  rationale: Provider grants and contractual governance can give a consumer controlled read-only data access, making minimum
+    private computation unnecessary when row-level access is acceptable.
+market:
+  buyer:
+  - 'Inferred buyer: data partnership, analytics, or warehouse owner; exact budget owner unknown'
+  user:
+  - 'Published user: Snowflake provider administrator and consumer analyst'
+  trigger:
+  - Counterparties need repeated analysis of agreed warehouse objects and accept controlled consumer access
+  jobs_to_be_done:
+  - Document purpose and roles
+  - Create restricted tables or views
+  - Grant consumer access
+  - Run and monitor permitted SQL
+  current_alternatives:
+  - File exchange under agreement
+  - Data clean room
+  - Private Match minimum-result workflow
+  pricing:
+    public: false
+    model: Existing Snowflake plans, consumer compute, administration, and agreement work; exact total unknown
+    amount: unknown
+    source: https://docs.snowflake.com/en/user-guide/data-sharing-intro
+  deployment_lead_time: unknown; documentation states access is immediate after configured grants, but agreement and object-design
+    time vary
+product:
+  inputs:
+  - Provider database objects or filtered views
+  - Consumer account and roles
+  - Purpose, access, and retention terms
+  outputs:
+  - Read-only access to granted objects
+  - Arbitrary SQL results permitted by the grants and views
+  - Query and grant history
+  workflow:
+  - Agree data-use boundaries
+  - Prepare tables or views
+  - Create share and grants
+  - Consumer imports and queries
+  - Monitor and revoke access
+  deployment:
+  - Snowflake provider and consumer accounts with external governance documentation
+  prerequisites:
+  - Provider sharing enabled
+  - Compatible provider and consumer accounts
+  - Administrator roles
+  - Reviewed objects and agreement
+  data_movement: Snowflake states ordinary sharing does not copy data between accounts, while consumer users can read granted
+    rows and persist their query outputs.
+  data_retention: Shared source retention is provider controlled; consumer output retention and agreement terms are configuration
+    dependent.
+privacy_and_security:
+  published_technologies:
+  - Read-only Snowflake shares
+  - Tables or restricted views
+  - Role and object grants
+  - External data-sharing agreement
+  trust_model: The provider trusts Snowflake, its own grant configuration, consumer administrators and users, and contractual
+    governance.
+  attacker_model: No bilateral cryptographic attacker model; overbroad grants, authorized-user misuse, copying, and configuration
+    error are operational risks.
+  raw_data_access: Consumer roles can read the rows and columns granted through tables or views; the provider can restrict
+    but not cryptographically minimize arbitrary permitted query output.
+  metadata_leakage:
+  - Provider and consumer accounts
+  - Shared object schema, grant, query, timing, and usage metadata
+  repeated_query_controls: Warehouse roles, view logic, monitoring, and agreement terms; no intrinsic privacy query budget.
+  minimum_aggregation_controls: Only if implemented in provider views or functions; not intrinsic to direct object sharing.
+  audit_and_assurance:
+  - Agreement, grants, query history, and reproducible SQL can form an operational record when retained.
+  - Official Snowflake and regulator documentation was reviewed; no deployment was independently observed.
+assessment:
+  strengths:
+  - Uses existing warehouse roles and SQL
+  - Supports live repeated analysis
+  - Can expose only selected objects or views
+  - Avoids another application integration
+  limitations_or_unknowns:
+  - Consumer can obtain row-level data allowed by grants
+  - Incorrect views or grants can over-disclose
+  - Consumer copies and downstream use require separate controls
+  - Agreement and setup time are unknown
+  implications_for_private_match:
+  - Private Match may be unnecessary for trusted warehouse counterparties
+  - Minimum results are inferior when flexible SQL or row-level access is the actual requirement
+  claim_types:
+    facts:
+    - Snowflake documents provider-created read-only shares and states ordinary sharing does not copy data between accounts.
+    - The ICO describes data-sharing agreements as documenting purpose, parties, stages, roles, and responsibilities.
+    inferences:
+    - Warehouse sharing plus external governance is a non-PET substitute when the parties accept consumer access.
+    hypotheses:
+    - A restricted view will be preferred when it answers the decision without a new product and within acceptable disclosure.
+sources:
+  primary:
+  - url: https://docs.snowflake.com/en/user-guide/data-sharing-intro
+    title: Snowflake data-sharing overview
+    publisher: Snowflake
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://docs.snowflake.com/en/user-guide/data-sharing-provider
+    title: Configure provider shares
+    publisher: Snowflake
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/data-sharing/data-sharing-a-code-of-practice/data-sharing-agreements/
+    title: Data sharing agreements
+    publisher: UK Information Commissioner's Office
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

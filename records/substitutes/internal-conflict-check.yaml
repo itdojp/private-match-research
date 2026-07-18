@@ -1,0 +1,126 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Professional-services firm (workflow class)
+  product: Internal conflict database and intake questionnaire
+  canonical_url: https://rules.sra.org.uk/solicitors/guidance/conflicts-interest/
+  country_or_region: Professional-services / jurisdiction-dependent
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: substitute
+  confidence: medium
+  rationale: Internal intake, database search, and human review can decide many prospective matters without obtaining a hidden
+    counterpart dataset or buying a bilateral PET product.
+market:
+  buyer:
+  - 'Inferred buyer: professional-services risk, intake, or compliance leader; exact budget owner unknown'
+  user:
+  - 'Inferred user: requesting professional, intake staff, conflicts analyst, and reviewer'
+  trigger:
+  - A prospective client, matter, engagement, or relationship requires internal conflict review
+  jobs_to_be_done:
+  - Collect names, affiliates, matter context, and relationships
+  - Search internal client and matter records
+  - Review hits and decide or escalate
+  current_alternatives:
+  - Automated conflict platform
+  - External counsel or advisor
+  - Bilateral private overlap check
+  pricing:
+    public: false
+    model: Existing staff, intake system, database, and optional software subscription; incremental amount unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown; normally embedded in existing intake operations and dependent on data and escalation complexity
+product:
+  inputs:
+  - Prospective client and matter questionnaire
+  - Names, affiliates, adverse parties, and relationships
+  - Internal client and matter database
+  outputs:
+  - Possible-hit list
+  - Analyst notes and clarification requests
+  - Accept, decline, or escalate decision under firm policy
+  workflow:
+  - Complete intake questionnaire
+  - Search internal records
+  - Review possible hits
+  - Request context
+  - Record decision or escalation
+  deployment:
+  - Firm-controlled intake forms, internal database, search tools, and human review process
+  prerequisites:
+  - Maintained internal client and matter data
+  - Defined intake and escalation policy
+  - Authorized reviewers
+  - Prospective-party information
+  data_movement: Prospective names and matter context are disclosed inside the firm to authorized intake and review personnel;
+    external disclosure depends on firm policy.
+  data_retention: Firm policy, system, and applicable obligations determine retention; no universal period was established.
+privacy_and_security:
+  published_technologies:
+  - Intake questionnaire
+  - Internal client and matter database
+  - Name and relationship search
+  - Human conflict review
+  trust_model: The firm trusts its data custodians, intake staff, reviewers, access controls, and internal records.
+  attacker_model: No cryptographic attacker model; insider access, omissions, stale records, and search error are operational
+    risks.
+  raw_data_access: Authorized firm personnel can review prospective-party data, internal matter context, and possible hits
+    according to firm permissions.
+  metadata_leakage:
+  - Prospective client and matter identity
+  - Search terms, hit counts, reviewer actions, and decision status
+  repeated_query_controls: Firm access, intake authorization, and review policy; no intrinsic query budget.
+  minimum_aggregation_controls: Not applicable; item-level possible hits and context are often required for human review.
+  audit_and_assurance:
+  - Intake forms, search records, reviewer notes, and approval trails may form an internal operational record.
+  - Regulator guidance and vendor product material were reviewed; no universal manual workflow or outcome quality was independently
+    established.
+assessment:
+  strengths:
+  - Uses internal domain context and accountable reviewers
+  - Can explain and resolve possible hits
+  - May have negligible incremental procurement cost
+  - Supports item-level handling when necessary
+  limitations_or_unknowns:
+  - Aliases, spelling, stale records, and omissions can change results
+  - Process quality varies by firm
+  - Prospective information is disclosed internally
+  - Elapsed time and incremental cost are unknown
+  implications_for_private_match:
+  - Private Match may be unnecessary when one firm's data is sufficient
+  - A minimum result can be less useful than contextual human review
+  claim_types:
+    facts:
+    - SRA guidance addresses conflicts involving current and prospective clients.
+    - Intapp publishes a new-business conflict workflow with optional compliance handoff.
+    inferences:
+    - An internal database and questionnaire are a non-PET substitute for many conflict-preflight decisions.
+    hypotheses:
+    - Target firms will not buy a bilateral product when internal intake resolves the material question.
+sources:
+  primary:
+  - url: https://rules.sra.org.uk/solicitors/guidance/conflicts-interest/
+    title: Conflicts of interest guidance
+    publisher: Solicitors Regulation Authority
+    published_at: '2020-03-02'
+    accessed_at: '2026-07-18'
+  - url: https://www.intapp.com/product/intapp-conflicts/
+    title: Intapp Conflicts
+    publisher: Intapp
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

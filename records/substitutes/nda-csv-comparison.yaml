@@ -1,0 +1,122 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Bilateral counterparties (workflow class)
+  product: Mutual NDA plus spreadsheet or CSV comparison
+  canonical_url: https://www.gov.uk/government/publications/non-disclosure-agreements
+  country_or_region: General / jurisdiction-dependent
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: substitute
+  confidence: medium
+  rationale: The parties can govern direct disclosure and compare selected rows using existing tools instead of purchasing
+    a dedicated PET product.
+market:
+  buyer:
+  - 'Inferred buyer: partnership, diligence, sales, or operations owner; exact budget owner unknown'
+  user:
+  - 'Inferred user: data preparer, designated counterparty analyst, and business reviewer'
+  trigger:
+  - The parties need an overlap or exception decision and accept controlled row-level disclosure
+  jobs_to_be_done:
+  - Agree permitted use and recipients
+  - Normalize and exchange selected files
+  - Calculate matches and review exceptions
+  current_alternatives:
+  - Trusted intermediary
+  - Restricted warehouse share
+  - Private Match minimum-result workflow
+  pricing:
+    public: false
+    model: Internal labor and external review as applicable; standardized public amount unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown; agreement, field mapping, transfer, and exception review vary
+product:
+  inputs:
+  - Selected identifiers and attributes
+  - Field mapping and normalization rules
+  - Agreement and recipient list
+  outputs:
+  - Matching rows
+  - Nonmatching rows
+  - Counts, exceptions, and analyst working file
+  workflow:
+  - Agree purpose and recipients
+  - Prepare and normalize files
+  - Transfer selected data
+  - Compare rows
+  - Review and retain or remove working material
+  deployment:
+  - Existing document, file-transfer, spreadsheet, SQL, or scripting tools
+  prerequisites:
+  - Both parties accept direct disclosure
+  - Agreed fields and normalization
+  - Authorized transfer and analyst access
+  data_movement: Selected row-level identifiers and attributes move to the counterparty or a jointly designated analyst.
+  data_retention: Agreement and operational-process dependent; no universal retention period applies.
+privacy_and_security:
+  published_technologies:
+  - NDA or data-sharing agreement
+  - File transfer
+  - Spreadsheet, SQL, or script-based comparison
+  trust_model: Each party trusts the counterparty, designated analysts, transfer channel, and governance process with disclosed
+    data.
+  attacker_model: No cryptographic attacker model; misuse, copying, insider access, and accidental disclosure are managed
+    operationally.
+  raw_data_access: Authorized recipient analysts can read the selected identifiers and attributes supplied to them.
+  metadata_leakage:
+  - Party identities and purpose
+  - Schema, filenames, row counts, timestamps, and recipient activity
+  repeated_query_controls: Manual approval, agreement terms, and access controls; no intrinsic query budget.
+  minimum_aggregation_controls: None intrinsic; analysts can calculate row-level and aggregate outputs from the supplied file.
+  audit_and_assurance:
+  - Signed agreement, transfer receipt, file digest, version history, formulas, and reviewer notes may be retained if the
+    parties configure them.
+  - Evidence basis is official public guidance; no specific deployment was independently observed.
+assessment:
+  strengths:
+  - Uses familiar tools and existing governance
+  - Supports exact rows, explanations, and ad hoc follow-up
+  - May be sufficient for a one-off low-volume decision
+  limitations_or_unknowns:
+  - Discloses selected identifiers and attributes
+  - Normalization and formula errors can change results
+  - Copies and retention depend on operational discipline
+  - Elapsed time and cost are unknown
+  implications_for_private_match:
+  - Private Match may not be needed when direct disclosure is already acceptable
+  - Minimum output can be inferior when decision-makers need row-level explanations
+  claim_types:
+    facts:
+    - The UK Intellectual Property Office publishes mutual and one-way NDA examples for discussions with potential collaborators.
+    - The ICO describes data-sharing agreements as documenting purpose, parties, data stages, roles, and responsibilities.
+    inferences:
+    - Combining an agreement with an ordinary file comparison is a non-PET substitute when parties accept the disclosure.
+    hypotheses:
+    - A dedicated product is unnecessary when the existing exchange reaches the decision within required time and risk tolerance.
+sources:
+  primary:
+  - url: https://www.gov.uk/government/publications/non-disclosure-agreements
+    title: Non-disclosure agreements
+    publisher: UK Intellectual Property Office
+    published_at: '2015-03-12'
+    accessed_at: '2026-07-18'
+  - url: https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/data-sharing/data-sharing-a-code-of-practice/data-sharing-agreements/
+    title: Data sharing agreements
+    publisher: UK Information Commissioner's Office
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

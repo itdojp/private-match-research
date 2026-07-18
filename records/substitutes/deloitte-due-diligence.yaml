@@ -1,0 +1,120 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Deloitte
+  product: Acquisition and Vendor Diligence Services
+  canonical_url: https://www.deloitte.com/cbc/en/services/financial-advisory/services/acquisition-and-vendor-diligence-services.html
+  country_or_region: Global / member-firm dependent
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: substitute
+  confidence: high
+  rationale: A scoped professional engagement can answer the broader investment or transaction decision through document review
+    and judgment instead of a dedicated PET product.
+market:
+  buyer:
+  - 'Published buyer: corporate or private-equity transaction decision-maker'
+  user:
+  - 'Inferred user: deal lead, investment committee support team, and diligence workstream owner'
+  trigger:
+  - A buyer or seller needs acquisition, vendor, commercial, operational, or IT diligence
+  jobs_to_be_done:
+  - Scope decision questions
+  - Review source documents and explanations
+  - Analyze risks and opportunities
+  - Issue findings and follow-up requests
+  current_alternatives:
+  - Internal diligence team
+  - Virtual data-room review
+  - Minimum-result bilateral preflight
+  pricing:
+    public: false
+    model: Professional engagement based on scope and workstreams; public standardized amount unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown; engagement scope, data-room readiness, and specialist availability vary
+product:
+  inputs:
+  - Transaction documents and extracts
+  - Management explanations
+  - Scope, assumptions, and diligence questions
+  outputs:
+  - Scoped findings
+  - Risk and opportunity analysis
+  - Diligence report and follow-up questions
+  workflow:
+  - Define engagement scope
+  - Prepare source material
+  - Professional team reviews and analyzes
+  - Discuss exceptions
+  - Deliver a scoped report
+  deployment:
+  - Professional-services engagement with human specialists and client-provided data environments
+  prerequisites:
+  - Engagement mandate
+  - Agreed scope and recipients
+  - Access to relevant documents and personnel
+  - Professional team availability
+  data_movement: Deal documents, extracts, assumptions, and explanations become available to the authorized engagement team
+    and agreed recipients.
+  data_retention: Engagement and provider policy dependent; no universal public retention period was established.
+privacy_and_security:
+  published_technologies:
+  - Human professional review
+  - Data analytics
+  - Document and workpaper workflow
+  trust_model: The client relies on the selected professional team, engagement scope, source-data providers, and agreed recipient
+    controls.
+  attacker_model: No cryptographic attacker model; confidentiality, access, professional process, and engagement controls
+    govern disclosed material.
+  raw_data_access: Authorized engagement professionals can review the documents and extracts supplied within scope.
+  metadata_leakage:
+  - Transaction identities, scope, participants, questions, document inventory, and timing
+  repeated_query_controls: Engagement scope, data-room permissions, and human approval; no intrinsic query budget.
+  minimum_aggregation_controls: None intrinsic; professionals can review row-level documents and produce qualitative or quantitative
+    findings.
+  audit_and_assurance:
+  - Engagement scope, report, workpapers, and review trail may provide an operational record subject to provider and engagement
+    terms.
+  - Only vendor-published service material was reviewed; quality and duration were not independently assessed.
+assessment:
+  strengths:
+  - Combines context and multi-domain professional judgment
+  - Can challenge assumptions and request explanations
+  - Produces a scoped report for an existing transaction process
+  limitations_or_unknowns:
+  - Broad source material is disclosed to professionals
+  - Price and elapsed time are unknown
+  - Outcome depends on scope, access, and human judgment
+  - A professional report does not prove input completeness
+  implications_for_private_match:
+  - Minimum matching can be inferior when the actual decision needs broad diligence
+  - Private Match may add no value when the engagement already answers the overlap question
+  claim_types:
+    facts:
+    - Deloitte publishes acquisition, vendor, commercial, operational, and IT diligence service categories.
+    - The vendor describes analysis intended to inform transaction decisions.
+    inferences:
+    - A professional diligence engagement is a non-PET substitute for broader pre-transaction decisions.
+    hypotheses:
+    - A dedicated preflight product is unnecessary when a current engagement answers the question within its existing scope.
+sources:
+  primary:
+  - url: https://www.deloitte.com/cbc/en/services/financial-advisory/services/acquisition-and-vendor-diligence-services.html
+    title: Acquisition and Vendor Diligence Services
+    publisher: Deloitte
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved

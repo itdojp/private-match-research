@@ -1,0 +1,131 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Bilateral counterparties (workflow class)
+  product: Sampled or de-identified dataset exchange
+  canonical_url: https://csrc.nist.gov/pubs/sp/800/188/final
+  country_or_region: General / jurisdiction-dependent
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: substitute
+  confidence: medium
+  rationale: A reviewed sample or transformed dataset can enable richer bilateral analysis without a dedicated PET product,
+    while retaining residual disclosure and sampling risks.
+market:
+  buyer:
+  - 'Inferred buyer: partnership, research, diligence, or analytics owner; exact budget owner unknown'
+  user:
+  - 'Inferred user: source-data preparer, disclosure reviewer, recipient analyst, and business decision-maker'
+  trigger:
+  - Parties need richer exploratory evidence than a minimum match result and accept a transformed subset
+  jobs_to_be_done:
+  - Define sample and transformation
+  - Review residual disclosure risk
+  - Transfer transformed data
+  - Analyze and request follow-up
+  current_alternatives:
+  - Full row-level file exchange
+  - Trusted intermediary
+  - Private Match minimum-result workflow
+  pricing:
+    public: false
+    model: Internal extraction, transformation, disclosure review, transfer, and analyst labor; standardized amount unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown; data sensitivity, sample design, transformation, and review vary
+product:
+  inputs:
+  - Full source extract inside the data-owner boundary
+  - Sampling rule
+  - Fields and de-identification or generalization plan
+  outputs:
+  - Transformed row-level sample
+  - Exploratory statistics
+  - Follow-up questions and optional later extracts
+  workflow:
+  - Agree purpose and recipients
+  - Select sample and fields
+  - Transform identifiers and attributes
+  - Review residual risk
+  - Transfer and analyze
+  deployment:
+  - Existing data-preparation, review, transfer, and analytics tools
+  prerequisites:
+  - Agreed purpose and recipients
+  - Source-data access
+  - Sampling and transformation method
+  - Disclosure review
+  - Authorized transfer
+  data_movement: The full extract remains with source-data staff during preparation; the transformed sample and remaining
+    attributes move to the recipient.
+  data_retention: Agreement, review decision, and recipient controls determine retention; no universal period applies.
+privacy_and_security:
+  published_technologies:
+  - Sampling
+  - Suppression, generalization, or de-identification
+  - Disclosure review
+  - Ordinary file transfer and analytics
+  trust_model: The source trusts preparation and review staff; both parties trust the recipient and governance controls with
+    the transformed sample.
+  attacker_model: Residual linkage, rare attributes, auxiliary information, biased samples, and recipient misuse must be considered;
+    no peer-to-peer cryptographic boundary applies.
+  raw_data_access: Source staff can access the full extract; recipient analysts can access the transformed sample and remaining
+    attributes.
+  metadata_leakage:
+  - Party identities, purpose, schema, sample size, transformation choices, and transfer timing
+  - Residual quasi-identifiers in the sample
+  repeated_query_controls: Manual approval and agreement; repeated samples and follow-up extracts can accumulate information.
+  minimum_aggregation_controls: None intrinsic; the recipient receives row-level transformed data unless the workflow further
+    restricts it.
+  audit_and_assurance:
+  - Sample definition, transformation log, risk review, file digest, and analysis output can form an operational record when
+    retained.
+  - Official NIST publications were reviewed; no specific transformation or deployment was independently tested.
+assessment:
+  strengths:
+  - Supports rich exploratory and row-level analysis
+  - Uses familiar tools
+  - Can be lower effort than a new integration for a one-off question
+  - Makes sampling assumptions inspectable
+  limitations_or_unknowns:
+  - Residual linkage and re-identification risk can remain
+  - Samples can be biased or insufficient
+  - Repeated extracts can accumulate disclosure
+  - Elapsed time and cost are unknown
+  implications_for_private_match:
+  - Private Match may not be needed when residual disclosure is acceptable
+  - A minimum result is inferior when rich feature exploration is necessary
+  claim_types:
+    facts:
+    - NIST SP 800-188 describes de-identification governance, residual-risk evaluation, and multiple data-sharing models.
+    - NISTIR 8053 notes that some de-identified datasets can be re-identified.
+    inferences:
+    - A sampled or transformed exchange is a non-PET substitute for exploratory bilateral decisions.
+    hypotheses:
+    - A reviewed sample will be preferred when it answers the question faster and stakeholders accept its residual risk and
+      uncertainty.
+sources:
+  primary:
+  - url: https://csrc.nist.gov/pubs/sp/800/188/final
+    title: 'NIST SP 800-188: De-Identifying Government Datasets'
+    publisher: National Institute of Standards and Technology
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://www.nist.gov/publications/de-identification-personal-information
+    title: De-Identification of Personal Information
+    publisher: National Institute of Standards and Technology
+    published_at: '2015-10-22'
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
