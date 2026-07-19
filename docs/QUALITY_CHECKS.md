@@ -166,6 +166,8 @@ every redirect request:
 - HTTPS is mandatory;
 - URL userinfo is forbidden;
 - only port 443 is approved;
+- hostnames are IDNA-normalized and trailing root dots are removed before
+  localhost and literal-address checks;
 - `localhost`, scoped addresses, and missing/invalid hosts are rejected;
 - literal and DNS-resolved loopback, private, link-local, multicast, reserved,
   unspecified, and otherwise non-global IP addresses are rejected;
@@ -219,8 +221,8 @@ unavailable.
 
 Structured records under `records/` are public artifacts. Before merge:
 
-- `source_check`, `freshness_check`, `privacy_review`, and `claims_review` must be
-  `approved`;
+- `source_check`, `freshness_check`, `privacy_review`, `claims_review`, and
+  `reproducibility_review` must be `approved`;
 - `ip_review` and `security_review` must be `approved` or `not-required`;
 - public use-case findings also require `anonymization_review: approved`.
 
@@ -246,8 +248,9 @@ claims. The vocabulary is shown below for documentation only:
 
 A warning requires human claims review and narrower wording or supporting
 evidence. Negated statements are ignored where the bounded context detector
-recognizes them. Fenced code blocks and explicit documentation-ignore blocks are
-excluded; those exclusions must not suppress substantive claims.
+recognizes them. HTTP/HTTPS URL tokens, fenced code blocks, and explicit
+documentation-ignore blocks are excluded; those exclusions must not suppress
+substantive claims.
 
 ## Record locations
 

@@ -107,10 +107,27 @@ class UrlObservationSafetyTests(unittest.TestCase):
         self.assertEqual((status, detail), ("ok", "HTTP 200"))
         self.assertEqual(len(opener.requests), 1)
 
+    def test_trailing_dot_local_destinations_are_rejected_without_dns(self) -> None:
+        with mock.patch("scripts.validate_research.socket.getaddrinfo") as mocked_dns:
+            findings = validate_url_references(
+                [
+                    "https://localhost./private",
+                    "https://127.0.0.1./private",
+                ]
+            )
+
+        mocked_dns.assert_not_called()
+        self.assertEqual(len(findings), 2)
+        self.assertTrue(
+            all(item.code == "unsafe-url-reference" for item in findings)
+        )
+
     def test_non_public_literals_and_localhost_are_rejected_without_http(self) -> None:
         unsafe_urls = [
             "https://localhost/",
+            "https://localhost./",
             "https://127.0.0.1/",
+            "https://127.0.0.1./",
             "https://[::1]/",
             "https://10.1.2.3/",
             "https://192.168.1.10/",

@@ -232,7 +232,13 @@ def _publication_gate(record: dict[str, Any], path: str) -> list[Finding]:
     if not isinstance(publication, dict):
         return findings
 
-    required_approved = ["source_check", "freshness_check", "privacy_review", "claims_review"]
+    required_approved = [
+        "source_check",
+        "freshness_check",
+        "privacy_review",
+        "claims_review",
+        "reproducibility_review",
+    ]
     conditional = ["ip_review", "security_review"]
     if record.get("record_type") == "public-use-case-finding":
         required_approved.append("anonymization_review")
@@ -388,10 +394,11 @@ def lint_claims(root: Path) -> list[Finding]:
                 continue
             if in_ignore_block or in_fenced_block:
                 continue
-            if NEGATING_CONTEXT.search(line):
+            claim_text = RAW_URL_RE.sub("", line)
+            if NEGATING_CONTEXT.search(claim_text):
                 continue
             for code, pattern in RISKY_PATTERNS.items():
-                if pattern.search(line):
+                if pattern.search(claim_text):
                     findings.append(
                         Finding(
                             "warning",
@@ -453,25 +460,34 @@ def validate_url_reference(
         raise UnsafeUrlDestination("only HTTPS destinations are allowed")
     if parsed.username is not None or parsed.password is not None:
         raise UnsafeUrlDestination("URL userinfo is not allowed")
-    host = parsed.hostname
-    if host is None or not host:
+    raw_host = parsed.hostname
+    if raw_host is None or not raw_host:
         raise UnsafeUrlDestination("URL hostname is required")
-    if "%" in host:
+    if "%" in raw_host:
         raise UnsafeUrlDestination("scoped IP destinations are not allowed")
+    host = raw_host.rstrip(".")
+    if not host:
+        raise UnsafeUrlDestination("URL hostname is required")
+    try:
+        literal = ipaddress.ip_address(host)
+    except ValueError:
+        try:
+            host = host.encode("idna").decode("ascii").rstrip(".").lower()
+        except UnicodeError as exc:
+            raise UnsafeUrlDestination("invalid URL hostname") from exc
+        if not host:
+            raise UnsafeUrlDestination("URL hostname is required")
+        literal = None
     try:
         port = parsed.port or 443
     except ValueError as exc:
         raise UnsafeUrlDestination("invalid URL port") from exc
     if port not in APPROVED_URL_PORTS:
         raise UnsafeUrlDestination("URL port is not approved")
-    if host.lower() == "localhost" or host.lower().endswith(".localhost"):
+    if host == "localhost" or host.endswith(".localhost"):
         raise UnsafeUrlDestination("localhost destinations are not allowed")
 
-    try:
-        literal = ipaddress.ip_address(host)
-    except ValueError:
-        literal = None
-    else:
+    if literal is not None:
         if not _is_public_address(literal):
             raise UnsafeUrlDestination("literal destination is not a public address")
     return host, port, literal
