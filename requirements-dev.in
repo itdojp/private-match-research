@@ -1,0 +1,5 @@
+# Direct validation dependencies for CPython 3.12.13 on Ubuntu 24.04 x86_64.
+# Install requirements-build.txt first, then install this lock with --no-build-isolation.
+jsonschema==4.26.0
+PyYAML==6.0.3
+reuse==6.2.0

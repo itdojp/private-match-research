@@ -1,16 +1,21 @@
-name: Research Quality
+name: Research URL Observation
 
 on:
-  pull_request:
   push:
     branches: [main]
+  schedule:
+    - cron: '17 3 * * 1'
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: research-url-observation-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  validate:
+  observe:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -32,21 +37,21 @@ jobs:
           --require-hashes
           --no-build-isolation
           -r requirements-dev.txt
-      - name: Run validator tests
-        run: python -m unittest discover -s tests -p 'test_*.py'
-      - name: Validate research records and documentation without network observation
+      - name: Observe external URLs from trusted repository content
         run: >-
           python scripts/validate_research.py
           --root .
           --report-dir artifacts
           --stale-policy warn
-      - name: Validate REUSE licensing metadata
-        run: reuse lint
-      - name: Upload quality report
+          --check-urls
+          --trusted-url-observation
+          --url-policy warn
+          --url-timeout 5
+      - name: Upload URL observation report
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: research-quality-report
+          name: research-url-observation-report
           path: artifacts/
           if-no-files-found: error
           retention-days: 30
