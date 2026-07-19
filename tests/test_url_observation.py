@@ -150,6 +150,22 @@ class UrlObservationSafetyTests(unittest.TestCase):
 
         self.assertEqual(status, "unsafe-destination")
 
+    def test_dns_rebinding_is_rejected_before_a_connection(self) -> None:
+        answers = iter([[PUBLIC_ADDRESS], ["10.0.0.8"]])
+
+        def rebinding_resolver(_host: str, _port: int) -> list[str]:
+            return next(answers)
+
+        with mock.patch("scripts.validate_research.socket.socket") as mocked_socket:
+            status, _detail = check_url(
+                "https://public.example/source",
+                5.0,
+                resolver=rebinding_resolver,
+            )
+
+        self.assertEqual(status, "unsafe-destination")
+        mocked_socket.assert_not_called()
+
     def test_redirect_from_public_url_to_private_address_is_rejected(self) -> None:
         opener = FakeOpener(
             http_error(

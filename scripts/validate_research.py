@@ -7,6 +7,7 @@ import argparse
 import concurrent.futures
 import dataclasses
 import datetime as dt
+import http.client
 import ipaddress
 import json
 import os
@@ -104,6 +105,70 @@ class NoRedirectHandler(urllib.request.HTTPRedirectHandler):
         newurl: str,
     ) -> None:
         return None
+
+
+class PublicAddressHTTPSConnection(http.client.HTTPSConnection):
+    """Connect to validated public addresses without a second DNS lookup."""
+
+    def __init__(self, *args: Any, resolver: Any, **kwargs: Any) -> None:
+        self._public_address_resolver = resolver
+        super().__init__(*args, **kwargs)
+
+    def connect(self) -> None:
+        if self._tunnel_host is not None:
+            raise UnsafeUrlDestination("HTTP proxy tunnels are not allowed")
+        addresses = _resolve_public_addresses(
+            self.host,
+            self.port,
+            self._public_address_resolver,
+        )
+        last_error: OSError | None = None
+        for address in addresses:
+            family = socket.AF_INET6 if address.version == 6 else socket.AF_INET
+            raw_socket = socket.socket(family, socket.SOCK_STREAM)
+            try:
+                raw_socket.settimeout(self.timeout)
+                if self.source_address:
+                    raw_socket.bind(self.source_address)
+                destination: tuple[Any, ...]
+                if family == socket.AF_INET6:
+                    destination = (str(address), self.port, 0, 0)
+                else:
+                    destination = (str(address), self.port)
+                raw_socket.connect(destination)
+                self.sock = self._context.wrap_socket(
+                    raw_socket,
+                    server_hostname=self.host,
+                )
+                return
+            except OSError as exc:
+                last_error = exc
+                raw_socket.close()
+        if last_error is not None:
+            raise last_error
+        raise socket.gaierror(f"no usable public address found for {self.host}")
+
+
+class PublicAddressHTTPSHandler(urllib.request.HTTPSHandler):
+    """Build HTTPS connections that are pinned to validated DNS answers."""
+
+    def __init__(self, *, context: ssl.SSLContext, resolver: Any) -> None:
+        super().__init__(context=context)
+        self._public_address_resolver = resolver
+
+    def https_open(self, request: urllib.request.Request) -> Any:
+        def connection_factory(*args: Any, **kwargs: Any) -> Any:
+            return PublicAddressHTTPSConnection(
+                *args,
+                resolver=self._public_address_resolver,
+                **kwargs,
+            )
+
+        return self.do_open(
+            connection_factory,
+            request,
+            context=self._context,
+        )
 
 
 def _iter_files(root: Path, suffixes: set[str]) -> Iterable[Path]:
@@ -412,11 +477,15 @@ def validate_url_reference(
     return host, port, literal
 
 
-def validate_url_destination(
-    url: str,
-    resolver: Any = _resolve_host_addresses,
-) -> None:
-    host, port, literal = validate_url_reference(url)
+def _resolve_public_addresses(
+    host: str,
+    port: int,
+    resolver: Any,
+) -> list[ipaddress.IPv4Address | ipaddress.IPv6Address]:
+    try:
+        literal = ipaddress.ip_address(host)
+    except ValueError:
+        literal = None
     if literal is None:
         resolved = resolver(host, port)
         addresses: list[ipaddress.IPv4Address | ipaddress.IPv6Address] = []
@@ -434,13 +503,25 @@ def validate_url_destination(
         raise UnsafeUrlDestination(
             "destination did not resolve exclusively to public addresses"
         )
+    return addresses
 
 
-def _build_url_opener() -> Any:
+def validate_url_destination(
+    url: str,
+    resolver: Any = _resolve_host_addresses,
+) -> None:
+    host, port, _literal = validate_url_reference(url)
+    _resolve_public_addresses(host, port, resolver)
+
+
+def _build_url_opener(resolver: Any) -> Any:
     return urllib.request.build_opener(
         urllib.request.ProxyHandler({}),
         NoRedirectHandler(),
-        urllib.request.HTTPSHandler(context=ssl.create_default_context()),
+        PublicAddressHTTPSHandler(
+            context=ssl.create_default_context(),
+            resolver=resolver,
+        ),
     )
 
 
@@ -544,7 +625,7 @@ def check_url(
             "unsafe-destination",
             "URL observation timeout is outside the approved bound",
         )
-    opener = opener or _build_url_opener()
+    opener = opener or _build_url_opener(resolver)
     try:
         status = _request_with_validated_redirects(
             url, "HEAD", timeout, resolver, opener

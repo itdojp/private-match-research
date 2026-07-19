@@ -170,6 +170,9 @@ every redirect request:
 - literal and DNS-resolved loopback, private, link-local, multicast, reserved,
   unspecified, and otherwise non-global IP addresses are rejected;
 - a hostname is rejected if any usable DNS answer is non-public;
+- validated public addresses are used directly for the connection while the
+  original hostname is retained for TLS and HTTP, preventing an unvalidated
+  second DNS lookup;
 - environment HTTP proxies are disabled for the observer;
 - redirects are handled manually and capped at 5;
 - each request timeout is capped at 15 seconds and CI uses 5 seconds;
