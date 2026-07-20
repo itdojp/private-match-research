@@ -1,0 +1,110 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: OpenMined
+  product: PSI
+  canonical_url: https://github.com/OpenMined/PSI
+  country_or_region: Open source / Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: building-block
+  confidence: high
+  rationale: It implements two-party PSI and cardinality with multiple containers, but omits the complete commercial and policy
+    workflow.
+market:
+  buyer:
+  - 'Not a commercial product; inferred adopter: privacy engineering team'
+  user:
+  - 'Published user: C++, Python, JavaScript, Java, or Go developer depending on supported bindings'
+  trigger:
+  - 'Published use case: client and server need intersection elements or cardinality'
+  jobs_to_be_done:
+  - Configure ECDH PSI
+  - Select raw, Golomb-compressed, or Bloom-filter container
+  - Run client-server protocol
+  current_alternatives:
+  - Other PSI library
+  - Private Join and Compute
+  - Managed matching platform
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Client and server datasets
+  - Container and false-positive configuration
+  outputs:
+  - Intersection cardinality or client-revealed intersection elements
+  workflow:
+  - Build or install language package
+  - Generate server setup
+  - Send client request
+  - Compute intersection
+  deployment:
+  - Self-hosted library with language bindings
+  prerequisites:
+  - Compiler and Bazel for the core project
+  - Application transport
+  - Key and abuse controls
+  data_movement: Serialized protocol messages and server container move between client and server.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - ECDH commutative encryption
+  - Golomb compressed sets
+  - Bloom filters
+  - Raw encrypted-item container
+  trust_model: Two-party client-server protocol as described by the repository; application and endpoint trust are external.
+  attacker_model: See project SECURITY.md; deployment-specific malicious behavior requires separate review.
+  raw_data_access: Client can be configured to learn cardinality or intersection elements.
+  metadata_leakage:
+  - Dataset and message sizes
+  - False-positive behavior for compressed containers
+  repeated_query_controls: Application responsibility.
+  minimum_aggregation_controls: Application responsibility when cardinality is returned.
+  audit_and_assurance:
+  - Apache-2.0 repository and SECURITY.md are public; this record did not execute a protocol benchmark.
+  - 'Evidence reviewed: public source repository; the implementation was not benchmarked for this record.'
+assessment:
+  strengths:
+  - Supports cardinality and element-reveal modes
+  - Documents communication and false-positive trade-offs
+  limitations_or_unknowns:
+  - Compressed modes can produce configurable false positives
+  - Application policy and consent are out of scope
+  - Endpoint misuse controls require implementation
+  implications_for_private_match:
+  - It is a useful baseline for cardinality behavior
+  - Private Match must fix result semantics and transcript evidence
+  claim_types:
+    facts:
+    - OpenMined describes the project as ECDH PSI using Golomb compressed sets, Bloom filters, or raw encrypted strings.
+    - The README states compressed containers trade lower communication for false positives.
+    inferences:
+    - The project is a protocol component rather than an end-user bilateral decision product.
+    hypotheses:
+    - The raw-container mode can provide a correctness baseline before evaluating communication optimizations.
+sources:
+  primary:
+  - url: https://github.com/OpenMined/PSI
+    title: OpenMined PSI
+    publisher: OpenMined
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

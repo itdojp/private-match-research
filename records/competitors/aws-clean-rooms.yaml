@@ -1,0 +1,114 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Amazon Web Services
+  product: AWS Clean Rooms
+  canonical_url: https://aws.amazon.com/clean-rooms/
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: adjacent
+  confidence: high
+  rationale: It supports multi-party tabular analysis and matching, but its warehouse-oriented collaboration surface is broader
+    than a bounded bilateral preflight decision.
+market:
+  buyer:
+  - 'Inferred buyer: data collaboration or analytics leader; exact budget owner unknown'
+  user:
+  - 'Published user: AWS data engineer or analyst'
+  trigger:
+  - 'Published use case: collaborators need joint analysis without exchanging their full underlying tables'
+  jobs_to_be_done:
+  - Create a collaboration
+  - Apply analysis rules
+  - Run approved queries or matching workflows
+  current_alternatives:
+  - Warehouse data exchange
+  - Trusted third-party analysis
+  - Manual file transfer under contract
+  pricing:
+    public: true
+    model: Usage based, including Clean Rooms Processing Unit hours and capability-specific charges
+    amount: Region and capability dependent; see the official price table
+    source: https://aws.amazon.com/clean-rooms/pricing/
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Collaborator-configured tabular datasets
+  outputs:
+  - Query results permitted by configured analysis rules
+  workflow:
+  - Create collaboration
+  - Associate configured tables
+  - Run permitted analysis
+  deployment:
+  - AWS managed service
+  prerequisites:
+  - AWS account
+  - Supported data source and permissions
+  - Agreement among collaborators
+  data_movement: Documentation describes configured data sources associated with an AWS collaboration; exact movement depends
+    on the selected capability.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Analysis rules
+  - AWS Identity and Access Management
+  - Optional cryptographic computing and differential privacy capabilities
+  trust_model: AWS-managed control plane plus participant configuration; capability-specific boundaries apply.
+  attacker_model: unknown
+  raw_data_access: AWS documentation states collaborators receive permitted results rather than unrestricted access to one
+    another's underlying tables.
+  metadata_leakage:
+  - Capability and configuration dependent
+  - Collaboration membership and query activity are operational metadata
+  repeated_query_controls: Analysis rules and capability-specific controls; exact policy is collaboration dependent.
+  minimum_aggregation_controls: Configurable for supported analysis-rule paths; exact threshold is collaboration dependent.
+  audit_and_assurance:
+  - AWS service documentation and public pricing were reviewed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Integrates with AWS data and identity services
+  - Supports multiple analysis modes
+  limitations_or_unknowns:
+  - Deployment lead time is unknown
+  - A single product-wide attacker model was not found
+  - Total price depends on region, compute, and optional capabilities
+  implications_for_private_match:
+  - Private Match should not duplicate a general AWS analytics room
+  - A narrower setup and output surface requires buyer validation
+  claim_types:
+    facts:
+    - AWS documentation presents the service as a way for companies and partners to analyze collective datasets.
+    - AWS publishes usage-based pricing dimensions.
+    inferences:
+    - The workflow is broader and more cloud-specific than a single bilateral preflight decision.
+    hypotheses:
+    - Some low-frequency decisions will not justify creating an AWS collaboration.
+sources:
+  primary:
+  - url: https://docs.aws.amazon.com/clean-rooms/latest/userguide/what-is.html
+    title: What is AWS Clean Rooms?
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://aws.amazon.com/clean-rooms/pricing/
+    title: AWS Clean Rooms Pricing
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

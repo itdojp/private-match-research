@@ -1,0 +1,113 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Decentriq
+  product: Decentriq Data Clean Rooms
+  canonical_url: https://www.decentriq.com/data-clean-rooms
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: adjacent
+  confidence: high
+  rationale: It supports multi-party analysis, audience workflows, and custom computations using confidential computing, broader
+    than a minimal matching decision.
+market:
+  buyer:
+  - 'Published target buyer: advertiser, publisher, retailer, data partner, agency, or healthcare data leader'
+  user:
+  - 'Published user: business analyst, data analyst, or data scientist'
+  trigger:
+  - 'Published use case: parties need collaborative analysis or audience activation under agreed permissions'
+  jobs_to_be_done:
+  - Create a room
+  - Approve computations
+  - Run no-code or SQL, Python, and R analysis
+  - Release permitted results
+  current_alternatives:
+  - Trusted research intermediary
+  - Cloud data room
+  - Manual aggregation
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Participant datasets
+  - Approved computation or no-code module configuration
+  outputs:
+  - Approved aggregate insights
+  - Permission-dependent audience identifiers
+  - Advanced-analysis results
+  workflow:
+  - Onboard data
+  - Configure participants and permissions
+  - Approve computation
+  - Access permitted output
+  deployment:
+  - Decentriq platform using cloud confidential-computing infrastructure
+  prerequisites:
+  - Data-team onboarding
+  - Participant agreement
+  - Computation approval for advanced analysis
+  data_movement: Vendor documentation describes data onboarding into a confidential-computing-based room; exact storage and
+    transfer topology is not fully public.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Confidential computing
+  - Homomorphic encryption for stated product paths
+  - Differential privacy for stated product paths
+  trust_model: Vendor-described hardware-backed confidential-computing boundary plus participant permissions.
+  attacker_model: unknown
+  raw_data_access: Vendor states raw data remains inaccessible to collaborators; this was not independently reproduced.
+  metadata_leakage:
+  - Room membership and computation metadata
+  - Output-specific leakage depends on approved computation
+  repeated_query_controls: Permissions and computation approvals; exact public query-budget behavior unknown.
+  minimum_aggregation_controls: No-code modules provide aggregate paths; exact minimums are configuration dependent.
+  audit_and_assurance:
+  - Vendor references SOC 2 and audit logs; reports were not independently reviewed for this record.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - No-code and custom-analysis surfaces
+  - Explicit computation-approval workflow
+  limitations_or_unknowns:
+  - Public price is unknown
+  - Detailed technical whitepaper requires an NDA
+  - Independent reproduction was not reviewed
+  implications_for_private_match:
+  - TEE-backed operation belongs in the technology comparison
+  - Private Match needs a narrower workflow advantage rather than a technology-only claim
+  claim_types:
+    facts:
+    - Decentriq's public page lists no-code, SQL, Python, R, API, and SDK paths.
+    - The vendor describes participant permissions and computation approval before output access.
+    inferences:
+    - The offering addresses recurring collaboration and audience workflows beyond preflight matching.
+    hypotheses:
+    - A fixed output may reduce the approval and analyst work required for one-off bilateral decisions.
+sources:
+  primary:
+  - url: https://www.decentriq.com/data-clean-rooms
+    title: Data Clean Rooms
+    publisher: Decentriq
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

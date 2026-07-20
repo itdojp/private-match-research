@@ -1,0 +1,117 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Datasite
+  product: Datasite Diligence
+  canonical_url: https://www.datasite.com/en/products/diligence
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: substitute
+  confidence: high
+  rationale: Parties can disclose selected deal documents into a permissioned virtual data room and perform ordinary diligence
+    instead of computing a minimal private match.
+market:
+  buyer:
+  - 'Published target buyer: M&A dealmaker, advisor, corporate-development, or legal team'
+  user:
+  - 'Published user: sell-side administrator, buyer, advisor, or diligence reviewer'
+  trigger:
+  - 'Published use case: an M&A transaction enters document preparation or due diligence'
+  jobs_to_be_done:
+  - Upload and organize documents
+  - Control reviewer access
+  - Search, redact, and answer diligence questions
+  current_alternatives:
+  - Email and file share
+  - Physical data room
+  - Private computation preflight
+  pricing:
+    public: false
+    model: Vendor states quotes are customized by transaction scope, requirements, and timeline
+    amount: unknown
+    source: https://www.datasite.com/en/resources/faqs/how-much-does-datasite-diligence-cost
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Deal documents and metadata
+  - User and permission configuration
+  outputs:
+  - Permissioned document access
+  - Search, redaction, Q&A, and diligence workflow records
+  workflow:
+  - Create project
+  - Upload and classify documents
+  - Invite reviewers
+  - Conduct diligence and Q&A
+  deployment:
+  - Vendor-hosted virtual data room
+  prerequisites:
+  - Transaction project
+  - Document preparation
+  - Reviewer identities and permissions
+  - Customized commercial quote
+  data_movement: Selected documents are uploaded to the virtual data room for access by authorized participants.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Virtual data room
+  - Permission controls
+  - Document search and redaction
+  trust_model: Participants trust the VDR operator, project administrators, and configured permissions for disclosed documents.
+  attacker_model: unknown
+  raw_data_access: Authorized reviewers can access documents granted to them; this is controlled disclosure rather than private
+    computation.
+  metadata_leakage:
+  - Document names and access activity according to permissions
+  - Deal and participant metadata
+  repeated_query_controls: Project permissions and workflow dependent.
+  minimum_aggregation_controls: Not applicable to document review.
+  audit_and_assurance:
+  - Vendor product and pricing FAQ pages were reviewed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Established M&A diligence workflow
+  - Can answer richer questions than a match score after parties accept disclosure
+  limitations_or_unknowns:
+  - Requires document disclosure to the VDR and authorized reviewers
+  - Customized price is not public
+  - Preparation can exceed a preflight decision
+  implications_for_private_match:
+  - Private Match may be unnecessary once a deal has reached full diligence
+  - The product should target an earlier go or no-go checkpoint if H2 evidence supports it
+  claim_types:
+    facts:
+    - Datasite describes Diligence as a virtual data room for M&A due diligence.
+    - Datasite states pricing is customized for each transaction.
+    inferences:
+    - A VDR is a non-PET substitute when controlled disclosure is acceptable.
+    hypotheses:
+    - A minimal overlap decision can precede and reduce unnecessary VDR setup.
+sources:
+  primary:
+  - url: https://www.datasite.com/en/products/diligence
+    title: Datasite Diligence
+    publisher: Datasite
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://www.datasite.com/en/resources/faqs/how-much-does-datasite-diligence-cost
+    title: How much does Datasite Diligence cost?
+    publisher: Datasite
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

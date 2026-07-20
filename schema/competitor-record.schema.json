@@ -25,8 +25,19 @@
       "properties": {
         "class": {"enum": ["direct", "adjacent", "substitute", "building-block", "potential"]},
         "confidence": {"enum": ["high", "medium", "low"]},
-        "rationale": {"type": "string", "minLength": 1}
-      }
+        "rationale": {"type": "string", "minLength": 1},
+        "direct_designation_approval": {"$ref": "#/$defs/directDesignationApproval"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"class": {"const": "direct"}},
+            "required": ["class"]
+          },
+          "then": {"required": ["direct_designation_approval"]},
+          "else": {"not": {"required": ["direct_designation_approval"]}}
+        }
+      ]
     },
     "market": {
       "type": "object", "additionalProperties": false,
@@ -126,6 +137,21 @@
           }
         }
       ]
+    },
+    "directDesignationApproval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "authority", "approved_at", "evidence_url"],
+      "properties": {
+        "status": {"const": "approved"},
+        "authority": {"const": "authorized-itdo-human"},
+        "approved_at": {"type": "string", "format": "date"},
+        "evidence_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://github\\.com/itdojp/private-match-research/(pull/[1-9][0-9]*#(pullrequestreview-[1-9][0-9]*|discussion_r[1-9][0-9]*|issuecomment-[1-9][0-9]*)|issues/[1-9][0-9]*#issuecomment-[1-9][0-9]*)$"
+        }
+      }
     },
     "sources": {
       "type": "object", "additionalProperties": false,

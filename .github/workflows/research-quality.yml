@@ -34,6 +34,8 @@ jobs:
           -r requirements-dev.txt
       - name: Run validator tests
         run: python -m unittest discover -s tests -p 'test_*.py'
+      - name: Check generated competitor index
+        run: python scripts/generate_competitor_index.py --root . --check
       - name: Validate research records and documentation without network observation
         run: >-
           python scripts/validate_research.py

@@ -1,0 +1,116 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: InfoSum
+  product: InfoSum Data Clean Room
+  canonical_url: https://www.infosum.com/platform/privacy
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: adjacent
+  confidence: high
+  rationale: It offers decentralized matching, analysis, and activation for advertising and data collaboration, a broader
+    vertical workflow than a fixed bilateral decision.
+market:
+  buyer:
+  - 'Published target buyer: media, advertiser, publisher, or commerce data leader'
+  user:
+  - 'Published user: audience or data collaboration operator'
+  trigger:
+  - 'Published use case: partners need overlap, insight, activation, or measurement across audience data'
+  jobs_to_be_done:
+  - Normalize datasets
+  - Calculate audience overlap or insight
+  - Export permitted activation data
+  current_alternatives:
+  - Cloud data room
+  - Identity provider
+  - Direct audience file exchange
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Normalized audience datasets in Bunkers or Beacons
+  outputs:
+  - Permitted aggregate results
+  - Permission-dependent activation or identifier exports
+  workflow:
+  - Create or connect a dataset
+  - Normalize fields
+  - Grant permissions
+  - Run an approved collaboration
+  deployment:
+  - InfoSum-managed platform with decentralized dataset environments
+  prerequisites:
+  - InfoSum account arranged through customer support
+  - Dataset onboarding
+  - Partner permissions
+  data_movement: Vendor documentation states original uploaded data remains in a Bunker; export paths can disclose permitted
+    identifiers depending on configuration.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Private set intersection
+  - Multi-party computation
+  - Differential privacy
+  - Dataset permission controls
+  trust_model: Vendor-described decentralized Bunker model; product-path and export permissions affect the boundary.
+  attacker_model: unknown
+  raw_data_access: Vendor documentation distinguishes Bunker storage from permitted result and export access.
+  metadata_leakage:
+  - Dataset schema and collaboration metadata
+  - Result and export leakage depends on permissions
+  repeated_query_controls: Permission and product configuration dependent; exact public query-budget policy unknown.
+  minimum_aggregation_controls: Vendor describes privacy controls, but exact minimums for every workflow are unknown.
+  audit_and_assurance:
+  - Vendor product and support documentation were reviewed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Explicit advertising collaboration workflows
+  - Decentralized product positioning
+  limitations_or_unknowns:
+  - Public price is unknown
+  - Independent reproduction was not reviewed
+  - Exact controls differ between Bunker, Beacon, and export paths
+  implications_for_private_match:
+  - Data non-movement messaging alone does not differentiate Private Match
+  - A smaller buyer trigger and lower setup burden need evidence
+  claim_types:
+    facts:
+    - InfoSum support documentation describes Bunker and Beacon dataset paths.
+    - Vendor documentation describes permission-dependent result and export workflows.
+    inferences:
+    - InfoSum is an adjacent commercial default for audience-oriented collaboration rather than a generic bilateral preflight.
+    hypotheses:
+    - Private Match can avoid activation complexity by limiting output to a decision or coarse band.
+sources:
+  primary:
+  - url: https://www.infosum.com/platform/privacy
+    title: Privacy at InfoSum
+    publisher: InfoSum
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://support.infosum.com/hc/en-us/articles/20230364634258-Introducing-the-InfoSum-Data-Clean-Room
+    title: Introducing the InfoSum Data Clean Room
+    publisher: InfoSum
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

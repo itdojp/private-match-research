@@ -1,0 +1,115 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Duality Technologies
+  product: SecurePlus Query
+  canonical_url: https://dualitytech.com/
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: potential
+  confidence: medium
+  rationale: Official material describes encrypted cross-party querying, but current public buyer, deployment, pricing, and
+    product-scope details are incomplete.
+market:
+  buyer:
+  - 'Published target buyer: financial-crime or regulated-data leader; exact budget owner unknown'
+  user:
+  - 'Published user: investigator or analyst issuing SQL-like queries'
+  trigger:
+  - 'Published use case: an institution needs to query another party''s records without disclosing the query terms'
+  jobs_to_be_done:
+  - Configure a data provider
+  - Submit protected SQL-like queries
+  - Review returned matches or aggregates
+  current_alternatives:
+  - Centralized data exchange
+  - Private set intersection library
+  - Manual investigative request
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Query terms
+  - Provider-hosted tabular data
+  outputs:
+  - Query result described by the selected SecurePlus workflow
+  workflow:
+  - Install or provision components
+  - Configure parties and keys
+  - Submit supported query
+  - Return permitted result
+  deployment:
+  - Official installation guide describes an AWS Marketplace deployment path
+  prerequisites:
+  - Commercial engagement
+  - Supported cloud environment
+  - Query and data-source configuration
+  data_movement: Official material describes queries against data in the provider environment; exact component and transfer
+    boundaries are not fully public.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Homomorphic encryption
+  - SQL-like protected query
+  trust_model: Two-party encrypted-query model described by the vendor; detailed current threat model unknown.
+  attacker_model: unknown
+  raw_data_access: Vendor material states the requesting party receives query results rather than unrestricted provider data;
+    independently unverified.
+  metadata_leakage:
+  - unknown
+  repeated_query_controls: unknown
+  minimum_aggregation_controls: unknown
+  audit_and_assurance:
+  - Official product and installation PDFs were reviewed; current external evaluation details are unknown.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Targets query privacy across organizations
+  - Documents a cloud installation path
+  limitations_or_unknowns:
+  - Current canonical product documentation is sparse
+  - Public price is unknown
+  - Query leakage and repeated-query controls are unknown
+  implications_for_private_match:
+  - Encrypted query products are a relevant alternative
+  - Current status requires re-verification before a stronger classification
+  claim_types:
+    facts:
+    - Duality's official material describes SecurePlus Query for encrypted SQL-like querying.
+    - An official guide describes installation through AWS Marketplace.
+    inferences:
+    - The product could overlap with matching workflows, but its current buyer and minimum output are not sufficiently documented
+      for an adjacent classification with high confidence.
+    hypotheses:
+    - A narrowly specified bilateral protocol may be easier to evaluate than a general encrypted-query product.
+sources:
+  primary:
+  - url: https://dualitytech.com/wp-content/uploads/2023/06/pagerFinCrime_v10.pdf
+    title: SecurePlus Query for Financial Crime
+    publisher: Duality Technologies
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://dualitytech.com/wp-content/uploads/2024/01/Installation-Guide-v3.1-AWS-Market-Place_support.pdf
+    title: SecurePlus Installation Guide
+    publisher: Duality Technologies
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

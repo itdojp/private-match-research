@@ -1,0 +1,120 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Optable
+  product: Optable Collaborate
+  canonical_url: https://www.optable.co/platform-collaborate
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: adjacent
+  confidence: high
+  rationale: It offers no-code advertising data collaboration, match insight, augmentation, and cloud connectivity, broader
+    than Private Match's proposed constrained session.
+market:
+  buyer:
+  - 'Published target buyer: publisher, advertiser, or media revenue leader'
+  user:
+  - 'Published user: audience and advertising data operator'
+  trigger:
+  - 'Published use case: a publisher needs to collaborate with an advertising partner across fragmented data locations'
+  jobs_to_be_done:
+  - Connect an advertising partner
+  - Calculate match insights
+  - Augment audiences
+  - Activate results
+  current_alternatives:
+  - Cloud-specific data room
+  - Direct audience onboarding
+  - Identity partner
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Publisher and advertiser audience data
+  - Cloud or platform connector configuration
+  outputs:
+  - Partner-match insights
+  - Augmented traits
+  - Activation audiences
+  workflow:
+  - Connect partner or cloud
+  - Select no-code collaboration
+  - Run match or insight
+  - Activate permitted audience
+  deployment:
+  - Optable managed platform with AWS, BigQuery, and Snowflake connectors
+  prerequisites:
+  - Commercial or demo engagement
+  - Advertising partner
+  - Supported data connection
+  data_movement: Vendor describes cross-cloud paths that can leave partner data in its cloud environment; Optable-local paths
+    may have different movement.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Purpose-built data rooms
+  - Cloud connectors
+  - PAIR interoperability
+  - Audience identity functions
+  trust_model: Deployment-path dependent across Optable and external cloud environments.
+  attacker_model: unknown
+  raw_data_access: Vendor describes purpose-limited collaboration and partner-cloud paths; exact raw-access boundary depends
+    on the chosen connector.
+  metadata_leakage:
+  - Audience and partner metadata
+  - Match and activation outputs
+  repeated_query_controls: unknown
+  minimum_aggregation_controls: unknown
+  audit_and_assurance:
+  - Vendor collaboration and solution pages were reviewed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - No-code advertising workflows
+  - Cross-cloud and PAIR interoperability positioning
+  limitations_or_unknowns:
+  - Public price is unknown
+  - Scope is advertising-centric
+  - Exact cryptographic and attacker model by connector is unknown
+  implications_for_private_match:
+  - Cross-cloud convenience is a competitive dimension
+  - Private Match should avoid adding activation features without evidence
+  claim_types:
+    facts:
+    - Optable lists AWS, BigQuery, and Snowflake connectors.
+    - The vendor describes match insights, augmentation, and activation workflows.
+    inferences:
+    - The offering is adjacent for advertising collaborations and has a broader job than preflight matching.
+    hypotheses:
+    - A constrained output may be useful before parties commit to an Optable collaboration.
+sources:
+  primary:
+  - url: https://www.optable.co/platform-collaborate
+    title: Optable Collaborate
+    publisher: Optable
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://www.optable.co/solutions/grow-revenue-with-data-collaboration
+    title: Grow revenue with data collaboration
+    publisher: Optable
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

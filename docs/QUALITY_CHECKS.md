@@ -11,9 +11,12 @@ The required local checks cover:
 
 - YAML syntax across the repository
 - structured records under `records/`
+- deterministic competitor-index generation and the 25-record acceptance floor
+- generated-index identity normalization, table-cell escaping, and link-label escaping
 - competitor, technology, and public use-case finding JSON Schemas
 - observation, verification, and review dates
 - classification and confidence vocabulary
+- record-scoped human approval metadata for every `direct` designation
 - primary-source presence
 - publication-gate status
 - Markdown local-link existence and external-link structural safety
@@ -126,6 +129,18 @@ Run unit and negative URL-safety tests:
 python -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
+Regenerate the structured competitor index after changing competitor records:
+
+```bash
+python scripts/generate_competitor_index.py --root .
+```
+
+Verify that the committed index is current:
+
+```bash
+python scripts/generate_competitor_index.py --root . --check
+```
+
 Run required local-only repository validation:
 
 ```bash
@@ -200,6 +215,7 @@ The validator exits non-zero for:
 - invalid or escaping local links
 - incomplete public publication gate
 - inconsistent or future verification dates
+- missing, invalid, misplaced, or future-dated `direct` designation approval
 - unsafe external URL structure or literal destination
 - unsafe external URL destination
 - redirect limit or response-size limit violations
@@ -225,6 +241,28 @@ Structured records under `records/` are public artifacts. Before merge:
   `reproducibility_review` must be `approved`;
 - `ip_review` and `security_review` must be `approved` or `not-required`;
 - public use-case findings also require `anonymization_review: approved`.
+
+A competitor record classified as `direct` additionally requires
+`classification.direct_designation_approval`. Its status must be `approved`, its
+authority must use the stable `authorized-itdo-human` role, and its approval date
+must be valid and not in the future. The evidence URL must point to a concrete
+review or comment fragment under `itdojp/private-match-research`; a PR or Issue
+root URL is insufficient. Non-`direct` records must not carry this field, and a
+generic `publication.claims_review: approved` does not substitute for it.
+
+The Schema, repository validator, and generator fail closed on this metadata.
+They validate structure, repository scope, reference shape, and date only. Before
+merge, a human reviewer must verify the referenced author's authorization and
+the approval's record-specific scope. An agent must not create, infer, or approve
+`direct_designation_approval` autonomously. Semantic failures use the stable
+finding code `direct-designation-approval`.
+
+The competitor Schema remains version `0.1`. This fail-closed hardening is part
+of the active Draft PR, all 29 current in-repository records are non-`direct` and
+remain valid without migration, and the repository does not currently define an
+external Schema compatibility policy. It narrows acceptance of hypothetical
+`direct` records. Before declaring the Schema stable or relying on external
+compatibility, human maintainers must establish and apply a versioning policy.
 
 Templates are syntax checked but are not treated as published findings.
 Patent-sensitive or trade-secret candidates stay private or embargoed until a

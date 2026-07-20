@@ -1,0 +1,114 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Meta Research
+  product: Private-ID
+  canonical_url: https://github.com/facebookresearch/Private-ID
+  country_or_region: Open source / Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: building-block
+  confidence: high
+  rationale: It provides private record joins and shares for later MPC, but does not supply a complete consent, query-budget,
+    commercial, or evidence workflow.
+market:
+  buyer:
+  - 'Not a commercial product; inferred adopter: Rust protocol engineering team'
+  user:
+  - 'Published user: developer running company, partner, and optional helper roles'
+  trigger:
+  - 'Published use case: parties need a common ID spine or private inner, left, or outer join'
+  jobs_to_be_done:
+  - Build Rust binaries
+  - Configure party roles
+  - Run private join
+  - Produce mapped IDs or additive shares
+  current_alternatives:
+  - PSI library
+  - Identity resolution vendor
+  - Centralized join
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Party identifier files
+  - Optional features for shared outputs
+  outputs:
+  - Common ID mapping
+  - Private join result
+  - Additive or XOR shares for later computation
+  workflow:
+  - Build with Rust or containers
+  - Start party services
+  - Run counterpart client
+  - Pass shares to downstream computation
+  deployment:
+  - Self-hosted Rust binaries
+  - Docker Compose examples
+  prerequisites:
+  - Nightly Rust toolchain for documented source build
+  - Party networking
+  - Certificates or explicit test-only no-TLS choice
+  data_movement: Protocol messages move among two or more roles; outputs can be IDs or shares depending on selected algorithm.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Private ID mapping
+  - Inner, left, and outer private joins
+  - Additive and XOR sharing
+  trust_model: Algorithm dependent across two-party and delegated variants; helper and shuffler roles appear in some protocols.
+  attacker_model: Defined by referenced papers and chosen variant; application endpoints and operations require separate review.
+  raw_data_access: Output varies from mapped IDs to shares; it can reveal more than a cardinality-only product if configured
+    that way.
+  metadata_leakage:
+  - Role and transport metadata
+  - Join output shape and variant-specific leakage
+  repeated_query_controls: Application responsibility.
+  minimum_aggregation_controls: Not intrinsic to ID or share outputs.
+  audit_and_assurance:
+  - Apache-2.0 source and protocol papers are public; the implementation was not benchmarked for this record.
+  - 'Evidence reviewed: public source repository; the implementation was not benchmarked for this record.'
+assessment:
+  strengths:
+  - Supports multiple private-join shapes
+  - Can produce shares for downstream MPC
+  limitations_or_unknowns:
+  - Output can exceed Private Match's minimum disclosure
+  - Variant selection and helper assumptions require review
+  - Repository push activity observed through 2024-10-18
+  implications_for_private_match:
+  - Private join semantics are a relevant implementation reference
+  - Private Match should avoid exposing an ID spine unless the use case requires it
+  claim_types:
+    facts:
+    - The repository describes private matching across two or more parties and multiple join types.
+    - The implementation includes Rust binaries and Docker Compose examples.
+    inferences:
+    - Private-ID is a building block for a broader computation pipeline rather than a fixed decision product.
+    hypotheses:
+    - Share-producing joins may support later modes but are unnecessary for the v0.1 minimum output.
+sources:
+  primary:
+  - url: https://github.com/facebookresearch/Private-ID
+    title: Private-ID
+    publisher: Meta Research
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved
