@@ -15,6 +15,14 @@ No local candidate benchmark has been executed. Facts (`F`) are attributed to cu
 
 The comparison reference is a two-party workflow whose accepted result is limited to `MATCH`, `NO_MATCH`, or `INDETERMINATE`, is identical for both parties, binds the session, parties, policy, and protocol version, and permits later disclosure only after both parties consent. None of the surveyed implementations is assumed to enforce that complete policy without an application wrapper.
 
+The nine files under `records/technologies/` evaluate standards and
+implementations by technology category. They are not competitor classifications.
+Some projects also appear under `records/competitors/` as product or
+building-block market records; that separate record type evaluates buyer,
+trigger, and market position. A technology selection or shared project identity
+does not create a `direct` competitor designation, and no direct-designation
+approval metadata is applicable to these technology records.
+
 ## 2. Cross-candidate security and leakage comparison
 
 | Candidate | Model and trusted components | Low-entropy identifiers | Input omission / malicious input | Repeated-query risk | Metadata leakage | Result symmetry | Balanced / unbalanced fit |

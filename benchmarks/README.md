@@ -23,7 +23,27 @@ Every later execution must:
 7. distinguish a library result from the proposed `MATCH`, `NO_MATCH`, or `INDETERMINATE` wrapper result;
 8. state unobserved channels and tooling limits.
 
-Actual result files must validate against [`result.schema.json`](result.schema.json). A `pass` requires at least one output-artifact digest. No result file is committed by this planning change.
+Actual result files must validate against
+[`result.schema.json`](result.schema.json). Every status requires at least one
+input-artifact digest. A generated-input run must bind its input manifest
+SHA-256; a fixture run must bind the fixture or fixture-manifest SHA-256. A
+`skip` or `unsupported` result must bind the reviewed matrix or input-definition
+digest and state in `limitations` that no experiment input was generated. A
+`pass` additionally requires at least one output-artifact digest. No result file
+is committed by this planning change.
+
+`source_revision` must exactly equal the `source_revision` pinned for the
+result's `track_id` in
+[`experiment-matrix.yaml`](experiment-matrix.yaml). v0.1 permits no deviation.
+A different revision requires a separately reviewed matrix change before
+execution; a result file cannot document an after-the-fact exception.
+
+Matrix repository paths are untrusted configuration input to the validator.
+Selected technology records, generators, fixtures, and result files must be
+relative regular files under their permitted repository prefixes. Absolute
+paths, parent segments, missing files, directories, and symlinks that resolve
+outside the repository are rejected. Track and experiment identifiers must also
+be unique.
 
 ## 2. Selected tracks and pins
 

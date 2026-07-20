@@ -28,7 +28,11 @@
       "enum": ["pass", "fail", "skip", "unsupported", "timeout", "tool-error"]
     },
     "executed_at": {"type": "string", "format": "date-time"},
-    "source_revision": {"type": "string", "minLength": 7},
+    "source_revision": {
+      "type": "string",
+      "minLength": 7,
+      "description": "Must exactly equal the selected track source_revision pin in experiment-matrix.yaml; the validator enforces the track-specific value."
+    },
     "environment": {
       "type": "object",
       "minProperties": 1,
@@ -54,7 +58,7 @@
       "properties": {
         "stdout_sha256": {"$ref": "#/$defs/sha256"},
         "stderr_sha256": {"$ref": "#/$defs/sha256"},
-        "input_artifacts": {"$ref": "#/$defs/digests"},
+        "input_artifacts": {"$ref": "#/$defs/digests", "minProperties": 1},
         "output_artifacts": {"$ref": "#/$defs/digests"}
       }
     },

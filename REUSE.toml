@@ -6,6 +6,10 @@ SPDX-PackageSupplier = "ITDO Inc. / 株式会社アイティードゥ"
 path = [
   ".github/workflows/*.yml",
   ".gitignore",
+  "benchmarks/*.json",
+  "benchmarks/*.py",
+  "benchmarks/*.yaml",
+  "benchmarks/fixtures/*.csv",
   "REUSE.toml",
   "requirements-build.in",
   "requirements-build.txt",
@@ -22,7 +26,9 @@ SPDX-License-Identifier = "Apache-2.0"
 [[annotations]]
 path = [
   "AGENTS.md",
+  "benchmarks/*.md",
   "CONTRIBUTING.md",
+  "decisions/*.md",
   "GOVERNANCE.md",
   "LICENSE.md",
   "README.md",
@@ -32,6 +38,7 @@ path = [
   "landscape/*.md",
   "landscape/substitutes/*.md",
   "templates/*.yaml",
+  "technologies/*.md",
   "records/**/*.yaml",
   "records/**/*.yml",
 ]

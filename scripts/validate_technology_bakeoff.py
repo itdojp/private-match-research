@@ -7,7 +7,7 @@ import argparse
 import csv
 import json
 import unicodedata
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 
 import yaml
@@ -31,6 +31,9 @@ REQUIRED_EXPERIMENTS = {f"EXP-{number:03d}" for number in range(1, 9)}
 RESULT_STATUSES = {"pass", "fail", "skip", "unsupported", "timeout", "tool-error"}
 PLAN_STATUSES = RESULT_STATUSES | {"not-run"}
 REQUIRED_TRACKS = {"TRACK-PSI", "TRACK-VOPRF", "TRACK-TEE"}
+REPOSITORY_PATH_ERROR = "repository-path"
+RESULT_SOURCE_REVISION_ERROR = "result-source-revision"
+DUPLICATE_ID_ERROR = "duplicate-id"
 
 REQUIRED_RECORD_PATHS = (
     "observation.observed_at",
@@ -120,6 +123,49 @@ def _has_prefix(values: Any, prefix: str) -> bool:
     )
 
 
+def _duplicate_ids(items: list[Any]) -> list[str]:
+    seen: set[str] = set()
+    duplicates: set[str] = set()
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        item_id = item.get("id")
+        if not isinstance(item_id, str):
+            continue
+        if item_id in seen:
+            duplicates.add(item_id)
+        seen.add(item_id)
+    return sorted(duplicates)
+
+
+def resolve_repo_file(root: Path, candidate: str, allowed_prefix: str) -> Path:
+    """Resolve a repository-relative regular file without allowing path escape."""
+    if not isinstance(candidate, str) or not candidate:
+        raise ValueError("path must be a non-empty relative POSIX path")
+
+    candidate_path = PurePosixPath(candidate)
+    if candidate_path.is_absolute() or PureWindowsPath(candidate).is_absolute():
+        raise ValueError("absolute paths are not allowed")
+    if "\\" in candidate:
+        raise ValueError("path must use POSIX separators")
+    if ".." in candidate_path.parts:
+        raise ValueError("parent path segments are not allowed")
+
+    prefix_path = PurePosixPath(allowed_prefix)
+    if candidate_path.parts[: len(prefix_path.parts)] != prefix_path.parts:
+        raise ValueError(f"path must be under {prefix_path.as_posix()}/")
+
+    resolved_root = root.resolve()
+    resolved = resolved_root.joinpath(*candidate_path.parts).resolve()
+    try:
+        resolved.relative_to(resolved_root)
+    except ValueError as error:
+        raise ValueError("resolved path escapes the repository") from error
+    if not resolved.is_file():
+        raise ValueError("path must resolve to an existing regular file")
+    return resolved
+
+
 def _validate_edge_fixtures(root: Path) -> list[str]:
     errors: list[str] = []
     fixture_dir = root / "benchmarks" / "fixtures"
@@ -154,9 +200,14 @@ def _validate_edge_fixtures(root: Path) -> list[str]:
 def _load_result_validator(
     root: Path,
 ) -> tuple[Draft202012Validator | None, list[str]]:
-    path = root / "benchmarks" / "result.schema.json"
-    if not path.exists():
-        return None, ["missing benchmark result schema"]
+    try:
+        path = resolve_repo_file(
+            root,
+            "benchmarks/result.schema.json",
+            "benchmarks",
+        )
+    except ValueError as error:
+        return None, [f"{REPOSITORY_PATH_ERROR}: benchmark result schema: {error}"]
     try:
         schema = json.loads(path.read_text(encoding="utf-8"))
         Draft202012Validator.check_schema(schema)
@@ -172,12 +223,12 @@ def _validate_result_file(
     experiment_id: str,
     status: str,
     applicable_tracks: Any,
+    selected_tracks: dict[str, dict[str, Any]],
 ) -> list[str]:
-    path = (root / result_path).resolve()
     try:
-        path.relative_to(root)
-    except ValueError:
-        return [f"{experiment_id}: result path must stay within the repository"]
+        path = resolve_repo_file(root, result_path, "benchmarks")
+    except ValueError as error:
+        return [f"{experiment_id}: {REPOSITORY_PATH_ERROR}: result file: {error}"]
 
     try:
         result = json.loads(path.read_text(encoding="utf-8"))
@@ -201,8 +252,19 @@ def _validate_result_file(
         if result.get("status") != status:
             errors.append(f"{experiment_id}: result status does not match the matrix")
         tracks = applicable_tracks if isinstance(applicable_tracks, list) else []
-        if result.get("track_id") not in tracks:
+        track_id = result.get("track_id")
+        if track_id not in tracks:
             errors.append(f"{experiment_id}: result track_id is not applicable")
+        selected_track = (
+            selected_tracks.get(track_id) if isinstance(track_id, str) else None
+        )
+        if selected_track is not None:
+            expected_revision = selected_track.get("source_revision")
+            if result.get("source_revision") != expected_revision:
+                errors.append(
+                    f"{experiment_id}: {RESULT_SOURCE_REVISION_ERROR}: "
+                    f"source_revision must exactly match the {track_id} selected-track pin"
+                )
     return errors
 
 
@@ -308,7 +370,23 @@ def validate_content(
     if not isinstance(tracks, list):
         errors.append("selected_tracks must be an array")
         tracks = []
-    track_ids = {track.get("id") for track in tracks if isinstance(track, dict)}
+    duplicate_track_ids = _duplicate_ids(tracks)
+    if duplicate_track_ids:
+        errors.append(
+            f"{DUPLICATE_ID_ERROR}: duplicate selected track IDs: {duplicate_track_ids}"
+        )
+    track_ids = {
+        track.get("id")
+        for track in tracks
+        if isinstance(track, dict) and isinstance(track.get("id"), str)
+    }
+    selected_tracks: dict[str, dict[str, Any]] = {}
+    for track in tracks:
+        if not isinstance(track, dict):
+            continue
+        track_id = track.get("id")
+        if isinstance(track_id, str) and track_id not in selected_tracks:
+            selected_tracks[track_id] = track
     if not REQUIRED_TRACKS.issubset(track_ids):
         errors.append(f"missing selected tracks: {sorted(REQUIRED_TRACKS - track_ids)}")
     classes = {track.get("class") for track in tracks if isinstance(track, dict)}
@@ -319,9 +397,12 @@ def validate_content(
             errors.append("each selected track must be a mapping")
             continue
         record_path = track.get("record")
-        if not isinstance(record_path, str) or not (root / record_path).is_file():
+        try:
+            resolve_repo_file(root, record_path, "records/technologies")
+        except ValueError as error:
             errors.append(
-                f"{track.get('id', 'unknown track')}: selected record path does not exist"
+                f"{track.get('id', 'unknown track')}: {REPOSITORY_PATH_ERROR}: "
+                f"selected record: {error}"
             )
         if not track.get("source_revision"):
             errors.append(
@@ -336,10 +417,15 @@ def validate_content(
     if not isinstance(experiments, list):
         errors.append("experiments must be an array")
         experiments = []
+    duplicate_experiment_ids = _duplicate_ids(experiments)
+    if duplicate_experiment_ids:
+        errors.append(
+            f"{DUPLICATE_ID_ERROR}: duplicate experiment IDs: {duplicate_experiment_ids}"
+        )
     experiment_ids = {
         experiment.get("id")
         for experiment in experiments
-        if isinstance(experiment, dict)
+        if isinstance(experiment, dict) and isinstance(experiment.get("id"), str)
     }
     if experiment_ids != REQUIRED_EXPERIMENTS:
         errors.append(
@@ -357,9 +443,25 @@ def validate_content(
             errors.append(f"{experiment_id}: requirement is required")
         if not experiment.get("applicable_tracks"):
             errors.append(f"{experiment_id}: applicable tracks are required")
+
+        inputs = experiment.get("inputs")
+        if isinstance(inputs, dict):
+            for field, allowed_prefix in (
+                ("generator", "benchmarks"),
+                ("left_fixture", "benchmarks/fixtures"),
+                ("right_fixture", "benchmarks/fixtures"),
+            ):
+                if field not in inputs:
+                    continue
+                try:
+                    resolve_repo_file(root, inputs[field], allowed_prefix)
+                except ValueError as error:
+                    errors.append(
+                        f"{experiment_id}: {REPOSITORY_PATH_ERROR}: {field}: {error}"
+                    )
         if status in RESULT_STATUSES:
             result_path = experiment.get("result")
-            if not isinstance(result_path, str) or not (root / result_path).is_file():
+            if not isinstance(result_path, str):
                 errors.append(
                     f"{experiment_id}: executed status requires a committed result path"
                 )
@@ -372,6 +474,7 @@ def validate_content(
                         experiment_id,
                         status,
                         experiment.get("applicable_tracks", []),
+                        selected_tracks,
                     )
                 )
 
