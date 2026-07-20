@@ -4,7 +4,7 @@ Observed at: 2026-07-18
 Status: preliminary / public-source scan  
 Scope: adjacent products and substitutes for privacy-preserving cross-organization matching and analysis
 
-Structured follow-up: [`competitor-index.md`](competitor-index.md) contains 26
+Structured follow-up: [`competitor-index.md`](competitor-index.md) contains 29
 schema-validated records with buyer, user, trigger, output, deployment, pricing,
 trust, assurance, source, and review-date fields. The structured records
 supersede this preliminary scan when details differ.
@@ -234,6 +234,9 @@ Primary sources:
 - General-purpose and warehouse-native data clean rooms are mature commercial categories.
 - Confidential computing, MPC, FHE, differential privacy, and client-side cryptographic preprocessing are already used or marketed in commercial offerings.
 - Protected ID matching is offered in Japan by established vendors.
+- The structured index includes three dedicated privacy-first matching
+  candidates—ZERONEAR, Heyoosh Engine, and Voxhu—reviewed from official sources
+  on 2026-07-20; none is designated as a direct competitor.
 
 ### Inferences
 

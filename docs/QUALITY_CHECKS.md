@@ -12,6 +12,7 @@ The required local checks cover:
 - YAML syntax across the repository
 - structured records under `records/`
 - deterministic competitor-index generation and the 25-record acceptance floor
+- generated-index identity normalization, table-cell escaping, and link-label escaping
 - competitor, technology, and public use-case finding JSON Schemas
 - observation, verification, and review dates
 - classification and confidence vocabulary

@@ -1,0 +1,160 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Heyoosh Ltd. (a Keepod company)
+  product: Heyoosh Engine
+  canonical_url: https://www.heyoosh.com/
+  country_or_region: Global vendor target; organization jurisdiction unknown
+observation:
+  observed_at: '2026-07-20'
+  last_verified_at: '2026-07-20'
+  next_review_at: '2026-10-20'
+  source_status: current
+classification:
+  class: adjacent
+  confidence: medium
+  rationale: >-
+    The vendor presents a white-label matching engine for organizational buyers
+    and a consumer application, but its broad recommendation and messaging
+    workflow differs from a fixed bilateral preflight output and the published
+    technical and assurance details are vendor claims only.
+market:
+  buyer:
+  - 'Inferred buyer: product, digital, or service team licensing a configurable matching application; exact budget owner unknown'
+  user:
+  - 'Published users: matchmaker administrators and end users in talent, care, advisory, education, event, dating, or friendship workflows'
+  trigger:
+  - 'Published use case: an organization wants to deploy branded compatibility matching without building an engine and mobile application from scratch'
+  jobs_to_be_done:
+  - Configure a branded matching workflow
+  - Collect user profiles, preferences, and feedback
+  - Produce compatibility recommendations
+  - Support messaging and matchmaker administration
+  current_alternatives:
+  - Build an in-house recommendation and messaging application
+  - License another white-label matching platform
+  - Use manual professional matchmaking
+  pricing:
+    public: false
+    model: Commercial contact for the engine; consumer application subscription terms are presented separately
+    amount: unknown
+    source: https://www.heyoosh.com/
+  deployment_lead_time: 'Vendor claim: deployable in as little as 90 days; independently unverified'
+product:
+  inputs:
+  - User profile, preferences, interests, and dealbreakers
+  - Vendor-described multimodal and voice inputs where configured
+  - Match feedback signals
+  - Operator configuration and branding
+  outputs:
+  - Compatibility recommendations or candidate matches
+  - Vendor-described match explanations or prompts
+  - Messaging and operator analytics surfaces
+  workflow:
+  - Define the target matching use case and branding
+  - Integrate or configure the vendor engine and application
+  - Collect end-user information and feedback
+  - Produce recommendations and support conversations
+  deployment:
+  - Vendor-operated cloud engine with a white-label mobile application for iOS and Android
+  - Consumer iPhone application listed by Apple under developer Keepod
+  prerequisites:
+  - Commercial engagement and integration for the engine
+  - Mobile distribution and service configuration
+  - End-user accounts and consent appropriate to the operator's use case
+  data_movement: >-
+    The vendor says federated learning avoids centralising raw data, while its
+    terms describe email registration, encrypted information and metadata
+    transfer, server-queued messages, support data, and vendor-operated cloud
+    infrastructure. Feature-specific data flows are unknown.
+  data_retention: >-
+    The terms say message history is stored on user devices and temporarily
+    queued messages are held by the service. Retention periods for profiles,
+    matching features, analytics, feedback, and operator data are unknown.
+privacy_and_security:
+  published_technologies:
+  - Vendor-described federated learning
+  - Vendor-described differential privacy for analytics
+  - Vendor-described zero-knowledge encryption and end-to-end messaging
+  - Multilingual retrieval-augmented generation
+  - Adaptive reinforcement from match feedback
+  - On-device voice sentiment analysis
+  trust_model: >-
+    The workflow relies on Heyoosh's engine and cloud infrastructure, the
+    white-label operator and administrative tools, client applications, and
+    third-party providers. Public role and key boundaries are incomplete.
+  attacker_model: unknown
+  raw_data_access: >-
+    The vendor says federated learning does not centralise raw data and its terms
+    say it cannot decrypt messages. The reviewed sources do not define raw
+    access for profiles, voice features, recommendations, analytics, operator
+    administrators, or model training. No claim was independently reproduced.
+  metadata_leakage:
+  - Account email, authentication tokens, keys, push tokens, and support metadata described in the terms
+  - Profile, preference, match-feedback, operator, and analytics metadata; exact scope unknown
+  - Recommendation and messaging timing and relationship metadata; exact disclosure unknown
+  repeated_query_controls: >-
+    The vendor describes an adaptive feedback loop, but public user-query,
+    recommendation-enumeration, and operator-query limits were not found.
+  minimum_aggregation_controls: >-
+    Differential privacy for analytics is a vendor claim; parameters, minimum
+    cohorts, composition limits, and independently reviewed evidence are unknown.
+  audit_and_assurance:
+  - >-
+    The vendor names SOC 2 Type II, GDPR, and HIPAA on its landing page, but no
+    report, scope, legal assessment, or control mapping was reviewed for this
+    record.
+  - No public cryptographic specification or independent assessment was found in the reviewed sources.
+  - 'Evidence reviewed: vendor and platform-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Dedicated organizational matching engine and white-label application
+  - Vendor describes profile, recommendation, feedback, messaging, and administration in one workflow
+  - Apple currently serves a product listing and version history for the consumer application
+  limitations_or_unknowns:
+  - Exact engine pricing and commercial terms are unknown
+  - The meaning and implementation of the vendor's zero-knowledge encryption label are not publicly specified
+  - Published assurance claims and partner deployment claims were not independently verified
+  - Exact operator access, model-training flow, threat model, and repeated-query controls are unknown
+  - Current geographic availability and organization jurisdiction were not independently established
+  implications_for_private_match:
+  - The record supplies dedicated privacy-first matching-product coverage with an organizational buyer path
+  - A broad recommendation engine and white-label app solve a different job from a fixed bilateral disclosure result
+  - Private Match must compare buyer, result scope, setup, operator access, and evidence rather than technology labels
+  claim_types:
+    facts:
+    - The official site presents Heyoosh Engine as a configurable white-label matching stack and lists federated learning, differential privacy, retrieval-augmented generation, feedback, and mobile-app features.
+    - Heyoosh terms describe email registration, encrypted messages, device-held message history, server queueing, and technical metadata.
+    - Apple currently serves a Heyoosh application listing with version 3.5.5 dated 2025-07-14.
+    inferences:
+    - Heyoosh Engine is adjacent because it targets organizational matching deployments but has broader recommendations, messaging, analytics, and administration.
+    - The reviewed material is insufficient to validate the vendor's privacy, assurance, performance, or deployment claims.
+    hypotheses:
+    - Teams seeking a configurable full matching experience may prefer a white-label engine over a narrow bilateral preflight protocol.
+sources:
+  primary:
+  - url: https://www.heyoosh.com/
+    title: Heyoosh Engine product page
+    publisher: Heyoosh Ltd.
+    published_at: null
+    accessed_at: '2026-07-20'
+  - url: https://www.heyoosh.com/terms
+    title: Heyoosh Terms of Service and Privacy Policy
+    publisher: Heyoosh Ltd.
+    published_at: null
+    accessed_at: '2026-07-20'
+  - url: https://apps.apple.com/lu/app/heyoosh/id1534153089
+    title: Heyoosh App Store listing and version history
+    publisher: Apple App Store / Keepod
+    published_at: '2025-07-14'
+    accessed_at: '2026-07-20'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

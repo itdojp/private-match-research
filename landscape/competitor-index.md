@@ -3,8 +3,8 @@
 This index is generated from the public YAML records under `records/competitors/`.
 Regenerate it with `python scripts/generate_competitor_index.py`.
 
-- Records: 26
-- Latest source verification date: 2026-07-18
+- Records: 29
+- Latest source verification date: 2026-07-20
 - Classification boundary: technology similarity alone does not establish
   direct competition.
 - Human decision boundary: no `direct` designation is asserted by this index
@@ -15,10 +15,10 @@ Regenerate it with `python scripts/generate_competitor_index.py`.
 | Classification | Records |
 | --- | ---: |
 | `direct` | 0 |
-| `adjacent` | 13 |
+| `adjacent` | 14 |
 | `substitute` | 5 |
 | `building-block` | 6 |
-| `potential` | 2 |
+| `potential` | 4 |
 
 A zero count does not establish that a category has no market participants;
 it only describes the current reviewed records.
@@ -34,6 +34,7 @@ it only describes the current reviewed records.
 | Decentriq | [Decentriq Data Clean Rooms](../records/competitors/decentriq-data-clean-rooms.yaml) | `adjacent` | high | 2026-07-18 | 2026-10-18 | no / unknown |
 | EAGLYS | [DataArmor Gate DB](../records/competitors/eaglys-dataarmor-gate-db.yaml) | `adjacent` | medium | 2026-07-18 | 2026-10-18 | no / unknown |
 | Google Cloud | [BigQuery Data Clean Rooms](../records/competitors/bigquery-data-clean-rooms.yaml) | `adjacent` | high | 2026-07-18 | 2026-10-18 | no / unknown |
+| Heyoosh Ltd. (a Keepod company) | [Heyoosh Engine](../records/competitors/heyoosh-engine.yaml) | `adjacent` | medium | 2026-07-20 | 2026-10-20 | no / unknown |
 | InfoSum | [InfoSum Data Clean Room](../records/competitors/infosum-data-clean-room.yaml) | `adjacent` | high | 2026-07-18 | 2026-10-18 | no / unknown |
 | LiveRamp | [LiveRamp Clean Room](../records/competitors/liveramp-clean-room.yaml) | `adjacent` | high | 2026-07-18 | 2026-10-18 | no / unknown |
 | NTT DOCOMO BUSINESS | [析秘 (MPC)](../records/competitors/ntt-secihi-mpc.yaml) | `adjacent` | high | 2026-07-18 | 2026-10-18 | no / unknown |
@@ -44,7 +45,7 @@ it only describes the current reviewed records.
 | Datasite | [Datasite Diligence](../records/competitors/datasite-diligence.yaml) | `substitute` | high | 2026-07-18 | 2026-10-18 | no / unknown |
 | Intapp | [Intapp Conflicts](../records/competitors/intapp-conflicts.yaml) | `substitute` | high | 2026-07-18 | 2026-10-18 | no / unknown |
 | Snowflake | [Secure Data Sharing](../records/competitors/snowflake-secure-data-sharing.yaml) | `substitute` | high | 2026-07-18 | 2026-10-18 | yes |
-| SS&C Intralinks | [VDRPro](../records/competitors/intralinks-vdrpro.yaml) | `substitute` | high | 2026-07-18 | 2026-10-18 | no / unknown |
+| SS&amp;C Intralinks | [VDRPro](../records/competitors/intralinks-vdrpro.yaml) | `substitute` | high | 2026-07-18 | 2026-10-18 | no / unknown |
 | Alibaba academic contributors | [mpc4j](../records/competitors/alibaba-mpc4j.yaml) | `building-block` | high | 2026-07-18 | 2026-10-18 | no / unknown |
 | Google | [Private Join and Compute](../records/competitors/google-private-join-and-compute.yaml) | `building-block` | high | 2026-07-18 | 2026-10-18 | no / unknown |
 | Meta Research | [Private-ID](../records/competitors/meta-private-id.yaml) | `building-block` | high | 2026-07-18 | 2026-10-18 | no / unknown |
@@ -53,6 +54,8 @@ it only describes the current reviewed records.
 | SecretFlow | [SecretFlow PSI Library](../records/competitors/secretflow-psi.yaml) | `building-block` | high | 2026-07-18 | 2026-10-18 | no / unknown |
 | Duality Technologies | [SecurePlus Query](../records/competitors/duality-secureplus-query.yaml) | `potential` | medium | 2026-07-18 | 2026-10-18 | no / unknown |
 | Enveil | [ZeroReveal Search](../records/competitors/enveil-zeroreveal-search.yaml) | `potential` | medium | 2026-07-18 | 2026-10-18 | no / unknown |
+| Voxhu | [Voxhu](../records/competitors/voxhu.yaml) | `potential` | low | 2026-07-20 | 2026-10-20 | yes |
+| ZERONEAR | [ZERONEAR](../records/competitors/zeronear.yaml) | `potential` | medium | 2026-07-20 | 2026-10-20 | no / unknown |
 
 ## Evidence boundary
 

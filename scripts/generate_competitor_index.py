@@ -7,6 +7,7 @@ import argparse
 import collections
 import datetime as dt
 import os
+import unicodedata
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -14,6 +15,23 @@ import yaml
 
 
 CLASS_ORDER = ("direct", "adjacent", "substitute", "building-block", "potential")
+
+# Encode syntax-significant characters as HTML character references. CommonMark
+# renders the original character while the generated source cannot open a link,
+# table column, inline HTML tag, emphasis span, or code span from identity data.
+_MARKDOWN_INLINE_ENTITIES = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\\": "&#92;",
+    "|": "&#124;",
+    "[": "&#91;",
+    "]": "&#93;",
+    "*": "&#42;",
+    "_": "&#95;",
+    "`": "&#96;",
+    "~": "&#126;",
+}
 
 
 def load_records(records_dir: Path) -> list[tuple[Path, dict[str, Any]]]:
@@ -39,7 +57,9 @@ def load_records(records_dir: Path) -> list[tuple[Path, dict[str, Any]]]:
             raise ValueError(f"{path}: missing index field {exc}") from exc
 
         if key in identities:
-            raise ValueError(f"{path}: duplicate organization/product also present in {identities[key]}")
+            raise ValueError(
+                f"{path}: duplicate organization/product also present in {identities[key]}"
+            )
         identities[key] = path
         records.append((path, record))
 
@@ -52,13 +72,44 @@ def _date_text(value: Any) -> str:
     return str(value)
 
 
-def _escape_cell(value: Any) -> str:
-    return str(value).replace("|", "\\|").replace("\n", " ")
+def _normalize_inline_text(value: Any) -> str:
+    """Normalize non-rendering code points without silently deleting input."""
+    text = str(value).replace("\r\n", "\n").replace("\r", "\n")
+    normalized: list[str] = []
+    for character in text:
+        category = unicodedata.category(character)
+        if category in {"Cc", "Zl", "Zp"}:
+            normalized.append(" ")
+        elif category == "Cs":
+            normalized.append("\N{REPLACEMENT CHARACTER}")
+        else:
+            normalized.append(character)
+    return "".join(normalized)
 
 
-def render_index(records: Iterable[tuple[Path, dict[str, Any]]], output_path: Path) -> str:
+def _escape_table_cell(value: Any) -> str:
+    """Render identity text as literal content inside one Markdown table cell."""
+    normalized = _normalize_inline_text(value)
+    return "".join(
+        _MARKDOWN_INLINE_ENTITIES.get(character, character) for character in normalized
+    )
+
+
+def _escape_link_label(value: Any) -> str:
+    """Render identity text without permitting it to terminate a Markdown link label."""
+    normalized = _normalize_inline_text(value)
+    return "".join(
+        _MARKDOWN_INLINE_ENTITIES.get(character, character) for character in normalized
+    )
+
+
+def render_index(
+    records: Iterable[tuple[Path, dict[str, Any]]], output_path: Path
+) -> str:
     rows = list(records)
-    counts = collections.Counter(record["classification"]["class"] for _, record in rows)
+    counts = collections.Counter(
+        record["classification"]["class"] for _, record in rows
+    )
     latest_verification = max(
         (_date_text(record["observation"]["last_verified_at"]) for _, record in rows),
         default="unknown",
@@ -100,7 +151,9 @@ def render_index(records: Iterable[tuple[Path, dict[str, Any]]], output_path: Pa
         _, record = item
         classification = record["classification"]["class"]
         return (
-            CLASS_ORDER.index(classification) if classification in CLASS_ORDER else len(CLASS_ORDER),
+            CLASS_ORDER.index(classification)
+            if classification in CLASS_ORDER
+            else len(CLASS_ORDER),
             str(record["identity"]["organization"]).casefold(),
             str(record["identity"]["product"]).casefold(),
         )
@@ -110,16 +163,18 @@ def render_index(records: Iterable[tuple[Path, dict[str, Any]]], output_path: Pa
         classification = record["classification"]
         observation = record["observation"]
         relative_record = Path(os.path.relpath(path, start=output_path.parent))
-        product = f"[{_escape_cell(identity['product'])}]({relative_record.as_posix()})"
+        product = (
+            f"[{_escape_link_label(identity['product'])}]({relative_record.as_posix()})"
+        )
         pricing = "yes" if record["market"]["pricing"]["public"] else "no / unknown"
         lines.append(
             "| "
             + " | ".join(
                 [
-                    _escape_cell(identity["organization"]),
+                    _escape_table_cell(identity["organization"]),
                     product,
-                    f"`{_escape_cell(classification['class'])}`",
-                    _escape_cell(classification["confidence"]),
+                    f"`{_escape_table_cell(classification['class'])}`",
+                    _escape_table_cell(classification["confidence"]),
                     _date_text(observation["last_verified_at"]),
                     _date_text(observation["next_review_at"]),
                     pricing,
@@ -146,24 +201,34 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path.cwd())
     parser.add_argument("--records-dir", type=Path, default=Path("records/competitors"))
-    parser.add_argument("--output", type=Path, default=Path("landscape/competitor-index.md"))
+    parser.add_argument(
+        "--output", type=Path, default=Path("landscape/competitor-index.md")
+    )
     parser.add_argument("--minimum-count", type=int, default=25)
-    parser.add_argument("--check", action="store_true", help="Fail if the committed index is stale")
+    parser.add_argument(
+        "--check", action="store_true", help="Fail if the committed index is stale"
+    )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     root = args.root.resolve()
-    records_dir = args.records_dir if args.records_dir.is_absolute() else root / args.records_dir
+    records_dir = (
+        args.records_dir if args.records_dir.is_absolute() else root / args.records_dir
+    )
     output_path = args.output if args.output.is_absolute() else root / args.output
     records = load_records(records_dir)
     if len(records) < args.minimum_count:
-        raise SystemExit(f"competitor-index: expected at least {args.minimum_count} records, found {len(records)}")
+        raise SystemExit(
+            f"competitor-index: expected at least {args.minimum_count} records, found {len(records)}"
+        )
     rendered = render_index(records, output_path)
 
     if args.check:
-        current = output_path.read_text(encoding="utf-8") if output_path.exists() else ""
+        current = (
+            output_path.read_text(encoding="utf-8") if output_path.exists() else ""
+        )
         if current != rendered:
             print(f"competitor-index: stale or missing: {output_path}")
             return 1
