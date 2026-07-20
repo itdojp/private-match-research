@@ -72,24 +72,27 @@ def render_index(records: Iterable[tuple[Path, dict[str, Any]]], output_path: Pa
         "",
         f"- Records: {len(rows)}",
         f"- Latest source verification date: {latest_verification}",
-        "- Classification boundary: technology similarity alone does not establish direct competition.",
-        "- Human decision boundary: no `direct` designation is asserted by this index without explicit approval.",
+        "- Classification boundary: technology similarity alone does not establish",
+        "  direct competition.",
+        "- Human decision boundary: no `direct` designation is asserted by this index",
+        "  without explicit approval.",
         "",
         "## Classification summary",
         "",
         "| Classification | Records |",
-        "|---|---:|",
+        "| --- | ---: |",
     ]
     lines.extend(f"| `{name}` | {counts[name]} |" for name in CLASS_ORDER)
     lines.extend(
         [
             "",
-            "A zero count does not establish that a category has no market participants; it only describes the current reviewed records.",
+            "A zero count does not establish that a category has no market participants;",
+            "it only describes the current reviewed records.",
             "",
             "## Records",
             "",
-            "| Organization | Product | Classification | Confidence | Last verified | Next review | Public pricing |",
-            "|---|---|---|---|---|---|---|",
+            "| Organization | Product | Class | Confidence | Verified | Review | Pricing |",
+            "| --- | --- | --- | --- | --- | --- | --- |",
         ]
     )
 
@@ -130,8 +133,9 @@ def render_index(records: Iterable[tuple[Path, dict[str, Any]]], output_path: Pa
             "",
             "## Evidence boundary",
             "",
-            "Each linked record separates vendor-published facts, research inferences, hypotheses, and unknowns. "
-            "A record does not independently validate a vendor's performance, privacy, security, or compliance claims.",
+            "Each linked record separates vendor-published facts, research inferences,",
+            "hypotheses, and unknowns. A record does not independently validate a vendor's",
+            "performance, privacy, security, or compliance claims.",
             "",
         ]
     )

@@ -5,25 +5,28 @@ Regenerate it with `python scripts/generate_competitor_index.py`.
 
 - Records: 26
 - Latest source verification date: 2026-07-18
-- Classification boundary: technology similarity alone does not establish direct competition.
-- Human decision boundary: no `direct` designation is asserted by this index without explicit approval.
+- Classification boundary: technology similarity alone does not establish
+  direct competition.
+- Human decision boundary: no `direct` designation is asserted by this index
+  without explicit approval.
 
 ## Classification summary
 
 | Classification | Records |
-|---|---:|
+| --- | ---: |
 | `direct` | 0 |
 | `adjacent` | 13 |
 | `substitute` | 5 |
 | `building-block` | 6 |
 | `potential` | 2 |
 
-A zero count does not establish that a category has no market participants; it only describes the current reviewed records.
+A zero count does not establish that a category has no market participants;
+it only describes the current reviewed records.
 
 ## Records
 
-| Organization | Product | Classification | Confidence | Last verified | Next review | Public pricing |
-|---|---|---|---|---|---|---|
+| Organization | Product | Class | Confidence | Verified | Review | Pricing |
+| --- | --- | --- | --- | --- | --- | --- |
 | Acompany | [AutoPrivacy DataCleanRoom](../records/competitors/acompany-autoprivacy-dcr.yaml) | `adjacent` | high | 2026-07-18 | 2026-10-18 | no / unknown |
 | Amazon Web Services | [AWS Clean Rooms](../records/competitors/aws-clean-rooms.yaml) | `adjacent` | high | 2026-07-18 | 2026-10-18 | yes |
 | Amazon Web Services | [Cryptographic Computing for Clean Rooms (C3R)](../records/competitors/aws-c3r.yaml) | `adjacent` | high | 2026-07-18 | 2026-10-18 | yes |
@@ -53,4 +56,6 @@ A zero count does not establish that a category has no market participants; it o
 
 ## Evidence boundary
 
-Each linked record separates vendor-published facts, research inferences, hypotheses, and unknowns. A record does not independently validate a vendor's performance, privacy, security, or compliance claims.
+Each linked record separates vendor-published facts, research inferences,
+hypotheses, and unknowns. A record does not independently validate a vendor's
+performance, privacy, security, or compliance claims.
