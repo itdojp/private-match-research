@@ -13,6 +13,13 @@ from typing import Any, Iterable
 
 import yaml
 
+if __package__:
+    from scripts.direct_designation import direct_designation_approval_errors
+else:
+    from direct_designation import (  # type: ignore[import-not-found]
+        direct_designation_approval_errors,
+    )
+
 
 CLASS_ORDER = ("direct", "adjacent", "substitute", "building-block", "potential")
 
@@ -32,6 +39,12 @@ _MARKDOWN_INLINE_ENTITIES = {
     "`": "&#96;",
     "~": "&#126;",
 }
+
+
+def _require_direct_designation_approval(path: Path, record: dict[str, Any]) -> None:
+    errors = direct_designation_approval_errors(record)
+    if errors:
+        raise ValueError(f"{path}: direct designation approval: {'; '.join(errors)}")
 
 
 def load_records(records_dir: Path) -> list[tuple[Path, dict[str, Any]]]:
@@ -55,6 +68,8 @@ def load_records(records_dir: Path) -> list[tuple[Path, dict[str, Any]]]:
             record["market"]["pricing"]["public"]
         except (KeyError, TypeError) as exc:
             raise ValueError(f"{path}: missing index field {exc}") from exc
+
+        _require_direct_designation_approval(path, record)
 
         if key in identities:
             raise ValueError(
@@ -107,6 +122,8 @@ def render_index(
     records: Iterable[tuple[Path, dict[str, Any]]], output_path: Path
 ) -> str:
     rows = list(records)
+    for path, record in rows:
+        _require_direct_designation_approval(path, record)
     counts = collections.Counter(
         record["classification"]["class"] for _, record in rows
     )
@@ -125,8 +142,10 @@ def render_index(
         f"- Latest source verification date: {latest_verification}",
         "- Classification boundary: technology similarity alone does not establish",
         "  direct competition.",
-        "- Human decision boundary: no `direct` designation is asserted by this index",
-        "  without explicit approval.",
+        "- Human decision boundary: a `direct` record is rendered only with its own",
+        "  `authorized-itdo-human` approval and concrete GitHub evidence reference.",
+        "  Automation checks the reference structure, not the human author's authority",
+        "  or the substantive scope of the approval.",
         "",
         "## Classification summary",
         "",

@@ -18,6 +18,9 @@ from scripts.validate_research import load_yaml, validate_markdown_links
 
 ROOT = Path(__file__).resolve().parents[1]
 RECORDS_DIR = ROOT / "records" / "competitors"
+SYNTHETIC_DIRECT_EVIDENCE_URL = (
+    "https://github.com/itdojp/private-match-research/pull/999999#discussion_r999999999"
+)
 
 
 def index_record(organization: str, product: str) -> dict:
@@ -31,6 +34,20 @@ def index_record(organization: str, product: str) -> dict:
         "classification": {"class": "adjacent", "confidence": "medium"},
         "market": {"pricing": {"public": False}},
     }
+
+
+def approved_direct_record() -> dict:
+    """Build a synthetic direct fixture, not evidence of an actual approval."""
+    record = copy.deepcopy(load_yaml(RECORDS_DIR / "acompany-autoprivacy-dcr.yaml"))
+    record["classification"]["class"] = "direct"
+    record["classification"]["confidence"] = "high"
+    record["classification"]["direct_designation_approval"] = {
+        "status": "approved",
+        "authority": "authorized-itdo-human",
+        "approved_at": "2026-07-20",
+        "evidence_url": SYNTHETIC_DIRECT_EVIDENCE_URL,
+    }
+    return record
 
 
 def render_identity(organization: str, product: str) -> tuple[str, list[str]]:
@@ -115,8 +132,22 @@ class CompetitorLandscapeTests(unittest.TestCase):
                     " ".join(record["privacy_and_security"]["audit_and_assurance"]),
                 )
 
+    def test_current_records_remain_non_direct_without_approval_metadata(self) -> None:
+        records = load_records(RECORDS_DIR)
+        self.assertEqual(len(records), 29)
+        for path, record in records:
+            with self.subTest(path=path.name):
+                self.assertNotEqual(record["classification"]["class"], "direct")
+                self.assertNotIn(
+                    "direct_designation_approval", record["classification"]
+                )
+        rendered = render_index(records, ROOT / "landscape/competitor-index.md")
+        self.assertIn("| `direct` | 0 |", rendered)
+
     def test_index_generation_is_deterministic(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(
+            prefix=".codex-test-index-determinism-", dir=ROOT
+        ) as tmp:
             root = Path(tmp)
             records_dir = root / "records" / "competitors"
             records_dir.mkdir(parents=True)
@@ -227,7 +258,9 @@ class CompetitorLandscapeTests(unittest.TestCase):
         self.assertNotIn("](", cells[1].split("](../records", 1)[0])
 
     def test_generated_special_identity_local_link_is_validated(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(
+            prefix=".codex-test-local-link-", dir=ROOT
+        ) as tmp:
             root = Path(tmp)
             record_path = root / "records" / "competitors" / "special.yaml"
             record_path.parent.mkdir(parents=True)
@@ -254,7 +287,9 @@ class CompetitorLandscapeTests(unittest.TestCase):
             )
 
     def test_duplicate_identity_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(
+            prefix=".codex-test-duplicate-identity-", dir=ROOT
+        ) as tmp:
             records_dir = Path(tmp)
             record = index_record("Alpha", "One")
             (records_dir / "one.yaml").write_text(
@@ -267,8 +302,54 @@ class CompetitorLandscapeTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "duplicate organization/product"):
                 load_records(records_dir)
 
+    def test_generator_rejects_direct_record_without_approval(self) -> None:
+        record = approved_direct_record()
+        del record["classification"]["direct_designation_approval"]
+        with self.assertRaisesRegex(ValueError, "direct designation approval"):
+            render_index(
+                [(Path("records/competitors/direct.yaml"), record)],
+                Path("landscape/competitor-index.md"),
+            )
+
+    def test_generator_load_rejects_pending_direct_approval(self) -> None:
+        record = approved_direct_record()
+        record["classification"]["direct_designation_approval"]["status"] = "pending"
+        with tempfile.TemporaryDirectory(
+            prefix=".codex-test-direct-generator-", dir=ROOT
+        ) as tmp:
+            records_dir = Path(tmp)
+            (records_dir / "direct.yaml").write_text(
+                yaml.safe_dump(record, sort_keys=False), encoding="utf-8"
+            )
+            with self.assertRaisesRegex(ValueError, "status must be 'approved'"):
+                load_records(records_dir)
+
+    def test_generator_renders_only_valid_approved_direct_record(self) -> None:
+        record = approved_direct_record()
+        rendered = render_index(
+            [(Path("records/competitors/direct.yaml"), record)],
+            Path("landscape/competitor-index.md"),
+        )
+        self.assertIn("| `direct` | 1 |", rendered)
+        self.assertIn(
+            "[AutoPrivacy DataCleanRoom](../records/competitors/direct.yaml)",
+            rendered,
+        )
+
+    def test_approved_direct_index_is_deterministic(self) -> None:
+        rows = [
+            (
+                Path("records/competitors/direct.yaml"),
+                approved_direct_record(),
+            )
+        ]
+        output = Path("landscape/competitor-index.md")
+        self.assertEqual(render_index(rows, output), render_index(rows, output))
+
     def test_check_mode_detects_stale_index(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(
+            prefix=".codex-test-stale-index-", dir=ROOT
+        ) as tmp:
             root = Path(tmp)
             records_dir = root / "records" / "competitors"
             records_dir.mkdir(parents=True)

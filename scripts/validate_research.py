@@ -23,6 +23,17 @@ from typing import Any, Iterable
 import yaml
 from jsonschema import Draft202012Validator, FormatChecker
 
+if __package__:
+    from scripts.direct_designation import (
+        DIRECT_DESIGNATION_APPROVAL_ERROR,
+        direct_designation_approval_errors,
+    )
+else:
+    from direct_designation import (  # type: ignore[import-not-found]
+        DIRECT_DESIGNATION_APPROVAL_ERROR,
+        direct_designation_approval_errors,
+    )
+
 
 class NoDatesSafeLoader(yaml.SafeLoader):
     """Safe YAML loader that leaves ISO dates as strings for JSON Schema."""
@@ -286,6 +297,17 @@ def _date_consistency(record: dict[str, Any], path: str, today: dt.date, stale_p
     return findings
 
 
+def _direct_designation_approval(
+    record: dict[str, Any], path: str, today: dt.date
+) -> list[Finding]:
+    if record.get("record_type") != "competitor":
+        return []
+    return [
+        Finding("error", DIRECT_DESIGNATION_APPROVAL_ERROR, path, message)
+        for message in direct_designation_approval_errors(record, today=today)
+    ]
+
+
 def validate_records(
     root: Path, stale_policy: str, today: dt.date | None = None
 ) -> tuple[list[Finding], list[dict[str, Any]]]:
@@ -314,6 +336,7 @@ def validate_records(
         for error in sorted(validator.iter_errors(raw), key=lambda item: list(item.absolute_path)):
             findings.append(Finding("error", "schema", rel, f"{_json_path(error)}: {error.message}"))
         findings.extend(_date_consistency(raw, rel, today, stale_policy))
+        findings.extend(_direct_designation_approval(raw, rel, today))
         findings.extend(_publication_gate(raw, rel))
         records.append(raw)
     return findings, records

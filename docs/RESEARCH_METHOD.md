@@ -1,6 +1,6 @@
 # Research Method v0.1
 
-最終更新: 2026-07-18
+最終更新: 2026-07-20
 
 ## 1. 目的
 
@@ -73,6 +73,17 @@ next_review_at: 2026-10-18
 | `potential` | 公開情報不足で分類未確定 |
 
 Data Clean RoomやPET基盤を自動的にdirect competitorと扱わない。buyer、導入trigger、導入期間、出力、価格モデルを比較して分類する。
+
+`direct`は人間専用のmaterialな戦略判断である。各`direct`レコードは、
+`authorized-itdo-human` roleによるrecord-specificな承認日と、このrepository
+内の具体的なGitHub review/commentを指す公開HTTPS URLを
+`classification.direct_designation_approval`へ持たなければならない。一般的な
+`publication.claims_review`はこの承認を代替しない。Agentは承認フィールドを
+自律生成または推測してはならない。
+
+Schema、validator、generatorは承認フィールドの構造、repository scope、参照形式
+および未来日でないことを検査する。人間reviewerは参照先の作者、権限、および
+承認対象scopeを確認する。自動検査は実在する承認者の権限や判断内容を証明しない。
 
 ## 7. 競合レコード必須項目
 

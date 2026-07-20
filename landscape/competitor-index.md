@@ -7,8 +7,10 @@ Regenerate it with `python scripts/generate_competitor_index.py`.
 - Latest source verification date: 2026-07-20
 - Classification boundary: technology similarity alone does not establish
   direct competition.
-- Human decision boundary: no `direct` designation is asserted by this index
-  without explicit approval.
+- Human decision boundary: a `direct` record is rendered only with its own
+  `authorized-itdo-human` approval and concrete GitHub evidence reference.
+  Automation checks the reference structure, not the human author's authority
+  or the substantive scope of the approval.
 
 ## Classification summary
 

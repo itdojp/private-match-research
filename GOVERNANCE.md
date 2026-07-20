@@ -50,6 +50,9 @@ Requirements:
 - explicit inference label
 - confidence level
 - alternative interpretations when material
+- for a material `direct` competitor designation, record-scoped approval from an
+  authorized human with a concrete public review reference; general claims
+  review does not substitute for that decision
 
 ### Decision record
 
