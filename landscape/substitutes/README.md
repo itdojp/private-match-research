@@ -16,6 +16,17 @@ No interview-derived information is included. Future interview observations rema
 
 “Evidentiary value” below means the operational record available to a decision-maker; it is not legal evidence and does not establish admissibility, professional assurance, input completeness, or correctness.
 
+### Product-record and workflow-record boundary
+
+The 29 product records under `records/competitors/` and the seven records in this survey have no duplicate organization/product identity pair. A product record describes a named offering; a substitute record describes how a buyer could complete a decision without a dedicated Private Match purchase.
+
+Two source relationships require an explicit role distinction:
+
+- [`Snowflake Secure Data Sharing`](../../records/competitors/snowflake-secure-data-sharing.yaml) is a named product-capability record. `SUB-WH` is the broader workflow in which counterparties combine restricted warehouse grants with an external agreement.
+- [`Intapp Conflicts`](../../records/competitors/intapp-conflicts.yaml) is a named product record cited as one documented source. `SUB-CONFLICT` is the workflow class of internal intake, database search, and human review; it does not treat Intapp as the identity of every such workflow.
+
+These cross-references do not classify either product as a direct competitor, and they do not establish that the workflows are equivalent in implementation, assurance, or outcome.
+
 ## 2. Comparison reference
 
 The Private Match reference in this document is a proposed bounded workflow, not an implemented market claim:

@@ -129,3 +129,4 @@ publication:
   security_review: not-required
   privacy_review: approved
   claims_review: approved
+  reproducibility_review: approved

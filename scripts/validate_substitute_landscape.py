@@ -11,6 +11,8 @@ from typing import Any
 import yaml
 
 
+MAX_ERROR_DETAIL_LENGTH = 160
+
 REQUIRED_CLASSES = {
     "nda-csv-comparison.yaml": "nda-csv",
     "studenttracker-trusted-matching.yaml": "trusted-third-party",
@@ -63,21 +65,96 @@ def _read_path(record: dict[str, Any], dotted_path: str) -> Any:
     return value
 
 
-def load_landscape(root: Path) -> tuple[dict[str, dict[str, Any]], str]:
+def _read_utf8(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
+
+
+def _bounded_detail(detail: str) -> str:
+    normalized = " ".join(detail.split()) or "details unavailable"
+    if len(normalized) <= MAX_ERROR_DETAIL_LENGTH:
+        return normalized
+    return f"{normalized[: MAX_ERROR_DETAIL_LENGTH - 3]}..."
+
+
+def _yaml_error_detail(error: yaml.YAMLError) -> str:
+    detail = "invalid YAML"
+    mark = getattr(error, "problem_mark", None)
+    if mark is not None:
+        detail = f"{detail} at line {mark.line + 1}, column {mark.column + 1}"
+    return _bounded_detail(detail)
+
+
+def _file_error_detail(error: OSError) -> str:
+    detail = type(error).__name__
+    if error.errno is not None:
+        detail = f"{detail} (errno {error.errno})"
+    return _bounded_detail(detail)
+
+
+def _unicode_error_detail(error: UnicodeError) -> str:
+    start = getattr(error, "start", None)
+    detail = type(error).__name__
+    if isinstance(start, int):
+        detail = f"{detail} at byte offset {start}"
+    return _bounded_detail(detail)
+
+
+def _relative_path(path: Path, root: Path) -> str:
+    try:
+        return path.relative_to(root).as_posix()
+    except ValueError:
+        return path.name
+
+
+def load_landscape(root: Path) -> tuple[dict[str, Any], str, list[str]]:
     records_dir = root / "records" / "substitutes"
-    records: dict[str, dict[str, Any]] = {}
+    records: dict[str, Any] = {}
+    load_errors: list[str] = []
     if records_dir.exists():
         for path in sorted((*records_dir.glob("*.yaml"), *records_dir.glob("*.yml"))):
-            with path.open("r", encoding="utf-8") as handle:
-                parsed = yaml.safe_load(handle)
+            relative_path = _relative_path(path, root)
+            try:
+                text = _read_utf8(path)
+            except UnicodeError as error:
+                load_errors.append(
+                    f"{relative_path}: text decode error: {_unicode_error_detail(error)}"
+                )
+                continue
+            except OSError as error:
+                load_errors.append(
+                    f"{relative_path}: file read error: {_file_error_detail(error)}"
+                )
+                continue
+            try:
+                parsed = yaml.safe_load(text)
+            except yaml.YAMLError as error:
+                load_errors.append(
+                    f"{relative_path}: YAML parse error: {_yaml_error_detail(error)}"
+                )
+                continue
             records[path.name] = parsed
+
     survey_path = root / "landscape" / "substitutes" / "README.md"
-    survey = survey_path.read_text(encoding="utf-8") if survey_path.exists() else ""
-    return records, survey
+    relative_survey_path = _relative_path(survey_path, root)
+    try:
+        survey = _read_utf8(survey_path)
+    except UnicodeError as error:
+        load_errors.append(
+            f"{relative_survey_path}: text decode error: {_unicode_error_detail(error)}"
+        )
+        survey = ""
+    except OSError as error:
+        load_errors.append(
+            f"{relative_survey_path}: file read error: {_file_error_detail(error)}"
+        )
+        survey = ""
+    return records, survey, load_errors
 
 
-def validate_content(records: dict[str, dict[str, Any]], survey: str) -> list[str]:
-    errors: list[str] = []
+def validate_content(
+    records: dict[str, Any], survey: str, load_errors: list[str]
+) -> list[str]:
+    errors = list(load_errors)
     if len(records) < 5:
         errors.append(f"expected at least 5 substitute records, found {len(records)}")
 
@@ -102,13 +179,17 @@ def validate_content(records: dict[str, dict[str, Any]], survey: str) -> list[st
         if organization and product:
             key = (str(organization), str(product))
             if key in identities:
-                errors.append(f"{filename}: duplicate identity also present in {identities[key]}")
+                errors.append(
+                    f"{filename}: duplicate identity also present in {identities[key]}"
+                )
             identities[key] = filename
 
         for dotted_path in REQUIRED_PATHS:
             value = _read_path(record, dotted_path)
             if value is None or value == "" or value == []:
-                errors.append(f"{filename}: missing comparison evidence at {dotted_path}")
+                errors.append(
+                    f"{filename}: missing comparison evidence at {dotted_path}"
+                )
 
     for column in REQUIRED_COMPARISON_COLUMNS:
         if f"| {column} " not in survey and f"| {column} |" not in survey:
@@ -116,7 +197,9 @@ def validate_content(records: dict[str, dict[str, Any]], survey: str) -> list[st
 
     disconfirming_tests = set(re.findall(r"\bDCT-[0-9]{3}\b", survey))
     if len(disconfirming_tests) < 3:
-        errors.append(f"expected at least 3 disconfirming tests, found {len(disconfirming_tests)}")
+        errors.append(
+            f"expected at least 3 disconfirming tests, found {len(disconfirming_tests)}"
+        )
     if "No interview-derived information is included" not in survey:
         errors.append("survey must state the interview/publication boundary")
     if "not legal evidence" not in survey:
@@ -133,8 +216,8 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     root = args.root.resolve()
-    records, survey = load_landscape(root)
-    errors = validate_content(records, survey)
+    records, survey, load_errors = load_landscape(root)
+    errors = validate_content(records, survey, load_errors)
     if errors:
         for error in errors:
             print(f"substitute-landscape: error: {error}")
