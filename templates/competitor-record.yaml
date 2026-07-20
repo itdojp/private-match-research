@@ -17,6 +17,14 @@ classification:
   class: potential # direct | adjacent | substitute | building-block | potential
   confidence: low # high | medium | low
   rationale: ""
+  # Human-only field: uncomment only for a record-scoped, explicitly approved
+  # direct designation. An agent must not create or infer this approval.
+  # The numeric URL below illustrates shape only; it is not approval evidence.
+  # direct_designation_approval:
+  #   status: approved
+  #   authority: authorized-itdo-human
+  #   approved_at: "YYYY-MM-DD"
+  #   evidence_url: "https://github.com/itdojp/private-match-research/pull/999999#discussion_r999999999"
 
 market:
   buyer: []
@@ -71,3 +79,4 @@ publication:
   security_review: pending
   privacy_review: pending
   claims_review: pending
+  reproducibility_review: pending

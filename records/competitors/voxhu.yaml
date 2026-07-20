@@ -1,0 +1,144 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Voxhu
+  product: Voxhu
+  canonical_url: https://voxhu.com/
+  country_or_region: Global vendor target; organization jurisdiction unknown
+observation:
+  observed_at: '2026-07-20'
+  last_verified_at: '2026-07-20'
+  next_review_at: '2026-10-20'
+  source_status: current
+classification:
+  class: potential
+  confidence: low
+  rationale: >-
+    The official page presents a dedicated World App dating and matching Mini
+    App with identity verification, limited daily recommendations, and
+    time-bounded chat, but only one product-specific source was found and the
+    provider, availability, data access, and assurance boundaries remain sparse.
+market:
+  buyer:
+  - 'Published payer: individual user choosing the optional Premium membership'
+  user:
+  - 'Published user: World App user with World ID Orb verification seeking dating matches'
+  trigger:
+  - 'Published use case: a verified user wants a limited set of dating profiles rather than an open-ended swipe feed'
+  jobs_to_be_done:
+  - Complete World ID verification and a dating profile
+  - Receive a limited batch of profiles
+  - Express mutual interest
+  - Use a time-bounded chat after matching
+  current_alternatives:
+  - Consumer dating application
+  - Human matchmaking service
+  - Social or community introduction
+  pricing:
+    public: true
+    model: Free tier with an optional monthly Premium membership
+    amount: 'Vendor-stated: 10 WLD per month for Premium'
+    source: https://voxhu.com/
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - World ID verification status
+  - Photos, interests, and biography
+  - Match preferences and location
+  outputs:
+  - Five vendor-described curated profiles twice per day
+  - An AI-generated conversation starter for a pair
+  - A mutual match and time-bounded chat
+  workflow:
+  - Open Voxhu inside World App
+  - Verify through World ID and build a profile
+  - Review scheduled profile batches and indicate interest
+  - Open a chat after mutual interest
+  deployment:
+  - Third-party Mini App running inside World App on supported iOS and Android devices
+  prerequisites:
+  - World App
+  - World ID Orb verification
+  - Voxhu availability in the user's Mini Apps directory
+  data_movement: >-
+    The product page says the service uses profile content, preferences,
+    location, and World ID verification and that an AI reads both profiles for
+    an icebreaker. Exact host, processor, and model data flows are unknown.
+  data_retention: >-
+    The vendor says chats auto-delete after 72 hours of inactivity. Profile,
+    match, AI input/output, backup, and account-deletion retention are unknown.
+privacy_and_security:
+  published_technologies:
+  - World App Mini App
+  - World ID Orb verification
+  - AI-curated matching and conversation starters
+  - Time-bounded chat
+  trust_model: >-
+    Users rely on Voxhu, World App, World ID and Orb verification, Mini App
+    hosting, and the undisclosed matching and AI providers. The reviewed page
+    does not define their data or control boundaries.
+  attacker_model: unknown
+  raw_data_access: >-
+    The vendor says it stores no personal biometrics from World ID verification
+    on its servers. The reviewed page does not disclose provider or operator
+    access to profiles, location, match state, chats, or AI inputs and outputs.
+  metadata_leakage:
+  - World ID verification and Mini App usage metadata
+  - Profile, preference, location, match, and interaction metadata; exact scope unknown
+  - AI prompt and output handling; exact scope unknown
+  repeated_query_controls: >-
+    The vendor publishes five profile recommendations twice per day, but the
+    enforcement mechanism, location enumeration risk, premium behavior, and
+    operator query controls are unknown.
+  minimum_aggregation_controls: unknown
+  audit_and_assurance:
+  - The Voxhu product page and generic World Mini App documentation were reviewed.
+  - No product-specific privacy policy, terms, protocol, audit report, or independent assessment was linked from the reviewed product page.
+  - 'Evidence reviewed: vendor and platform-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Dedicated privacy-first matching workflow with an explicit recommendation cadence
+  - Publicly stated price and time-bounded conversation behavior
+  - Uses an established host application's identity and Mini App interfaces
+  limitations_or_unknowns:
+  - Only one product-specific official source was found
+  - Current country-by-country Mini App availability was not independently tested
+  - Organization identity, jurisdiction, support, privacy terms, and deletion process are unknown
+  - Biometric, no-advertising, and data-handling statements were not independently verified
+  - Exact match algorithm, operator access, security model, and repeated-query enforcement are unknown
+  implications_for_private_match:
+  - The record fills the dedicated privacy-first matching-product coverage required by Issue #2
+  - Consumer dating recommendations and chat are not equivalent to a bilateral enterprise decision output
+  - The published batch limit is relevant to query-budget research but does not establish equivalent leakage controls
+  claim_types:
+    facts:
+    - The official page presents Voxhu as a World App Mini App requiring World ID Orb verification.
+    - The page states that users receive five profiles twice daily and that mutual matches open a time-bounded chat.
+    - The page states a free tier and an optional Premium membership at 10 WLD per month.
+    inferences:
+    - Voxhu is a relevant privacy-first matching candidate, but one product-specific page is insufficient for a stronger classification or confidence.
+    - Its consumer dating workflow differs materially from Private Match's enterprise preflight hypothesis.
+    hypotheses:
+    - Scheduled match batches could reduce open-ended profile enumeration, subject to unreviewed implementation and premium behavior.
+sources:
+  primary:
+  - url: https://voxhu.com/
+    title: Voxhu product, workflow, privacy statements, and pricing
+    publisher: Voxhu
+    published_at: null
+    accessed_at: '2026-07-20'
+  - url: https://docs.world.org/mini-apps/index
+    title: World Mini Apps documentation
+    publisher: World Foundation
+    published_at: null
+    accessed_at: '2026-07-20'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

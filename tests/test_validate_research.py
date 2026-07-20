@@ -9,10 +9,29 @@ from pathlib import Path
 
 import yaml
 
-from scripts.validate_research import lint_claims, load_schemas, validate_records
+from scripts.validate_research import (
+    lint_claims,
+    load_schemas,
+    load_yaml,
+    validate_records,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SYNTHETIC_DIRECT_EVIDENCE_URL = (
+    "https://github.com/itdojp/private-match-research/"
+    "pull/999999#discussion_r999999999"
+)
+
+
+def direct_designation_approval() -> dict:
+    """Return synthetic structure only; this is not evidence of human approval."""
+    return {
+        "status": "approved",
+        "authority": "authorized-itdo-human",
+        "approved_at": "2026-07-20",
+        "evidence_url": SYNTHETIC_DIRECT_EVIDENCE_URL,
+    }
 
 
 def competitor_record() -> dict:
@@ -94,6 +113,7 @@ def competitor_record() -> dict:
             "security_review": "not-required",
             "privacy_review": "approved",
             "claims_review": "approved",
+            "reproducibility_review": "approved",
         },
     }
 
@@ -175,6 +195,7 @@ def technology_record() -> dict:
             "security_review": "approved",
             "privacy_review": "approved",
             "claims_review": "approved",
+            "reproducibility_review": "approved",
         },
     }
 
@@ -232,12 +253,48 @@ def public_finding_record() -> dict:
             "security_review": "not-required",
             "privacy_review": "approved",
             "claims_review": "approved",
+            "reproducibility_review": "approved",
             "anonymization_review": "approved",
         },
     }
 
 
 class ResearchValidationTests(unittest.TestCase):
+    def schema_errors(self, record: dict) -> list:
+        validator = load_schemas(ROOT)[record["record_type"]]
+        return list(validator.iter_errors(record))
+
+    def direct_approval_findings(
+        self, record: dict, *, today: dt.date = dt.date(2026, 7, 20)
+    ) -> list:
+        with tempfile.TemporaryDirectory(
+            prefix=".codex-test-direct-approval-", dir=ROOT
+        ) as tmp:
+            repo = Path(tmp)
+            shutil.copytree(ROOT / "schema", repo / "schema")
+            records = repo / "records" / "competitors"
+            records.mkdir(parents=True)
+            (records / "synthetic.yaml").write_text(
+                yaml.safe_dump(record, sort_keys=False), encoding="utf-8"
+            )
+            findings, _parsed = validate_records(repo, "warn", today=today)
+        return [item for item in findings if item.code == "direct-designation-approval"]
+
+    def test_custom_yaml_loader_does_not_change_safe_loader_dates(self) -> None:
+        with tempfile.TemporaryDirectory(
+            prefix=".codex-test-yaml-loader-", dir=ROOT
+        ) as tmp:
+            path = Path(tmp) / "date.yaml"
+            path.write_text("observed_at: 2026-07-18\n", encoding="utf-8")
+
+            custom = load_yaml(path)
+            standard = yaml.safe_load(path.read_text(encoding="utf-8"))
+
+        self.assertEqual(custom["observed_at"], "2026-07-18")
+        self.assertIsInstance(custom["observed_at"], str)
+        self.assertEqual(standard["observed_at"], dt.date(2026, 7, 18))
+        self.assertIsInstance(standard["observed_at"], dt.date)
+
     def test_schemas_are_valid(self) -> None:
         validators = load_schemas(ROOT)
         self.assertEqual(set(validators), {"competitor", "technology", "public-use-case-finding"})
@@ -260,32 +317,171 @@ class ResearchValidationTests(unittest.TestCase):
         missing_date = technology_record()
         del missing_date["observation"]["observed_at"]
         cases.append((missing_date, "is a required property"))
+        missing_reproducibility_review = public_finding_record()
+        del missing_reproducibility_review["publication"][
+            "reproducibility_review"
+        ]
+        cases.append((missing_reproducibility_review, "is a required property"))
 
         for record, message in cases:
             errors = list(validators[record["record_type"]].iter_errors(record))
             self.assertTrue(errors)
             self.assertTrue(any(message in error.message for error in errors), [error.message for error in errors])
 
+    def test_direct_without_approval_fails_schema_and_semantic_validation(self) -> None:
+        record = competitor_record()
+        record["classification"]["class"] = "direct"
+        self.assertTrue(self.schema_errors(record))
+        self.assertTrue(self.direct_approval_findings(record))
+
+    def test_claims_review_alone_does_not_approve_direct_designation(self) -> None:
+        record = competitor_record()
+        record["classification"]["class"] = "direct"
+        self.assertEqual(record["publication"]["claims_review"], "approved")
+        findings = self.direct_approval_findings(record)
+        self.assertTrue(findings)
+        self.assertIn("record-scoped approval object", findings[0].message)
+
+    def test_pending_direct_approval_fails_schema_and_semantic_validation(self) -> None:
+        record = competitor_record()
+        record["classification"]["class"] = "direct"
+        approval = direct_designation_approval()
+        approval["status"] = "pending"
+        record["classification"]["direct_designation_approval"] = approval
+        self.assertTrue(self.schema_errors(record))
+        self.assertTrue(
+            any("status" in item.message for item in self.direct_approval_findings(record))
+        )
+
+    def test_wrong_direct_approval_authority_fails_validation(self) -> None:
+        record = competitor_record()
+        record["classification"]["class"] = "direct"
+        approval = direct_designation_approval()
+        approval["authority"] = "research-agent"
+        record["classification"]["direct_designation_approval"] = approval
+        self.assertTrue(self.schema_errors(record))
+        self.assertTrue(
+            any(
+                "authority" in item.message
+                for item in self.direct_approval_findings(record)
+            )
+        )
+
+    def test_direct_evidence_without_fragment_fails_validation(self) -> None:
+        record = competitor_record()
+        record["classification"]["class"] = "direct"
+        approval = direct_designation_approval()
+        approval["evidence_url"] = (
+            "https://github.com/itdojp/private-match-research/pull/999999"
+        )
+        record["classification"]["direct_designation_approval"] = approval
+        self.assertTrue(self.schema_errors(record))
+        self.assertTrue(
+            any(
+                "evidence_url" in item.message
+                for item in self.direct_approval_findings(record)
+            )
+        )
+
+    def test_direct_evidence_from_another_repository_fails_validation(self) -> None:
+        record = competitor_record()
+        record["classification"]["class"] = "direct"
+        approval = direct_designation_approval()
+        approval["evidence_url"] = (
+            "https://github.com/itdojp/private-match-strategy/"
+            "pull/999999#discussion_r999999999"
+        )
+        record["classification"]["direct_designation_approval"] = approval
+        self.assertTrue(self.schema_errors(record))
+        self.assertTrue(
+            any(
+                "evidence_url" in item.message
+                for item in self.direct_approval_findings(record)
+            )
+        )
+
+    def test_future_direct_approval_date_fails_semantic_validation(self) -> None:
+        record = competitor_record()
+        record["classification"]["class"] = "direct"
+        approval = direct_designation_approval()
+        approval["approved_at"] = "2026-07-21"
+        record["classification"]["direct_designation_approval"] = approval
+        self.assertEqual(self.schema_errors(record), [])
+        self.assertTrue(
+            any("future" in item.message for item in self.direct_approval_findings(record))
+        )
+
+    def test_invalid_direct_approval_date_fails_schema_and_semantics(self) -> None:
+        record = competitor_record()
+        record["classification"]["class"] = "direct"
+        approval = direct_designation_approval()
+        approval["approved_at"] = "2026-02-30"
+        record["classification"]["direct_designation_approval"] = approval
+        self.assertTrue(self.schema_errors(record))
+        self.assertTrue(
+            any(
+                "valid YYYY-MM-DD" in item.message
+                for item in self.direct_approval_findings(record)
+            )
+        )
+
+    def test_non_direct_record_cannot_carry_direct_approval(self) -> None:
+        record = competitor_record()
+        record["classification"]["direct_designation_approval"] = (
+            direct_designation_approval()
+        )
+        self.assertTrue(self.schema_errors(record))
+        self.assertTrue(
+            any(
+                "forbidden" in item.message
+                for item in self.direct_approval_findings(record)
+            )
+        )
+
+    def test_valid_synthetic_direct_approval_passes_schema_and_semantics(self) -> None:
+        record = competitor_record()
+        record["classification"]["class"] = "direct"
+        record["classification"]["direct_designation_approval"] = (
+            direct_designation_approval()
+        )
+        self.assertEqual(self.schema_errors(record), [])
+        self.assertEqual(self.direct_approval_findings(record), [])
+
     def test_record_validation_reports_stale_and_gate_errors(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(
+            prefix=".codex-test-record-validation-", dir=ROOT
+        ) as tmp:
             repo = Path(tmp)
             shutil.copytree(ROOT / "schema", repo / "schema")
             records = repo / "records" / "competitors"
             records.mkdir(parents=True)
             record = copy.deepcopy(competitor_record())
             record["observation"]["next_review_at"] = "2026-07-01"
-            record["publication"]["claims_review"] = "pending"
+            record["publication"]["reproducibility_review"] = "pending"
             (records / "stale.yaml").write_text(yaml.safe_dump(record, sort_keys=False), encoding="utf-8")
             findings, parsed = validate_records(repo, "warn", today=dt.date(2026, 7, 18))
             self.assertEqual(len(parsed), 1)
             self.assertTrue(any(item.code == "stale-record" and item.severity == "warning" for item in findings))
-            self.assertTrue(any(item.code == "publication-gate" and item.severity == "error" for item in findings))
+            self.assertTrue(
+                any(
+                    item.code == "publication-gate"
+                    and item.severity == "error"
+                    and "reproducibility_review" in item.message
+                    for item in findings
+                )
+            )
 
     def test_claim_lint_ignores_documentation_and_fenced_examples(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(
+            prefix=".codex-test-claim-lint-", dir=ROOT
+        ) as tmp:
             repo = Path(tmp)
             (repo / "doc.md").write_text(
-                """# Claims\n\n<!-- claim-lint: ignore-start -->\n- secure\n<!-- claim-lint: ignore-end -->\n\n```text\nproduction ready\n```\n\nThis product is secure.\n""",
+                """# Claims\n\n<!-- claim-lint: ignore-start -->\n- secure\n<!-- claim-lint: ignore-end -->\n\n```text\nproduction ready\n```\n\nSource: https://secure.example.com/proven-result\n\nThis product is secure.\n""",
+                encoding="utf-8",
+            )
+            (repo / "record.yaml").write_text(
+                "source: https://secure.example.com/proven-result\n",
                 encoding="utf-8",
             )
             findings = lint_claims(repo)

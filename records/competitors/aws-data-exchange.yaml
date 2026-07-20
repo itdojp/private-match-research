@@ -1,0 +1,127 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Amazon Web Services
+  product: AWS Data Exchange
+  canonical_url: https://docs.aws.amazon.com/data-exchange/latest/userguide/what-is.html
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: substitute
+  confidence: high
+  rationale: Organizations can grant, subscribe to, and directly access datasets under commercial terms instead of computing
+    a minimal private result.
+market:
+  buyer:
+  - 'Published target buyer: AWS data receiver or data-product subscriber'
+  user:
+  - 'Published user: data provider, sender, receiver, or subscriber administrator and analyst'
+  trigger:
+  - 'Published use case: one organization needs to grant or sell dataset access to another'
+  jobs_to_be_done:
+  - Publish or grant a dataset
+  - Accept terms
+  - Access files, APIs, Redshift, S3, or Lake Formation data
+  - Analyze received data
+  current_alternatives:
+  - Bilateral file transfer
+  - Cloud marketplace
+  - AWS Clean Rooms
+  pricing:
+    public: true
+    model: Provider-defined subscription, pay-as-you-go, or private offer plus applicable AWS infrastructure and transfer
+      charges
+    amount: Product and usage dependent
+    source: https://aws.amazon.com/data-exchange/pricing/
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Files, APIs, Redshift, S3, or Lake Formation datasets
+  - Grant or marketplace offer terms
+  outputs:
+  - Entitlement to dataset assets
+  - Direct data access or exported files
+  - Subscriber analysis results outside the exchange
+  workflow:
+  - Provider creates dataset or product
+  - Define grant or offer
+  - Receiver accepts or subscribes
+  - Receiver accesses data
+  deployment:
+  - AWS managed exchange and marketplace services
+  prerequisites:
+  - AWS account for non-public grants and products
+  - Provider eligibility for marketplace sales
+  - IAM and applicable data agreement
+  data_movement: Depending on asset type, receivers can export files, call APIs, query Redshift, or directly access provider
+    S3 objects.
+  data_retention: Product terms govern continued use; AWS notes exported files can remain after subscription end unless the
+    data agreement requires deletion.
+privacy_and_security:
+  published_technologies:
+  - Data grants
+  - AWS Marketplace offers
+  - IAM
+  - Multiple dataset asset types
+  trust_model: Sender intentionally grants data entitlement to a receiver under AWS identity controls and product terms.
+  attacker_model: unknown
+  raw_data_access: Receivers can access or export underlying dataset assets according to the product or grant; this is controlled
+    sharing, not private computation.
+  metadata_leakage:
+  - Provider, receiver, product, subscription, and access metadata
+  - Underlying data disclosed by the entitlement
+  repeated_query_controls: Offer, API, and IAM dependent; no private-computation query budget.
+  minimum_aggregation_controls: Not intrinsic to dataset grants.
+  audit_and_assurance:
+  - AWS user guide, pricing, and shared-responsibility documentation were reviewed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Supports multiple delivery types and commercial terms
+  - Avoids custom entitlement infrastructure for providers
+  limitations_or_unknowns:
+  - Underlying data is intentionally disclosed or made accessible
+  - Receiver must perform privacy and legal diligence
+  - Price varies by product and AWS usage
+  implications_for_private_match:
+  - Private Match is unnecessary when an entitlement and data-use agreement are acceptable
+  - A preflight needs to precede or narrow data purchase
+  claim_types:
+    facts:
+    - AWS Data Exchange supports data grants and marketplace products for files, APIs, Redshift, S3, and Lake Formation data.
+    - AWS documents provider-defined subscription terms and separate infrastructure charges.
+    inferences:
+    - AWS Data Exchange is a non-PET substitute for parties willing to grant data access.
+    hypotheses:
+    - A minimal fit result can reduce purchases of datasets that do not meet a buyer's threshold.
+sources:
+  primary:
+  - url: https://docs.aws.amazon.com/data-exchange/latest/userguide/what-is.html
+    title: What is AWS Data Exchange?
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://docs.aws.amazon.com/data-exchange/latest/userguide/product-subscriptions.html
+    title: Product subscriptions in AWS Data Exchange
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://aws.amazon.com/data-exchange/pricing/
+    title: AWS Data Exchange Pricing
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

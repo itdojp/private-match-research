@@ -1,0 +1,161 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: ZERONEAR
+  product: ZERONEAR
+  canonical_url: https://zeronear.com/
+  country_or_region: Global vendor target; organization jurisdiction unknown
+observation:
+  observed_at: '2026-07-20'
+  last_verified_at: '2026-07-20'
+  next_review_at: '2026-10-20'
+  source_status: current
+classification:
+  class: potential
+  confidence: medium
+  rationale: >-
+    The official pages present a dedicated nearby-person matching service with
+    configurable Spaces, profile matching, and private messaging, but the
+    consumer workflow, current store availability, enterprise buyer, exact
+    outputs, and independently reviewed assurance remain incomplete.
+market:
+  buyer:
+  - 'Inferred buyer or payer: individual user or Space creator; enterprise budget owner unknown'
+  user:
+  - 'Published user: adult seeking nearby people through interest-based matching Spaces'
+  trigger:
+  - 'Published use case: a user wants to find people by Space-specific rules, interests, availability, or approximate location'
+  jobs_to_be_done:
+  - Create or join an interest-based Space
+  - Build a Space-specific profile
+  - Review matching profiles and start a conversation
+  current_alternatives:
+  - Consumer dating or social application
+  - Interest community or messaging group
+  - Manual introduction or directory search
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: https://zeronear.com/
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Account and profile information
+  - Space-specific answers and matching preferences
+  - Optional approximate location
+  - Vendor-required face-liveness verification data
+  - Optional locally hashed contacts
+  outputs:
+  - Vendor-described profile matches with selected match details and distance
+  - A messaging channel after the user acts on a match
+  workflow:
+  - Complete account and face-liveness verification
+  - Create or join a Space
+  - Answer Space-specific profile questions
+  - Review profile cards produced by the vendor-described matching process
+  - Start or decline a conversation
+  deployment:
+  - Vendor-operated service with a mobile client presented for App Store and Google Play distribution
+  prerequisites:
+  - Supported mobile device and network access
+  - User at least 18 years old under the vendor terms
+  - Face-liveness verification
+  data_movement: >-
+    The vendor policy says the service receives account and profile data, Space
+    participation, matching preferences, approximate-area data when enabled,
+    verification data, and contact hashes when synchronization is used. Exact
+    service topology was not independently reviewed.
+  data_retention: >-
+    The vendor policy describes account data in cloud infrastructure, face data
+    in isolated storage, and encrypted messages on devices plus encrypted
+    backup. Exact retention periods and deletion verification are unknown.
+privacy_and_security:
+  published_technologies:
+  - Vendor-described Signal Protocol end-to-end encryption
+  - Local contact hashing
+  - Geohash-based approximate location
+  - 3D face-liveness verification
+  - AI-assisted Space and profile matching
+  - Vendor-described OTS messaging controls
+  trust_model: >-
+    Users rely on the vendor client, cloud service, verification-data storage,
+    matching implementation, and key handling. The reviewed pages do not define
+    a formal trust or collusion model.
+  attacker_model: unknown
+  raw_data_access: >-
+    The vendor says private message content is end-to-end encrypted and contact
+    synchronization sends hashes, while its policy also lists account, profile,
+    Space, preference, approximate-location, and verification data processed by
+    the service. These statements were not independently reproduced.
+  metadata_leakage:
+  - Space membership and public Space profile
+  - Matching preferences and approximate-area data when enabled
+  - Account, verification, match, and communication metadata; exact scope unknown
+  repeated_query_controls: >-
+    Space and user interaction controls are described, but a public match-query
+    budget, enumeration analysis, and repeated-query policy were not found.
+  minimum_aggregation_controls: unknown
+  audit_and_assurance:
+  - The official site and privacy and terms pages were reviewed.
+  - >-
+    The vendor links a domain-verified GitHub organization and describes its
+    frontend as open source, but that organization exposed no public repository
+    when observed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction or external audit was reviewed.'
+assessment:
+  strengths:
+  - Dedicated privacy-first person-matching workflow rather than a general data room
+  - Configurable matching Spaces and explicit metadata disclosures
+  limitations_or_unknowns:
+  - Current regional store availability and installability were not independently tested
+  - Public price is unknown
+  - Formal threat model, protocol specification, key lifecycle, and repeated-query analysis are unknown
+  - The reviewed GitHub organization exposed no public implementation to assess
+  - Face-verification storage and deletion behavior were not independently assessed
+  implications_for_private_match:
+  - The record fills the dedicated privacy-first matching-product coverage required by Issue #2
+  - Consumer discovery and messaging differ from a bilateral enterprise preflight decision
+  - Vendor technology labels do not establish equivalent disclosure or assurance properties
+  claim_types:
+    facts:
+    - The official site presents configurable Spaces, profile matching, approximate-distance display, and messaging.
+    - The January 2026 privacy policy lists the account, profile, Space, matching-preference, approximate-location, verification, and contact-hash data it processes.
+    - The domain-verified GitHub organization exposed no public repositories when observed.
+    inferences:
+    - ZERONEAR is a relevant privacy-first matching candidate but public information is insufficient for a stronger classification.
+    - Its consumer and community workflow is materially different from Private Match's enterprise preflight hypothesis.
+    hypotheses:
+    - Configurable matching Spaces may compete with some discovery workflows that do not need a bilateral enterprise protocol.
+sources:
+  primary:
+  - url: https://zeronear.com/
+    title: ZERONEAR product and workflow
+    publisher: ZERONEAR
+    published_at: null
+    accessed_at: '2026-07-20'
+  - url: https://zeronear.com/privacy/
+    title: ZERONEAR Privacy Policy
+    publisher: ZERONEAR
+    published_at: null
+    accessed_at: '2026-07-20'
+  - url: https://zeronear.com/terms/
+    title: ZERONEAR Terms of Service
+    publisher: ZERONEAR
+    published_at: null
+    accessed_at: '2026-07-20'
+  - url: https://github.com/zeronear-hq
+    title: ZERONEAR domain-verified GitHub organization
+    publisher: ZERONEAR / GitHub
+    published_at: null
+    accessed_at: '2026-07-20'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

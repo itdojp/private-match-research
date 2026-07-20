@@ -1,0 +1,116 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: NTT DOCOMO BUSINESS
+  product: 析秘TEE
+  canonical_url: https://www.ntt.com/about-us/press-releases/news/article/2025/0730.html
+  country_or_region: Japan
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: adjacent
+  confidence: high
+  rationale: It provides approved TEE execution for cross-organization data and logic with published commercial plans, but
+    its computation surface is broader than Private Match.
+market:
+  buyer:
+  - 'Inferred buyer: Japanese enterprise data-utilization or governance leader; exact budget owner unknown'
+  user:
+  - 'Published user: workflow creator and data or logic approver'
+  trigger:
+  - 'Published use case: organizations need agreed processing of sensitive data, images, natural language, or models'
+  jobs_to_be_done:
+  - Create a processing workflow
+  - Obtain data and logic owner approval
+  - Execute in a TEE
+  - Deliver encrypted output
+  current_alternatives:
+  - 析秘 MPC
+  - Confidential-computing cloud build
+  - Trusted third-party processor
+  pricing:
+    public: true
+    model: Common initial fee plus per-execution or monthly plan
+    amount: JPY 300,000 initial fee; JPY 100,000 per execution or JPY 1,000,000 per month, before tax
+    source: https://www.ntt.com/about-us/press-releases/news/article/2025/0730.html
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Participant data
+  - Processing logic or AI model
+  - Approved workflow
+  outputs:
+  - Encrypted result defined by the approved workflow
+  workflow:
+  - Create workflow in the GUI
+  - Request participant approval
+  - Execute approved processing
+  - Share result
+  deployment:
+  - Vendor-operated cloud service using a hardware-backed isolated execution environment
+  prerequisites:
+  - Commercial application through NTT sales
+  - Workflow agreement
+  - Supported processing package
+  data_movement: The launch material describes encrypted data and programs placed into an isolated execution environment;
+    exact regional topology is unknown.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Trusted execution environment
+  - Hardware memory encryption
+  - Approval-based workflow control
+  trust_model: Vendor-described hardware-backed isolation intended to reduce access by the platform operator; hardware, attestation,
+    and operational assumptions remain deployment dependent.
+  attacker_model: unknown
+  raw_data_access: Vendor states participants and the platform operator use the approved isolated workflow rather than unrestricted
+    raw access; independently unverified.
+  metadata_leakage:
+  - Workflow, participant, timing, and execution-count metadata
+  - Application-specific side-channel analysis was not found
+  repeated_query_controls: Workflow approval controls execution; the public release does not define a universal query budget.
+  minimum_aggregation_controls: Application-defined; no universal public minimum found.
+  audit_and_assurance:
+  - Official dated launch material describes technology, workflow, and price.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Published Japanese price anchors
+  - Supports non-tabular processing and approval workflow
+  limitations_or_unknowns:
+  - TEE and platform assumptions require deeper review
+  - Application-specific leakage is unknown
+  - Per-use price may be material for low-value sessions
+  implications_for_private_match:
+  - A per-use domestic confidential-computing substitute is available
+  - Private Match should benchmark total cost and setup rather than technology labels
+  claim_types:
+    facts:
+    - NTT DOCOMO BUSINESS announced service availability from 2025-07-31.
+    - The announcement publishes an initial fee and per-use or monthly pricing.
+    - The announcement distinguishes the TEE service from the existing MPC service.
+    inferences:
+    - The product is adjacent for complex approved processing and a substitute for some preflight workflows if its setup is
+      acceptable.
+    hypotheses:
+    - Private Match can target lower-cost standardized decisions below the published per-execution price.
+sources:
+  primary:
+  - url: https://www.ntt.com/about-us/press-releases/news/article/2025/0730.html
+    title: 析秘TEE launch announcement
+    publisher: NTT DOCOMO BUSINESS
+    published_at: '2025-07-30'
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

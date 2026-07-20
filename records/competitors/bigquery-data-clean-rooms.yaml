@@ -1,0 +1,111 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Google Cloud
+  product: BigQuery Data Clean Rooms
+  canonical_url: https://cloud.google.com/bigquery/docs/data-clean-rooms
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: adjacent
+  confidence: high
+  rationale: It provides governed BigQuery sharing and analysis across organizations, broader than Private Match's proposed
+    fixed-output bilateral session.
+market:
+  buyer:
+  - 'Inferred buyer: Google Cloud data or marketing analytics leader; exact budget owner unknown'
+  user:
+  - 'Published user: data contributor, subscriber, or BigQuery analyst'
+  trigger:
+  - 'Published use case: organizations need to join and analyze data with privacy restrictions'
+  jobs_to_be_done:
+  - Publish a clean-room listing
+  - Subscribe to shared resources
+  - Run queries subject to analysis rules
+  current_alternatives:
+  - BigQuery sharing without a data room
+  - Other cloud data rooms
+  - Centralized data transfer
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - BigQuery tables, views, or routines
+  - Analysis rules and subscriber permissions
+  outputs:
+  - BigQuery results allowed by analysis and privacy rules
+  workflow:
+  - Create data exchange and listing
+  - Add shared resources
+  - Subscribe
+  - Analyze through linked datasets
+  deployment:
+  - Google Cloud BigQuery managed service
+  prerequisites:
+  - Google Cloud projects
+  - BigQuery and sharing permissions
+  - Supported regions and editions
+  data_movement: Documentation describes BigQuery sharing through linked datasets; cross-region behavior and source design
+    remain configuration dependent.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - BigQuery sharing
+  - Analysis rules
+  - IAM and data policies
+  trust_model: Google Cloud platform controls plus contributor-configured analysis and access rules.
+  attacker_model: unknown
+  raw_data_access: Google documentation states subscribers are restricted by analysis rules rather than receiving unrestricted
+    contributor data access.
+  metadata_leakage:
+  - Project, listing, and query metadata
+  - Analysis-dependent aggregate leakage
+  repeated_query_controls: Analysis-rule and privacy-policy dependent.
+  minimum_aggregation_controls: Supported by configured aggregation thresholds for relevant analysis-rule paths.
+  audit_and_assurance:
+  - Google Cloud product documentation was reviewed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Uses existing BigQuery sharing infrastructure
+  - Supports tables, views, and routines
+  limitations_or_unknowns:
+  - Exact public clean-room price was not found
+  - Requires BigQuery administration
+  - A single deployment-wide attacker model was not found
+  implications_for_private_match:
+  - Private Match should not become a general BigQuery analysis layer
+  - Cloud neutrality and fixed outputs need operational validation
+  claim_types:
+    facts:
+    - Google Cloud documents contributor and subscriber roles for BigQuery Data Clean Rooms.
+    - The documentation describes analysis rules and privacy policies on shared resources.
+    inferences:
+    - The product is an adjacent option for organizations already collaborating through BigQuery.
+    hypotheses:
+    - Non-data-platform teams may prefer a narrower preflight workflow.
+sources:
+  primary:
+  - url: https://cloud.google.com/bigquery/docs/data-clean-rooms
+    title: Use BigQuery data clean rooms
+    publisher: Google Cloud
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved
