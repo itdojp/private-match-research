@@ -1,0 +1,148 @@
+schema_version: '0.1'
+record_type: technology
+identity:
+  name: MP-SPDZ
+  category: MPC
+  implementation_or_standard: data61/MP-SPDZ v0.4.3
+  canonical_url: https://github.com/data61/MP-SPDZ
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  maturity: Active public repository; v0.4.3 published 2026-07-06
+problem_fit:
+  supported_results:
+  - general-computation
+  - threshold
+  - cardinality
+  party_model:
+  - two-party
+  - multi-party
+  data_profiles:
+  - balanced
+  - unbalanced
+  - low-entropy-identifiers
+  - large-set
+  target_use_cases:
+  - General minimum-result circuit
+  - Passive versus active protocol comparison
+  - Programmable all-party output
+  non_fit:
+  - No Private Match circuit or normalization policy is supplied
+  - Large protocol/configuration space makes an unbounded comparison misleading
+  - Repository states implementation lacks the review expected for critical deployment
+security:
+  security_model: 'Protocol-selected: semi-honest/passive or malicious/active under honest- or dishonest-majority assumptions'
+  cryptographic_assumptions:
+  - Protocol-specific secret sharing, oblivious transfer, homomorphic encryption, garbled circuits, MACs, preprocessing, and
+    randomness
+  - Compiler and virtual-machine correctness
+  trusted_components:
+  - Pinned MP-SPDZ source and dependencies
+  - Selected party threshold and protocol
+  - Compiler/program, preprocessing source, certificates, hosts, and I/O handling
+  collusion_threshold: Varies by selected protocol; must be recorded and cannot be inferred from the framework name
+  input_authenticity: Malicious protocols can detect modeled protocol deviation but do not prove real-world dataset origin
+  omission_resistance: No real-dataset completeness guarantee; a valid secret input can still omit rows
+  replay_and_session_binding: Certificates and channels exist, but Private Match session/version/replay semantics must be
+    encoded and evidenced
+  metadata_leakage:
+  - Party count and endpoints
+  - Program/circuit shape, preprocessing volume, rounds, traffic, timing, and output recipients
+  - Public inputs and configured set-size bounds
+  repeated_query_risk:
+  - Programmed output remains an oracle across runs
+  - Query-budget state and related-session policy must be external or encoded in an authoritative service
+  known_attacks_or_limitations:
+  - Wrong protocol selection changes security assumptions
+  - Online-only benchmark options can use intentionally unsuitable preprocessing and must not be reported as full runs
+  - No full implementation review is claimed by upstream
+engineering:
+  languages:
+  - C++
+  - Python-based high-level MPC language and tooling
+  platforms:
+  - Linux
+  - macOS paths documented
+  - Docker
+  - Native compiler/VM
+  deployment_models:
+  - Multiple local processes
+  - Multiple networked hosts
+  - Preprocessing and online phases
+  computation_profile: Circuit/domain/protocol dependent with separate preprocessing and online phases
+  communication_profile: Rounds and bytes vary across secret sharing, OT, HE, and garbling protocols
+  artifact_size_profile: Compiled bytecode, schedules, certificates, preprocessing, party inputs, logs, and outputs
+  operational_complexity: 'High: program design, domain choice, protocol/threshold selection, build, certificates, preprocessing,
+    networking, and evidence separation'
+  key_or_setup_requirements:
+  - Pinned release and dependencies
+  - Defined function/program and public bounds
+  - Party certificates and endpoints
+  - Protocol-specific preprocessing and threshold
+assurance:
+  standards:
+  - No single interoperability standard; supports Bristol Fashion circuits among other formats
+  papers:
+  - MP-SPDZ framework paper, ePrint 2020/521
+  - Protocol-specific papers emitted by compiler tooling
+  formal_analysis:
+  - Protocol papers vary; framework composition and application program need separate analysis
+  external_audits:
+  - Upstream README states implementation has not undergone the security review expected for critical code
+  test_vectors:
+  - Repository tutorials/tests and compiled example programs; no Private Match vector exists
+  interoperability:
+  - Bristol circuit support and project formats; cross-runtime result compatibility untested
+project_health:
+  license: Primary License.txt grants BSD-3-Clause and lists bundled components with additional notices
+  patent_considerations: Unknown; no patent or full transitive-license clearance performed
+  latest_release: v0.4.3 published 2026-07-06
+  maintenance_status: Active; latest release/default-branch commit observed 2026-07-06
+  bus_factor: Unknown
+  security_reporting: GitHub issues are preferred for general problems; vulnerability-specific private reporting path was
+    not established from reviewed README
+assessment:
+  strengths:
+  - F — Implements many passive and active MPC protocols and makes security-model differences explicit
+  - F — Provides program compiler, tutorials, protocol papers, and benchmarking procedures
+  limitations_or_unknowns:
+  - U — No minimum-result circuit, local cost, audit, input-policy, or metadata result exists
+  - U — Protocol and preprocessing selection can invalidate comparison if not fixed
+  recommended_experiments:
+  - H — Encode the minimum function only after SecretFlow baseline evidence defines normalization and output semantics
+  - H — Compare one passive and one active two-party protocol under identical circuit and network
+  private_match_fit: I — General active-security comparison candidate, deferred from the first bounded run
+  confidence: high
+sources:
+  primary:
+  - url: https://github.com/data61/MP-SPDZ
+    title: MP-SPDZ repository
+    publisher: CSIRO Data61
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://github.com/data61/MP-SPDZ/releases/tag/v0.4.3
+    title: MP-SPDZ v0.4.3
+    publisher: CSIRO Data61
+    published_at: '2026-07-06'
+    accessed_at: '2026-07-18'
+  - url: https://eprint.iacr.org/2020/521
+    title: 'MP-SPDZ: A Versatile Framework for Multi-Party Computation'
+    publisher: Cryptology ePrint Archive
+    published_at: '2020-05-05'
+    accessed_at: '2026-07-18'
+  - url: https://github.com/data61/MP-SPDZ/blob/master/License.txt
+    title: MP-SPDZ license
+    publisher: CSIRO Data61
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: approved
+  security_review: approved
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

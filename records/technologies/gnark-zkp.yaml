@@ -1,0 +1,149 @@
+schema_version: '0.1'
+record_type: technology
+identity:
+  name: gnark ZKP framework
+  category: ZKP
+  implementation_or_standard: Consensys gnark v0.15.0
+  canonical_url: https://github.com/Consensys/gnark
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  maturity: Active public repository; v0.15.0 published 2026-05-13
+problem_fit:
+  supported_results:
+  - general-computation
+  - threshold
+  party_model:
+  - client-server
+  - two-party
+  data_profiles:
+  - low-entropy-identifiers
+  - balanced
+  - unbalanced
+  - large-set
+  target_use_cases:
+  - Supporting proof of a bounded statement
+  - Proof/verifier cost experiment
+  - Committed policy or transformation conformance hypothesis
+  non_fit:
+  - Does not provide set matching, input completeness, session policy, or result symmetry by itself
+  - Whole-set circuits can create large witness/proving cost
+  - Supporting statement and verifier consumer are not yet defined
+security:
+  security_model: Proof-system and curve dependent; circuit soundness/zero-knowledge assumptions plus setup and implementation
+    trust
+  cryptographic_assumptions:
+  - Selected Groth16, PLONK, or other backend assumptions
+  - Curve and field arithmetic
+  - Trusted or universal setup according to backend
+  - Circuit, compiler, prover, verifier, and randomness correctness
+  trusted_components:
+  - Pinned gnark/gnark-crypto
+  - Circuit and witness schema
+  - Setup/proving/verifying material
+  - Verifier integration and public-input binding
+  collusion_threshold: Proof system rather than party-threshold protocol; application party model remains external
+  input_authenticity: A proof attests only constraints over the supplied witness; it does not establish real-world dataset
+    origin or completeness
+  omission_resistance: Not supplied unless completeness is represented by an externally justified commitment and circuit
+  replay_and_session_binding: Session/policy commitments can be public inputs if designed, but replay state and acceptance
+    policy remain application responsibilities
+  metadata_leakage:
+  - Circuit and proving-system choice
+  - Public inputs, proof size, setup identifiers, verifier result, timing, and resource use
+  repeated_query_risk:
+  - Repeated public statements and verifier outcomes can accumulate information
+  - A proof does not impose query budgets or purpose limits
+  known_attacks_or_limitations:
+  - Repository states no guarantee of constant-time or side-channel resistance
+  - Audit scopes do not automatically cover a new circuit or current integration
+  - Constraint omissions can make a proof valid for the wrong statement
+engineering:
+  languages:
+  - Go
+  platforms:
+  - Go toolchain
+  - CPU and experimental GPU paths depending on backend
+  deployment_models:
+  - Local prover and verifier
+  - Embedded Go library
+  - Optional external verifier formats
+  computation_profile: Circuit, witness, proof system, curve, and setup dependent; no Private Match circuit or local result
+    exists
+  communication_profile: Proof and public inputs can be compact relative to witness, but proving artifacts and setup may be
+    large
+  artifact_size_profile: Circuit/constraint system, witness, proving/verifying keys, proof, public input, logs, and generated
+    verifier
+  operational_complexity: Circuit design/review, setup lifecycle, key/artifact integrity, prover capacity, verifier binding,
+    and audit-scope tracking
+  key_or_setup_requirements:
+  - Pinned gnark/gnark-crypto release
+  - Defined bounded statement and circuit
+  - Backend/curve/setup selection
+  - Proving and verification artifact digests
+  - Session/public-input encoding
+assurance:
+  standards:
+  - No universal Private Match ZKP statement or verifier standard identified
+  papers:
+  - Proof-system papers corresponding to selected backend; none selected for this first run
+  formal_analysis:
+  - Backend analyses do not prove a future application circuit has complete constraints
+  external_audits:
+  - Repository lists multiple scoped audits for gnark, gnark-crypto, standard library, and verifier components
+  test_vectors:
+  - Repository tests, release checks, prover checks, fuzzing, and examples
+  interoperability:
+  - Some verifier/export paths exist; no cross-implementation Private Match proof vector is defined
+project_health:
+  license: Apache-2.0 as published by repository
+  patent_considerations: Unknown; proof-system and application patent clearance not performed
+  latest_release: v0.15.0 published 2026-05-13
+  maintenance_status: Active; last default-branch commit observed 2026-07-15
+  bus_factor: Unknown
+  security_reporting: Repository publishes a security policy and advisories route
+assessment:
+  strengths:
+  - F — Public Go circuit, prove, and verify APIs with multiple backends
+  - F — Repository publishes scoped audit references and explicit side-channel limitations
+  limitations_or_unknowns:
+  - U — Supporting statement, circuit, setup, proof system, verifier binding, and comparative value are undecided
+  - U — No local proof, performance, or integration result exists
+  recommended_experiments:
+  - H — Define one bounded supporting statement only after a verifier consumer and threat question exist
+  - H — Compare proof evidence with a signed receipt before accepting extra complexity
+  private_match_fit: I — Retained only as a supporting proof candidate; rejected as the default matching mechanism
+  confidence: high
+sources:
+  primary:
+  - url: https://github.com/Consensys/gnark
+    title: gnark repository
+    publisher: Consensys
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://docs.gnark.consensys.io/
+    title: gnark documentation
+    publisher: Consensys
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://github.com/Consensys/gnark/releases/tag/v0.15.0
+    title: gnark v0.15.0
+    publisher: Consensys
+    published_at: '2026-05-13'
+    accessed_at: '2026-07-18'
+  - url: https://github.com/Consensys/gnark#audits
+    title: gnark audit list
+    publisher: Consensys
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: approved
+  security_review: approved
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

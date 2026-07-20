@@ -1,0 +1,168 @@
+schema_version: '0.1'
+record_type: technology
+identity:
+  name: AWS Nitro Enclaves
+  category: TEE
+  implementation_or_standard: AWS Nitro Enclaves CLI v1.4.5 and NSM API v0.5.2
+  canonical_url: https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave.html
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  maturity: Current AWS EC2 feature; CLI v1.4.5 and NSM API v0.5.2 observed in 2026
+problem_fit:
+  supported_results:
+  - general-computation
+  - membership
+  - threshold
+  party_model:
+  - two-party
+  - client-server
+  data_profiles:
+  - balanced
+  - unbalanced
+  - low-entropy-identifiers
+  - large-set
+  target_use_cases:
+  - Attested minimum-result prototype
+  - Parent-visible metadata and raw-egress observation
+  - Cryptographic-versus-hardware trust comparison
+  non_fit:
+  - Requires supported paid EC2 parent and human approval before execution
+  - Attestation measures code/configuration but does not prove application correctness or input completeness
+  - Enclave memory, CPU, vsock, storage, and lifecycle constraints apply
+security:
+  security_model: Trusted hardware and measured-code model rooted in AWS Nitro Hypervisor and attestation PKI
+  cryptographic_assumptions:
+  - AWS Nitro attestation PKI and COSE signature validation
+  - Hash/PCR measurement integrity
+  - Nonce freshness and verifier policy
+  - Application cryptography and KMS/session protection where used
+  trusted_components:
+  - AWS Nitro hardware/system and hypervisor
+  - Attestation certificate chain and verifier
+  - Reviewed EIF, kernel/bootstrap/application, build chain, and PCR policy
+  - Parent for availability/I/O routing and approved external services
+  collusion_threshold: No cryptographic party threshold; confidentiality depends on the TEE trust boundary and code, while
+    the parent controls availability and I/O
+  input_authenticity: Attestation identifies measured enclave code, not the truth or completeness of party inputs
+  omission_resistance: Not supplied; parties or parent-side feeders can omit input before enclave processing
+  replay_and_session_binding: Attestation supports a nonce and user data, but application session state, input commitments,
+    and persistent replay/query-budget state must be designed
+  metadata_leakage:
+  - Parent observes enclave lifecycle, allocated vCPU/memory, EIF handling, vsock byte counts/timing, and proxied external
+    traffic
+  - Input/output lengths, invocation timing, failures, and persisted parent artifacts
+  repeated_query_risk:
+  - Ephemeral enclave memory does not by itself provide durable query budgets
+  - Authorized repeated inputs can form an oracle unless bound to persistent policy state
+  known_attacks_or_limitations:
+  - No direct external network or persistent storage does not remove parent metadata or availability control
+  - Side channels, rollback, endpoint safety, supply chain, and application bugs remain outside attestation identity
+  - Debug-mode attestation PCRs are zero and cannot support the planned attestation check
+engineering:
+  languages:
+  - Rust and C components in published tooling
+  - Application-defined enclave language
+  platforms:
+  - Supported Nitro-based Amazon EC2 instance
+  - Linux enclave image
+  - Nitro CLI and NSM API
+  deployment_models:
+  - Parent EC2 instance plus isolated enclave
+  - Vsock application I/O
+  - Optional attested external service or KMS integration
+  computation_profile: Application-defined within allocated enclave CPU/memory; local and cloud measurements not run
+  communication_profile: All enclave external interaction crosses vsock to the parent or an explicit proxy; bytes/timing observable
+    at parent
+  artifact_size_profile: Container/image inputs, EIF, PCRs, attestation documents, logs, vsock evidence, parent files, and
+    teardown record
+  operational_complexity: 'High: supported paid instance, enclave allocation, deterministic image build, attestation verifier,
+    nonce/PCR policy, vsock I/O, capture, and teardown'
+  key_or_setup_requirements:
+  - Human-approved AWS environment and cost ceiling
+  - Pinned CLI/NSM versions and deterministic EIF
+  - Expected PCR/signing-certificate policy
+  - Fresh nonce and attestation verifier
+  - Application keys and persistent query state if used
+assurance:
+  standards:
+  - CBOR and COSE are used in the AWS attestation document; AWS-specific attestation format and PKI
+  papers:
+  - No independent TEE paper was used as deployment evidence in this record
+  formal_analysis:
+  - AWS attestation documentation; no formal proof of the proposed application or full platform was reviewed
+  external_audits:
+  - Unknown for the exact proposed EIF, verifier, Nitro CLI, NSM, and platform combination
+  test_vectors:
+  - AWS Hello Enclaves/tutorial paths and NSM tests; no Private Match vector exists
+  interoperability:
+  - AWS Nitro-specific EIF, PCR, NSM, and attestation PKI; no independent TEE interop run
+project_health:
+  license: Nitro CLI and NSM API repositories publish Apache-2.0
+  patent_considerations: Unknown; AWS service terms, OSS license, and patent clearance require separate review
+  latest_release: Nitro CLI v1.4.5 published 2026-06-02; NSM API v0.5.2 published 2026-07-08
+  maintenance_status: Both observed repositories active in 2026; service documentation current when accessed
+  bus_factor: AWS-managed service/tooling; contributor bus factor not evaluated
+  security_reporting: AWS repositories direct potential issues to AWS vulnerability reporting
+assessment:
+  strengths:
+  - F — AWS documents enclave isolation, vsock-only communication, no direct external networking/persistent storage, and signed
+    measured attestation
+  - F — Current CLI and NSM tooling is public and versioned
+  limitations_or_unknowns:
+  - U — No approved environment, EIF, verifier, cost, local result, raw-egress observation, or side-channel assessment exists
+  - U — Application correctness, durable policy state, and endpoint security are external
+  recommended_experiments:
+  - H — Build an attested synthetic minimum-result prototype only after human environment approval
+  - H — Validate nonce/PCR policy outside debug mode and record parent-visible vsock/network/artifact metadata
+  private_match_fit: I — Selected TEE comparison path; selection is conditional and not a cloud-resource authorization or
+    production choice
+  confidence: high
+sources:
+  primary:
+  - url: https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave.html
+    title: What is Nitro Enclaves?
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://docs.aws.amazon.com/enclaves/latest/user/set-up-attestation.html
+    title: Cryptographic attestation
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://docs.aws.amazon.com/enclaves/latest/user/verify-root.html
+    title: Verifying the root of trust
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://github.com/aws/aws-nitro-enclaves-cli
+    title: AWS Nitro Enclaves CLI
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://github.com/aws/aws-nitro-enclaves-cli/releases/tag/v1.4.5
+    title: Nitro CLI v1.4.5
+    publisher: Amazon Web Services
+    published_at: '2026-06-02'
+    accessed_at: '2026-07-18'
+  - url: https://github.com/aws/aws-nitro-enclaves-nsm-api
+    title: AWS Nitro Enclaves NSM API
+    publisher: Amazon Web Services
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://github.com/aws/aws-nitro-enclaves-nsm-api/releases/tag/v0.5.2
+    title: NSM API v0.5.2
+    publisher: Amazon Web Services
+    published_at: '2026-07-08'
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: approved
+  security_review: approved
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

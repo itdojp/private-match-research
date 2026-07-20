@@ -1,0 +1,127 @@
+schema_version: '0.1'
+record_type: technology
+identity:
+  name: Google Private Join and Compute
+  category: PSI
+  implementation_or_standard: google/private-join-and-compute at 950c5e4c88d7
+  canonical_url: https://github.com/google/private-join-and-compute
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  maturity: Public repository not archived; no GitHub release observed and last default-branch commit observed 2026-03-09
+problem_fit:
+  supported_results:
+  - cardinality
+  - sum
+  party_model:
+  - two-party
+  - client-server
+  data_profiles:
+  - balanced
+  - unbalanced
+  - low-entropy-identifiers
+  target_use_cases:
+  - Intersection cardinality and associated-value sum
+  - Reference for explicit small-output and repeated-run leakage
+  non_fit:
+  - Cardinality and sum are prohibited core outputs for Private Match v0.1
+  - Repository documents honest-but-curious behavior
+  - Client output is not a symmetric minimum result
+security:
+  security_model: Repository states honest-but-curious security and warns that deviating parties may learn more
+  cryptographic_assumptions:
+  - Commutative encryption for matching
+  - Paillier-style additive homomorphic encryption for sum
+  - Randomness and transport dependencies described by project code/paper
+  trusted_components:
+  - Both parties follow the protocol
+  - Pinned project code and dependencies
+  - Input preparation and external enforcement
+  collusion_threshold: Two-party protocol with no independent third party
+  input_authenticity: Repository explicitly states that inputs are not authenticated and parties can change them
+  omission_resistance: Not supplied; arbitrary party inputs can omit records
+  replay_and_session_binding: No Private Match authoritative replay/session state established from the repository workflow
+  metadata_leakage:
+  - Intersection cardinality and sum
+  - Input sizes, endpoints, timing, traffic shape, and protocol success/failure
+  repeated_query_risk:
+  - Repository warns that sequences on related input can reveal more
+  - Small intersections and unique associated values can support inference
+  known_attacks_or_limitations:
+  - Honest-but-curious only
+  - Output itself can leak intersection membership
+  - Suggested mitigations are not implemented by the repository according to its README
+engineering:
+  languages:
+  - C++
+  platforms:
+  - Bazel
+  - Two local or networked processes
+  deployment_models:
+  - Client and server CLI/library
+  computation_profile: Dedicated matching and additive aggregation; no local timing exists
+  communication_profile: Protocol exchange for commutative matching and encrypted sum; local bytes unknown
+  artifact_size_profile: Input CSVs, keys, binaries, logs, cardinality/sum output, and capture artifacts
+  operational_complexity: Bazel build, two processes, key setup, associated-value policy, output-leakage controls, and external
+    input governance
+  key_or_setup_requirements:
+  - Pinned source/dependencies
+  - Party cryptographic keys
+  - Associated-value bounds
+  - Minimum-size and repeated-query policy outside the library
+assurance:
+  standards:
+  - No protocol standard identified
+  papers:
+  - Project documentation and linked Private Join and Compute design
+  - Birds of a Feather Flock Together, USENIX Security 2022, linked by project
+  formal_analysis:
+  - Honest-but-curious scope documented by project; not extended to malicious behavior
+  external_audits:
+  - Repository suggests code audits as external enforcement but no current implementation audit was established
+  test_vectors:
+  - Repository dummy-data generator and examples
+  interoperability:
+  - Project-specific protocol and Bazel implementation
+project_health:
+  license: Apache-2.0 as published by the repository
+  patent_considerations: Unknown; no patent clearance performed
+  latest_release: No GitHub release observed
+  maintenance_status: Not archived; last default-branch commit observed 2026-03-09
+  bus_factor: Unknown
+  security_reporting: Google open-source reporting route; repository-specific SECURITY.md was not established
+assessment:
+  strengths:
+  - F — Repository states output, threat scope, unauthenticated-input risk, small-output leakage, and repeated-query risk
+    explicitly
+  - F — Includes a deterministic dummy-data workflow
+  limitations_or_unknowns:
+  - U — No local result, release artifact, current external audit, or symmetric-output path exists
+  - U — Output is outside the core result policy
+  recommended_experiments:
+  - H — Use documented caveats as negative-test requirements rather than execute this in the first core run
+  private_match_fit: I — Valuable negative reference, rejected for the core because it reveals cardinality and sum
+  confidence: high
+sources:
+  primary:
+  - url: https://github.com/google/private-join-and-compute
+    title: Private Join and Compute repository
+    publisher: Google
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://www.usenix.org/conference/usenixsecurity22/presentation/guo
+    title: Birds of a Feather Flock Together
+    publisher: USENIX
+    published_at: '2022-08-10'
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: approved
+  security_review: approved
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

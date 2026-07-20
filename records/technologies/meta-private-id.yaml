@@ -1,0 +1,138 @@
+schema_version: '0.1'
+record_type: technology
+identity:
+  name: Meta Private-ID
+  category: PSI
+  implementation_or_standard: facebookresearch/Private-ID v0.0.22
+  canonical_url: https://github.com/facebookresearch/Private-ID
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  maturity: Public repository not archived; latest release v0.0.22 published 2024-08-28 and last default-branch commit observed
+    2024-10-18
+problem_fit:
+  supported_results:
+  - intersection
+  - general-computation
+  party_model:
+  - two-party
+  - multi-party
+  data_profiles:
+  - balanced
+  - unbalanced
+  - large-set
+  - low-entropy-identifiers
+  target_use_cases:
+  - Private record joins
+  - Pseudorandom universal identifiers
+  - Downstream additive or XOR shares
+  non_fit:
+  - Universal identifiers and downstream shares exceed the minimum core result
+  - Repository exposes several distinct protocols with different role and output semantics
+  - Current malicious-input and query-budget behavior is not established by this record
+security:
+  security_model: Paper describes DDH-based private matching constructions; exact corruption model for each current repository
+    binary requires protocol-specific review
+  cryptographic_assumptions:
+  - Decisional Diffie-Hellman style assumptions described by the cited paper
+  - Protocol-specific encryption, shuffling, sharing, randomness, and transport dependencies
+  trusted_components:
+  - Pinned Rust implementation and dependencies
+  - Chosen protocol roles and any helper/shuffler
+  - Transport/TLS configuration and downstream MPC
+  collusion_threshold: Protocol-specific; delegated and multi-party variants introduce different helper and party assumptions
+  input_authenticity: No real-dataset authenticity conclusion was established from the reviewed public workflow
+  omission_resistance: No general completeness guarantee; streaming and updates are functionality goals rather than authenticity
+    evidence
+  replay_and_session_binding: Application/session replay policy was not established from the reviewed README examples
+  metadata_leakage:
+  - Party roles, endpoints, input sizes, match/UID/share dimensions, timing, and traffic shape
+  - Each party's mapping between its own rows and pseudorandom identifiers
+  repeated_query_risk:
+  - Repeated UID generation or matching may accumulate linkability
+  - Streaming or related batches require output and purpose review
+  known_attacks_or_limitations:
+  - Output semantics differ across binaries
+  - No local transport, tamper, replay, side-channel, or implementation audit result exists
+  - Nightly Rust requirement in README may affect reproducibility
+engineering:
+  languages:
+  - Rust
+  platforms:
+  - Rust nightly as documented
+  - Docker Compose path
+  - Localhost or networked roles
+  deployment_models:
+  - Two-party client/server
+  - Multi-party/helper variants
+  - Downstream MPC share generation
+  computation_profile: DDH-style and protocol-specific operations; author figures are not local evidence
+  communication_profile: Protocol and role count dependent; local bytes and rounds unknown
+  artifact_size_profile: CSV inputs, pseudorandom ID or share outputs, binaries, logs, and optional TLS material
+  operational_complexity: Multiple binaries, role-specific ports/files, optional helper/shuffler, transport choices, and downstream
+    computation
+  key_or_setup_requirements:
+  - Pinned source and Rust toolchain
+  - Protocol/role selection
+  - Endpoint and TLS decision
+  - Output-share and downstream-consumer design
+assurance:
+  standards:
+  - No interoperability standard identified
+  papers:
+  - Private Matching for Compute, ePrint 2020/599
+  - Additional multi-key and delegated papers linked by repository
+  formal_analysis:
+  - Paper construction analysis; implementation correspondence was not independently verified
+  external_audits:
+  - Unknown from reviewed primary pages
+  test_vectors:
+  - Repository examples and Rust tests; no cross-implementation vector reviewed
+  interoperability:
+  - Project-specific formats and binaries; downstream share compatibility must be established per consumer
+project_health:
+  license: Apache-2.0 as published by the repository
+  patent_considerations: Unknown; no patent clearance performed
+  latest_release: v0.0.22 published 2024-08-28
+  maintenance_status: Not archived; last default-branch commit observed 2024-10-18
+  bus_factor: Unknown
+  security_reporting: No repository SECURITY.md was observed at the root; organization reporting route requires review
+assessment:
+  strengths:
+  - F — Publishes multiple private matching and downstream-sharing workflows
+  - F — Cited paper addresses private identifiers and streaming/downstream computation
+  limitations_or_unknowns:
+  - U — Current protocol-by-protocol threat model, audit coverage, and dependency compatibility are incomplete
+  - U — No local balanced, unbalanced, metadata, or raw-egress result exists
+  recommended_experiments:
+  - H — Revisit after the minimum-result run if downstream private computation is required
+  private_match_fit: I — Relevant adjacent implementation, deferred because output semantics exceed the first bounded experiment
+  confidence: medium
+sources:
+  primary:
+  - url: https://github.com/facebookresearch/Private-ID
+    title: Private-ID repository
+    publisher: Meta
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://eprint.iacr.org/2020/599
+    title: Private Matching for Compute
+    publisher: Cryptology ePrint Archive
+    published_at: '2020-05-22'
+    accessed_at: '2026-07-18'
+  - url: https://github.com/facebookresearch/Private-ID/releases/tag/v0.0.22
+    title: Private-ID v0.0.22
+    publisher: Meta
+    published_at: '2024-08-28'
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: approved
+  security_review: approved
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

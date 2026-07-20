@@ -1,0 +1,142 @@
+schema_version: '0.1'
+record_type: technology
+identity:
+  name: RFC 9497 VOPRF via Cloudflare CIRCL
+  category: OPRF
+  implementation_or_standard: RFC 9497 and github.com/cloudflare/circl/oprf v1.6.4
+  canonical_url: https://datatracker.ietf.org/doc/rfc9497/
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  maturity: CFRG informational RFC published December 2023; CIRCL v1.6.4 published 2026-06-22
+problem_fit:
+  supported_results:
+  - membership
+  party_model:
+  - client-server
+  - two-party
+  data_profiles:
+  - low-entropy-identifiers
+  - balanced
+  - unbalanced
+  target_use_cases:
+  - Server-keyed identifier preprocessing
+  - RFC vector reproduction
+  - Online query-budget and context-binding experiment
+  non_fit:
+  - RFC 9497 outputs a PRF value, not set membership or intersection without an application index
+  - Client-only output is not a symmetric Private Match result
+  - Authentication, authorization, normalization, session binding, rate limiting, and query budgets are application responsibilities
+security:
+  security_model: RFC 9497 VOPRF security properties under its prime-order-group and DLEQ assumptions; application security
+    remains out of scope
+  cryptographic_assumptions:
+  - Prime-order group discrete-log style assumptions specified by the selected ciphersuite
+  - Hash-to-group/hash-to-scalar modeled assumptions
+  - DLEQ proof soundness and server key secrecy
+  - Cryptographic random generation
+  trusted_components:
+  - Pinned CIRCL implementation and Go toolchain
+  - Server key storage and public-key distribution
+  - Application authentication, transcript binding, query-budget state, and result policy
+  collusion_threshold: Client-server primitive; no third-party threshold and the server knows its PRF key
+  input_authenticity: The primitive processes client-provided bytes but does not establish business authorization or real-world
+    input provenance
+  omission_resistance: Not applicable to a single evaluation and not supplied for an application dataset
+  replay_and_session_binding: Mode and ciphersuite have a context string and POPRF can bind public info, but application session/replay
+    state is not provided
+  metadata_leakage:
+  - Client/server roles
+  - Ciphersuite and mode
+  - Batch size, message length, endpoints, timing, and public info
+  repeated_query_risk:
+  - An authenticated client can submit a dictionary of low-entropy guesses
+  - VOPRF verifiability does not impose rate limits or query budgets
+  known_attacks_or_limitations:
+  - Static Diffie-Hellman and timing considerations are discussed by the RFC
+  - CIRCL is provided as-is and its repository cautions that APIs may change
+  - Primitive conformance does not establish application output minimization
+engineering:
+  languages:
+  - Go
+  - RFC pseudocode and vectors
+  platforms:
+  - Go platforms supported by CIRCL
+  deployment_models:
+  - Client and server process
+  - Embedded library with an application-defined transport
+  computation_profile: Two-message batched evaluation plus proof generation/verification in VOPRF mode; local cost not measured
+  communication_profile: One blinded request and one evaluated response/proof per batch; application framing adds cost
+  artifact_size_profile: Server key, public key, vector inputs/outputs, application transcript, stdout/stderr, and result
+    evidence
+  operational_complexity: Low primitive harness complexity but high application-policy responsibility
+  key_or_setup_requirements:
+  - Selected RFC mode and ciphersuite
+  - Server key and client-authenticated public key
+  - Application domain/session context
+  - Online authorization and authoritative query budget
+assurance:
+  standards:
+  - RFC 9497, an IRTF/CFRG informational RFC rather than an Internet Standards Track specification
+  papers:
+  - Security references cited by RFC 9497
+  formal_analysis:
+  - RFC security properties and assumptions; not a proof of CIRCL application integration
+  external_audits:
+  - Unknown for CIRCL v1.6.4 OPRF package from the reviewed primary pages
+  test_vectors:
+  - RFC 9497 Appendix A vectors for OPRF, VOPRF, and POPRF modes
+  interoperability:
+  - RFC ciphersuites and vectors enable primitive comparison; no Private Match application interoperability test exists
+project_health:
+  license: BSD-3-Clause as published in the CIRCL repository; RFC text has its own publication terms
+  patent_considerations: Unknown; RFC/OSS status does not replace IPR and patent review
+  latest_release: CIRCL v1.6.4 published 2026-06-22; RFC 9497 published December 2023
+  maintenance_status: CIRCL active; default-branch commit observed 2026-07-17
+  bus_factor: Unknown
+  security_reporting: CIRCL repository publishes a security policy; RFC errata process is separate
+assessment:
+  strengths:
+  - F — RFC defines three modes, explicit errors, ciphersuites, security considerations, and vectors
+  - F — CIRCL publishes an RFC-compatible Go package with batch support
+  limitations_or_unknowns:
+  - U — No set protocol, symmetric result, session state, or query-budget component is supplied
+  - U — Local vector, invalid-proof, performance, and cross-implementation results are not run
+  recommended_experiments:
+  - H — Reproduce RFC VOPRF vectors through CIRCL v1.6.4
+  - H — Place a 20-query application budget before evaluation and observe stale context, proof, and key failures
+  private_match_fit: I — Selected as a low-entropy preprocessing primitive experiment, not as a complete matcher
+  confidence: high
+sources:
+  primary:
+  - url: https://datatracker.ietf.org/doc/rfc9497/
+    title: 'RFC 9497: Oblivious Pseudorandom Functions Using Prime-Order Groups'
+    publisher: RFC Editor
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://github.com/cloudflare/circl
+    title: Cloudflare CIRCL
+    publisher: Cloudflare
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://pkg.go.dev/github.com/cloudflare/circl/oprf
+    title: CIRCL oprf package
+    publisher: Go package documentation
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://github.com/cloudflare/circl/releases/tag/v1.6.4
+    title: CIRCL v1.6.4
+    publisher: Cloudflare
+    published_at: '2026-06-22'
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: approved
+  security_review: approved
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved
