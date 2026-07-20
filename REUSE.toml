@@ -30,6 +30,7 @@ path = [
   "docs/*.md",
   "docs/decisions/*.md",
   "landscape/*.md",
+  "landscape/substitutes/*.md",
   "templates/*.yaml",
   "records/**/*.yaml",
   "records/**/*.yml",

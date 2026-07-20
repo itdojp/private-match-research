@@ -1,0 +1,133 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Salesforce
+  product: Data Cloud Identity Resolution
+  canonical_url: https://help.salesforce.com/s/articleView?id=data.c360_a_identity_resolution.htm&language=en_US&type=5
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: substitute
+  confidence: high
+  rationale: An existing customer-data platform can unify profiles and answer overlap or identity questions inside one tenant
+    without a separate bilateral PET product.
+market:
+  buyer:
+  - 'Inferred buyer: customer-data, marketing, service-data, or data-platform leader; exact budget owner unknown'
+  user:
+  - 'Published user: Data Cloud architect and administrator; downstream user: analyst or marketer'
+  trigger:
+  - Multiple organizational source systems contain profile records that must be linked into persistent unified profiles
+  jobs_to_be_done:
+  - Map source data
+  - Configure match and reconciliation rules
+  - Run identity resolution
+  - Inspect and use unified profiles
+  current_alternatives:
+  - Master data-management platform
+  - Custom warehouse matching
+  - Bilateral Private Match session
+  pricing:
+    public: false
+    model: Data Cloud entitlement and usage-credit consumption; exact contractual amount unknown
+    amount: unknown
+    source: https://help.salesforce.com/s/articleView?id=mktg.mktg_bu_configure_identity_resolution_rulesets.htm&language=en_US&type=5
+  deployment_lead_time: initial mapping and ruleset setup unknown; documented processing frequency varies after configuration
+product:
+  inputs:
+  - Mapped source profiles
+  - Exact or fuzzy match rules
+  - Reconciliation rules and tenant configuration
+  outputs:
+  - Unified profiles
+  - Links to source profiles
+  - Identity-resolution summary and processing history
+  workflow:
+  - Connect and map source data
+  - Create ruleset
+  - Configure match and reconciliation
+  - Run ruleset
+  - Review summary and profiles
+  deployment:
+  - Salesforce Data Cloud tenant and supported source connections
+  prerequisites:
+  - Required Salesforce editions and permissions
+  - Data Cloud architect role
+  - Mapped source objects
+  - Configured data space
+  data_movement: Source profile data is made available within the configured Data Cloud tenant through ingestion or supported
+    data-source paths.
+  data_retention: Tenant, source, and platform configuration dependent; no universal retention period was established from
+    the reviewed pages.
+privacy_and_security:
+  published_technologies:
+  - Data mapping
+  - Exact and fuzzy match rules
+  - Reconciliation rules
+  - Unified profile objects
+  trust_model: The organization trusts Salesforce, its tenant administrators, source-system owners, and configured rules with
+    the profile data.
+  attacker_model: Platform and tenant controls apply; the workflow is not a peer-to-peer privacy protocol.
+  raw_data_access: Authorized tenant users and platform processes can access source profiles and unified links according to
+    tenant permissions.
+  metadata_leakage:
+  - Tenant, source, schema, ruleset, processing, profile-count, and administrator metadata
+  repeated_query_controls: Tenant permissions, ruleset limits, and billing controls; no bilateral query budget.
+  minimum_aggregation_controls: Not intrinsic; unified profiles and their source links are intended outputs.
+  audit_and_assurance:
+  - Ruleset configuration, processing history, and resolution summaries can form an internal operational record.
+  - Official Salesforce documentation was reviewed; matching quality was not independently reproduced.
+assessment:
+  strengths:
+  - Creates persistent reusable identity links
+  - Integrates with existing Salesforce workflows
+  - Supports configurable exact, fuzzy, and reconciliation logic
+  limitations_or_unknowns:
+  - Source profiles are available inside the platform boundary
+  - Rule quality and data quality determine output
+  - Initial setup time and contractual price are unknown
+  - Designed for one organizational tenant rather than symmetric two-party output
+  implications_for_private_match:
+  - Private Match is unnecessary when one organization already controls all relevant data
+  - Identity-quality work may be more valuable than a new privacy computation
+  claim_types:
+    facts:
+    - Salesforce documents identity resolution as producing unified profiles from source profiles through match and reconciliation
+      rules.
+    - The documentation states that rulesets affect Data Cloud credit consumption.
+    inferences:
+    - An existing CDP can substitute for a bilateral product when data is already within one tenant boundary.
+    hypotheses:
+    - Target organizations will reject a new preflight product when their existing identity platform already supports the
+      required decision.
+sources:
+  primary:
+  - url: https://help.salesforce.com/s/articleView?id=data.c360_a_identity_resolution.htm&language=en_US&type=5
+    title: About Identity Resolution
+    publisher: Salesforce
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://help.salesforce.com/s/articleView?id=data.c360_a_unify_data_dc4service.htm&language=en_US&type=5
+    title: Unify Service Data with Identity Resolution
+    publisher: Salesforce
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://help.salesforce.com/s/articleView?id=mktg.mktg_bu_configure_identity_resolution_rulesets.htm&language=en_US&type=5
+    title: Configure Identity Resolution Rulesets
+    publisher: Salesforce
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

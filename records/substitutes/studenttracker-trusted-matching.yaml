@@ -1,0 +1,126 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: National Student Clearinghouse
+  product: StudentTracker batch matching
+  canonical_url: https://www.studentclearinghouse.org/solutions/ed-insights/studenttracker/
+  country_or_region: United States
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: substitute
+  confidence: high
+  rationale: A central intermediary accepts submitted identifiers, matches them against a reference dataset, and returns defined
+    reports without a peer-to-peer PET product.
+market:
+  buyer:
+  - 'Published buyer: college, university, high school, district, or educational organization'
+  user:
+  - 'Published user: subscriber administrator, data preparer, and education-outcomes analyst'
+  trigger:
+  - An education organization needs enrollment or completion outcomes for a submitted cohort
+  jobs_to_be_done:
+  - Prepare a prescribed batch file
+  - Submit records to the intermediary
+  - Receive student-level or aggregate outcome reports
+  current_alternatives:
+  - Direct requests to institutions
+  - Internal outcome survey
+  - Private matching against separately obtained reference data
+  pricing:
+    public: false
+    model: Subscription or service tier; exact public amount not found on the reviewed pages
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown; service authorization, onboarding, and report turnaround were not established
+product:
+  inputs:
+  - Subscriber cohort file with service-defined student fields
+  - Subscriber authorization and account configuration
+  outputs:
+  - Student-level detail report
+  - Analysis-ready report
+  - Aggregate cohort report
+  workflow:
+  - Establish subscriber access
+  - Format and validate a cohort file
+  - Submit the file
+  - Intermediary matches records
+  - Retrieve and analyze reports
+  deployment:
+  - Centralized National Student Clearinghouse service and subscriber file-transfer workflow
+  prerequisites:
+  - Eligible subscriber relationship
+  - Service-defined file format
+  - Authorized cohort data
+  - Report-user access
+  data_movement: Subscriber identifiers move to the Clearinghouse, which compares them with its reference records and returns
+    reports.
+  data_retention: Implementation guidance states submitted student records are stored in the Clearinghouse database for later
+    reporting; exact retention terms were not established.
+privacy_and_security:
+  published_technologies:
+  - Centralized reference database
+  - Batch file exchange
+  - Operator-managed record matching and reporting
+  trust_model: The subscriber trusts the Clearinghouse to receive identifiers, operate the reference dataset, perform matching,
+    and return scoped reports.
+  attacker_model: Service and organizational controls apply; no peer-to-peer cryptographic attacker model is published for
+    this workflow.
+  raw_data_access: The intermediary receives submitted student records; the subscriber receives service-defined reports rather
+    than the complete reference database.
+  metadata_leakage:
+  - Subscriber identity and cohort purpose
+  - File size, submission timing, report requests, and match coverage
+  repeated_query_controls: Subscription, authorization, and service rules; published product tiers allow repeated submissions
+    in stated cases.
+  minimum_aggregation_controls: Service-defined; student-level and aggregate reports are both documented.
+  audit_and_assurance:
+  - Submission records and operator-generated reports can form an operational record within the service scope.
+  - Evidence reviewed is official service documentation; matching quality was not independently reproduced.
+assessment:
+  strengths:
+  - Intermediary supplies a reference dataset unavailable to the requester
+  - Provides standardized batch formats and reports
+  - Supports row-level and aggregate outcome workflows
+  limitations_or_unknowns:
+  - Identifiers are disclosed to the intermediary
+  - Coverage and match quality depend on source records and input quality
+  - Price and turnaround are unknown
+  - The education workflow does not generalize automatically to other domains
+  implications_for_private_match:
+  - A trusted intermediary can be superior when it owns the needed reference data
+  - Private Match cannot replace access to an external reference dataset by protocol design alone
+  claim_types:
+    facts:
+    - StudentTracker documents batch submissions of up to 250,000 students and student-level and aggregate reports.
+    - Implementation guidance states submitted student records are stored for later reporting.
+    inferences:
+    - The service demonstrates a centralized trusted-third-party matching substitute.
+    hypotheses:
+    - A peer-to-peer product is unnecessary when the decision depends on reference data controlled only by the intermediary.
+sources:
+  primary:
+  - url: https://www.studentclearinghouse.org/solutions/ed-insights/studenttracker/
+    title: StudentTracker
+    publisher: National Student Clearinghouse
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://help.studentclearinghouse.org/sths/knowledge-base/implementing-your-service/
+    title: Implementing StudentTracker
+    publisher: National Student Clearinghouse
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved
