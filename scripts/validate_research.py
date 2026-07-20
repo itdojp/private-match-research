@@ -7,9 +7,13 @@ import argparse
 import concurrent.futures
 import dataclasses
 import datetime as dt
+import http.client
+import ipaddress
 import json
+import os
 import re
 import socket
+import ssl
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -24,6 +28,10 @@ class NoDatesSafeLoader(yaml.SafeLoader):
     """Safe YAML loader that leaves ISO dates as strings for JSON Schema."""
 
 
+NoDatesSafeLoader.yaml_implicit_resolvers = {
+    first_char: list(resolvers)
+    for first_char, resolvers in yaml.SafeLoader.yaml_implicit_resolvers.items()
+}
 for first_char, resolvers in list(NoDatesSafeLoader.yaml_implicit_resolvers.items()):
     NoDatesSafeLoader.yaml_implicit_resolvers[first_char] = [
         entry for entry in resolvers if entry[0] != "tag:yaml.org,2002:timestamp"
@@ -63,7 +71,104 @@ NEGATING_CONTEXT = re.compile(
     re.IGNORECASE,
 )
 MARKDOWN_LINK_RE = re.compile(r"(?<!!)\[([^\]]+)\]\(([^)]+)\)")
-RAW_URL_RE = re.compile(r"https://[^\s<>()\]\[\"']+")
+RAW_URL_RE = re.compile(r"https?://[^\s<>()\]\[\"']+")
+APPROVED_URL_PORTS = {443}
+MAX_URL_REDIRECTS = 5
+MAX_URL_RESPONSE_BYTES = 64 * 1024
+MAX_URL_TIMEOUT_SECONDS = 15.0
+REDIRECT_STATUS_CODES = {301, 302, 303, 307, 308}
+TRUSTED_URL_OBSERVATION_EVENTS = {"push", "schedule", "workflow_dispatch"}
+
+
+class UnsafeUrlDestination(ValueError):
+    """Raised when a URL could reach a non-public or disallowed destination."""
+
+
+class UrlRedirectLimitError(RuntimeError):
+    """Raised when URL observation exceeds its bounded redirect count."""
+
+
+class UrlResponseSizeError(RuntimeError):
+    """Raised when a URL observation response exceeds its byte limit."""
+
+
+class NoRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Return redirects to the caller so every target is validated first."""
+
+    def redirect_request(
+        self,
+        req: urllib.request.Request,
+        fp: Any,
+        code: int,
+        msg: str,
+        headers: Any,
+        newurl: str,
+    ) -> None:
+        return None
+
+
+class PublicAddressHTTPSConnection(http.client.HTTPSConnection):
+    """Connect to validated public addresses without a second DNS lookup."""
+
+    def __init__(self, *args: Any, resolver: Any, **kwargs: Any) -> None:
+        self._public_address_resolver = resolver
+        super().__init__(*args, **kwargs)
+
+    def connect(self) -> None:
+        if self._tunnel_host is not None:
+            raise UnsafeUrlDestination("HTTP proxy tunnels are not allowed")
+        addresses = _resolve_public_addresses(
+            self.host,
+            self.port,
+            self._public_address_resolver,
+        )
+        last_error: OSError | None = None
+        for address in addresses:
+            family = socket.AF_INET6 if address.version == 6 else socket.AF_INET
+            raw_socket = socket.socket(family, socket.SOCK_STREAM)
+            try:
+                raw_socket.settimeout(self.timeout)
+                if self.source_address:
+                    raw_socket.bind(self.source_address)
+                destination: tuple[Any, ...]
+                if family == socket.AF_INET6:
+                    destination = (str(address), self.port, 0, 0)
+                else:
+                    destination = (str(address), self.port)
+                raw_socket.connect(destination)
+                self.sock = self._context.wrap_socket(
+                    raw_socket,
+                    server_hostname=self.host,
+                )
+                return
+            except OSError as exc:
+                last_error = exc
+                raw_socket.close()
+        if last_error is not None:
+            raise last_error
+        raise socket.gaierror(f"no usable public address found for {self.host}")
+
+
+class PublicAddressHTTPSHandler(urllib.request.HTTPSHandler):
+    """Build HTTPS connections that are pinned to validated DNS answers."""
+
+    def __init__(self, *, context: ssl.SSLContext, resolver: Any) -> None:
+        super().__init__(context=context)
+        self._public_address_resolver = resolver
+
+    def https_open(self, request: urllib.request.Request) -> Any:
+        def connection_factory(*args: Any, **kwargs: Any) -> Any:
+            return PublicAddressHTTPSConnection(
+                *args,
+                resolver=self._public_address_resolver,
+                **kwargs,
+            )
+
+        return self.do_open(
+            connection_factory,
+            request,
+            context=self._context,
+        )
 
 
 def _iter_files(root: Path, suffixes: set[str]) -> Iterable[Path]:
@@ -127,7 +232,13 @@ def _publication_gate(record: dict[str, Any], path: str) -> list[Finding]:
     if not isinstance(publication, dict):
         return findings
 
-    required_approved = ["source_check", "freshness_check", "privacy_review", "claims_review"]
+    required_approved = [
+        "source_check",
+        "freshness_check",
+        "privacy_review",
+        "claims_review",
+        "reproducibility_review",
+    ]
     conditional = ["ip_review", "security_review"]
     if record.get("record_type") == "public-use-case-finding":
         required_approved.append("anonymization_review")
@@ -214,13 +325,15 @@ def _extract_source_urls(record: Any) -> set[str]:
         for key, value in record.items():
             if key == "url" and isinstance(value, str):
                 urls.add(value)
-            elif key in {"canonical_url", "source"} and isinstance(value, str) and value.startswith("https://"):
+            elif key in {"canonical_url", "source"} and isinstance(value, str) and value.startswith(
+                ("http://", "https://")
+            ):
                 urls.add(value)
             else:
                 urls.update(_extract_source_urls(value))
     elif isinstance(record, list):
         for value in record:
-            if isinstance(value, str) and value.startswith("https://"):
+            if isinstance(value, str) and value.startswith(("http://", "https://")):
                 urls.add(value)
             else:
                 urls.update(_extract_source_urls(value))
@@ -240,8 +353,6 @@ def validate_markdown_links(root: Path) -> tuple[list[Finding], set[str]]:
                 continue
             parsed = urllib.parse.urlparse(target)
             if parsed.scheme in {"http", "https"}:
-                if parsed.scheme != "https":
-                    findings.append(Finding("warning", "insecure-url", rel, f"non-HTTPS external link: {target}"))
                 external_urls.add(target)
             elif parsed.scheme in {"mailto", "tel"} or target.startswith("#"):
                 continue
@@ -283,10 +394,11 @@ def lint_claims(root: Path) -> list[Finding]:
                 continue
             if in_ignore_block or in_fenced_block:
                 continue
-            if NEGATING_CONTEXT.search(line):
+            claim_text = RAW_URL_RE.sub("", line)
+            if NEGATING_CONTEXT.search(claim_text):
                 continue
             for code, pattern in RISKY_PATTERNS.items():
-                if pattern.search(line):
+                if pattern.search(claim_text):
                     findings.append(
                         Finding(
                             "warning",
@@ -305,36 +417,281 @@ def collect_record_urls(records: Iterable[dict[str, Any]]) -> set[str]:
     return urls
 
 
-def check_url(url: str, timeout: float) -> tuple[str, str]:
-    request = urllib.request.Request(
-        url,
-        method="HEAD",
-        headers={"User-Agent": "private-match-research-quality/0.1"},
+def _resolve_host_addresses(host: str, port: int) -> list[str]:
+    addresses: list[str] = []
+    for (
+        family,
+        _socket_type,
+        _protocol,
+        _canonical_name,
+        socket_address,
+    ) in socket.getaddrinfo(
+        host,
+        port,
+        type=socket.SOCK_STREAM,
+    ):
+        if family in {socket.AF_INET, socket.AF_INET6}:
+            addresses.append(socket_address[0])
+    if not addresses:
+        raise socket.gaierror(f"no usable address found for {host}")
+    return addresses
+
+
+def _is_public_address(address: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
+    return bool(
+        address.is_global
+        and not address.is_loopback
+        and not address.is_private
+        and not address.is_link_local
+        and not address.is_multicast
+        and not address.is_reserved
+        and not address.is_unspecified
     )
+
+
+def validate_url_reference(
+    url: str,
+) -> tuple[str, int, ipaddress.IPv4Address | ipaddress.IPv6Address | None]:
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            return "ok", f"HTTP {response.status}"
+        parsed = urllib.parse.urlsplit(url)
+    except ValueError as exc:
+        raise UnsafeUrlDestination("invalid URL") from exc
+    if parsed.scheme.lower() != "https":
+        raise UnsafeUrlDestination("only HTTPS destinations are allowed")
+    if parsed.username is not None or parsed.password is not None:
+        raise UnsafeUrlDestination("URL userinfo is not allowed")
+    raw_host = parsed.hostname
+    if raw_host is None or not raw_host:
+        raise UnsafeUrlDestination("URL hostname is required")
+    if "%" in raw_host:
+        raise UnsafeUrlDestination("scoped IP destinations are not allowed")
+    host = raw_host.rstrip(".")
+    if not host:
+        raise UnsafeUrlDestination("URL hostname is required")
+    try:
+        literal = ipaddress.ip_address(host)
+    except ValueError:
+        try:
+            host = host.encode("idna").decode("ascii").rstrip(".").lower()
+        except UnicodeError as exc:
+            raise UnsafeUrlDestination("invalid URL hostname") from exc
+        if not host:
+            raise UnsafeUrlDestination("URL hostname is required")
+        literal = None
+    try:
+        port = parsed.port or 443
+    except ValueError as exc:
+        raise UnsafeUrlDestination("invalid URL port") from exc
+    if port not in APPROVED_URL_PORTS:
+        raise UnsafeUrlDestination("URL port is not approved")
+    if host == "localhost" or host.endswith(".localhost"):
+        raise UnsafeUrlDestination("localhost destinations are not allowed")
+
+    if literal is not None:
+        if not _is_public_address(literal):
+            raise UnsafeUrlDestination("literal destination is not a public address")
+    return host, port, literal
+
+
+def _resolve_public_addresses(
+    host: str,
+    port: int,
+    resolver: Any,
+) -> list[ipaddress.IPv4Address | ipaddress.IPv6Address]:
+    try:
+        literal = ipaddress.ip_address(host)
+    except ValueError:
+        literal = None
+    if literal is None:
+        resolved = resolver(host, port)
+        addresses: list[ipaddress.IPv4Address | ipaddress.IPv6Address] = []
+        for item in resolved:
+            try:
+                addresses.append(ipaddress.ip_address(str(item).split("%", 1)[0]))
+            except ValueError as exc:
+                raise socket.gaierror("DNS returned an unusable address") from exc
+        if not addresses:
+            raise socket.gaierror("DNS returned no usable address")
+    else:
+        addresses = [literal]
+
+    if any(not _is_public_address(address) for address in addresses):
+        raise UnsafeUrlDestination(
+            "destination did not resolve exclusively to public addresses"
+        )
+    return addresses
+
+
+def validate_url_destination(
+    url: str,
+    resolver: Any = _resolve_host_addresses,
+) -> None:
+    host, port, _literal = validate_url_reference(url)
+    _resolve_public_addresses(host, port, resolver)
+
+
+def _build_url_opener(resolver: Any) -> Any:
+    return urllib.request.build_opener(
+        urllib.request.ProxyHandler({}),
+        NoRedirectHandler(),
+        PublicAddressHTTPSHandler(
+            context=ssl.create_default_context(),
+            resolver=resolver,
+        ),
+    )
+
+
+def _request_with_validated_redirects(
+    url: str,
+    method: str,
+    timeout: float,
+    resolver: Any,
+    opener: Any,
+) -> int:
+    current_url = url
+    redirect_count = 0
+    while True:
+        validate_url_destination(current_url, resolver=resolver)
+        headers = {"User-Agent": "private-match-research-quality/0.1"}
+        if method == "GET":
+            headers["Range"] = f"bytes=0-{MAX_URL_RESPONSE_BYTES - 1}"
+        request = urllib.request.Request(current_url, method=method, headers=headers)
+        try:
+            response = opener.open(request, timeout=timeout)
+        except urllib.error.HTTPError as exc:
+            if exc.code not in REDIRECT_STATUS_CODES:
+                raise
+            location = exc.headers.get("Location") if exc.headers is not None else None
+            exc.close()
+            if not location:
+                raise urllib.error.HTTPError(
+                    current_url,
+                    exc.code,
+                    "redirect response omitted Location",
+                    exc.headers,
+                    None,
+                ) from exc
+            target = urllib.parse.urljoin(current_url, location)
+            validate_url_destination(target, resolver=resolver)
+            if redirect_count >= MAX_URL_REDIRECTS:
+                raise UrlRedirectLimitError(
+                    f"redirect count exceeded {MAX_URL_REDIRECTS}"
+                )
+            redirect_count += 1
+            current_url = target
+            continue
+
+        with response:
+            if method == "GET":
+                content_length = response.headers.get("Content-Length")
+                if content_length is not None:
+                    try:
+                        if int(content_length) > MAX_URL_RESPONSE_BYTES:
+                            raise UrlResponseSizeError(
+                                f"response exceeded {MAX_URL_RESPONSE_BYTES} bytes"
+                            )
+                    except ValueError:
+                        pass
+                if (
+                    len(response.read(MAX_URL_RESPONSE_BYTES + 1))
+                    > MAX_URL_RESPONSE_BYTES
+                ):
+                    raise UrlResponseSizeError(
+                        f"response exceeded {MAX_URL_RESPONSE_BYTES} bytes"
+                    )
+            return int(response.status)
+
+
+def _classify_url_exception(exc: Exception) -> tuple[str, str]:
+    if isinstance(exc, urllib.error.HTTPError):
+        exc.close()
+        if exc.code in {404, 410}:
+            return "http-failure", f"HTTP {exc.code} (missing or gone)"
+        return "http-failure", f"HTTP {exc.code}"
+    if isinstance(exc, UnsafeUrlDestination):
+        return "unsafe-destination", str(exc)
+    if isinstance(exc, UrlRedirectLimitError):
+        return "redirect-limit", str(exc)
+    if isinstance(exc, UrlResponseSizeError):
+        return "response-too-large", str(exc)
+    if isinstance(
+        exc,
+        (
+            urllib.error.URLError,
+            TimeoutError,
+            socket.timeout,
+            socket.gaierror,
+            ssl.SSLError,
+            ConnectionError,
+        ),
+    ):
+        return "network-failure", str(exc)
+    return "network-failure", f"unexpected network error: {exc}"
+
+
+def check_url(
+    url: str,
+    timeout: float,
+    *,
+    resolver: Any = _resolve_host_addresses,
+    opener: Any | None = None,
+) -> tuple[str, str]:
+    if timeout <= 0 or timeout > MAX_URL_TIMEOUT_SECONDS:
+        return (
+            "unsafe-destination",
+            "URL observation timeout is outside the approved bound",
+        )
+    opener = opener or _build_url_opener(resolver)
+    try:
+        status = _request_with_validated_redirects(
+            url, "HEAD", timeout, resolver, opener
+        )
+        return "ok", f"HTTP {status}"
     except urllib.error.HTTPError as exc:
         if exc.code in {405, 501}:
+            exc.close()
             try:
-                get_request = urllib.request.Request(
+                status = _request_with_validated_redirects(
                     url,
-                    method="GET",
-                    headers={"User-Agent": "private-match-research-quality/0.1", "Range": "bytes=0-0"},
+                    "GET",
+                    timeout,
+                    resolver,
+                    opener,
                 )
-                with urllib.request.urlopen(get_request, timeout=timeout) as response:
-                    return "ok", f"HTTP {response.status}"
+                return "ok", f"HTTP {status}"
             except Exception as get_exc:
-                exc = get_exc
-        if isinstance(exc, urllib.error.HTTPError):
-            if exc.code in {404, 410}:
-                return "http-failure", f"HTTP {exc.code} (missing or gone)"
-            return "http-failure", f"HTTP {exc.code}"
-        return "network-failure", str(exc)
-    except (urllib.error.URLError, TimeoutError, socket.timeout, ConnectionError) as exc:
-        return "network-failure", str(exc)
+                return _classify_url_exception(get_exc)
+        return _classify_url_exception(exc)
     except Exception as exc:
-        return "network-failure", f"unexpected network error: {exc}"
+        return _classify_url_exception(exc)
+
+
+def _report_safe_url(url: str) -> str:
+    try:
+        parsed = urllib.parse.urlsplit(url)
+    except ValueError:
+        return "<invalid-url>"
+    netloc = parsed.netloc.rsplit("@", 1)[-1]
+    return urllib.parse.urlunsplit(
+        (parsed.scheme, netloc, parsed.path, parsed.query, parsed.fragment)
+    )
+
+
+def validate_url_references(urls: Iterable[str]) -> list[Finding]:
+    findings: list[Finding] = []
+    for url in sorted(set(urls)):
+        try:
+            validate_url_reference(url)
+        except UnsafeUrlDestination as exc:
+            findings.append(
+                Finding(
+                    "error",
+                    "unsafe-url-reference",
+                    _report_safe_url(url),
+                    str(exc),
+                )
+            )
+    return findings
 
 
 def check_urls(urls: Iterable[str], timeout: float, policy: str) -> list[Finding]:
@@ -342,15 +699,26 @@ def check_urls(urls: Iterable[str], timeout: float, policy: str) -> list[Finding
     findings: list[Finding] = []
     if not unique:
         return findings
-    with concurrent.futures.ThreadPoolExecutor(max_workers=min(8, len(unique))) as executor:
+    with concurrent.futures.ThreadPoolExecutor(
+        max_workers=min(8, len(unique))
+    ) as executor:
         future_map = {executor.submit(check_url, url, timeout): url for url in unique}
         for future in concurrent.futures.as_completed(future_map):
             url = future_map[future]
             status, detail = future.result()
             if status == "ok":
                 continue
-            severity = "error" if policy == "fail" and status == "http-failure" else "warning"
-            findings.append(Finding(severity, status, url, detail))
+            safety_failure = status in {
+                "unsafe-destination",
+                "redirect-limit",
+                "response-too-large",
+            }
+            severity = (
+                "error"
+                if safety_failure or (policy == "fail" and status == "http-failure")
+                else "warning"
+            )
+            findings.append(Finding(severity, status, _report_safe_url(url), detail))
     return findings
 
 
@@ -405,6 +773,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--report-dir", type=Path, default=Path("artifacts"))
     parser.add_argument("--stale-policy", choices=("warn", "fail"), default="warn")
     parser.add_argument("--check-urls", action="store_true")
+    parser.add_argument(
+        "--trusted-url-observation",
+        action="store_true",
+        help="Acknowledge that URL observation is running only on trusted repository content",
+    )
     parser.add_argument("--url-policy", choices=("warn", "fail"), default="warn")
     parser.add_argument("--url-timeout", type=float, default=5.0)
     parser.add_argument("--today", help="Override current UTC date for tests (YYYY-MM-DD)")
@@ -412,7 +785,21 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    github_event = os.environ.get("GITHUB_EVENT_NAME", "").strip()
+    if args.check_urls and not args.trusted_url_observation:
+        parser.error("--check-urls requires --trusted-url-observation")
+    if args.trusted_url_observation and not args.check_urls:
+        parser.error("--trusted-url-observation requires --check-urls")
+    if args.check_urls and github_event == "pull_request":
+        parser.error("external URL observation is disabled for pull_request events")
+    if args.check_urls and github_event and github_event not in TRUSTED_URL_OBSERVATION_EVENTS:
+        parser.error(f"external URL observation is not approved for GitHub event {github_event!r}")
+    if args.url_timeout <= 0 or args.url_timeout > MAX_URL_TIMEOUT_SECONDS:
+        parser.error(
+            f"--url-timeout must be greater than 0 and at most {MAX_URL_TIMEOUT_SECONDS:g} seconds"
+        )
     root = args.root.resolve()
     report_dir = args.report_dir if args.report_dir.is_absolute() else root / args.report_dir
     today = dt.date.fromisoformat(args.today) if args.today else dt.datetime.now(dt.timezone.utc).date()
@@ -426,6 +813,7 @@ def main(argv: list[str] | None = None) -> int:
     findings.extend(lint_claims(root))
 
     urls = collect_record_urls(records) | markdown_urls
+    findings.extend(validate_url_references(urls))
     checked_urls = 0
     if args.check_urls:
         checked_urls = len(urls)

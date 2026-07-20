@@ -137,7 +137,7 @@
     },
     "publication": {
       "type": "object", "additionalProperties": false,
-      "required": ["classification", "source_check", "freshness_check", "ip_review", "security_review", "privacy_review", "claims_review"],
+      "required": ["classification", "source_check", "freshness_check", "ip_review", "security_review", "privacy_review", "claims_review", "reproducibility_review"],
       "properties": {
         "classification": {"const": "public"},
         "source_check": {"$ref": "#/$defs/reviewStatus"},
@@ -145,7 +145,8 @@
         "ip_review": {"$ref": "#/$defs/reviewStatus"},
         "security_review": {"$ref": "#/$defs/reviewStatus"},
         "privacy_review": {"$ref": "#/$defs/reviewStatus"},
-        "claims_review": {"$ref": "#/$defs/reviewStatus"}
+        "claims_review": {"$ref": "#/$defs/reviewStatus"},
+        "reproducibility_review": {"$ref": "#/$defs/reviewStatus"}
       }
     },
     "reviewStatus": {"enum": ["pending", "approved", "rejected", "not-required"]}

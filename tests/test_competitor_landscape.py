@@ -45,6 +45,7 @@ class CompetitorLandscapeTests(unittest.TestCase):
                 self.assertTrue(record["assessment"]["claim_types"]["facts"])
                 self.assertTrue(record["assessment"]["claim_types"]["inferences"])
                 self.assertTrue(record["assessment"]["claim_types"]["hypotheses"])
+                self.assertEqual(record["publication"]["reproducibility_review"], "approved")
                 for source in record["sources"]["primary"]:
                     self.assertTrue(source["url"].startswith("https://"))
                     self.assertTrue(source["title"])
