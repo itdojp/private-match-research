@@ -1,0 +1,116 @@
+schema_version: '0.1'
+record_type: competitor
+identity:
+  organization: Snowflake
+  product: Snowflake Data Clean Rooms
+  canonical_url: https://docs.snowflake.com/en/user-guide/cleanrooms/introduction
+  country_or_region: Global
+observation:
+  observed_at: '2026-07-18'
+  last_verified_at: '2026-07-18'
+  next_review_at: '2026-10-18'
+  source_status: current
+classification:
+  class: adjacent
+  confidence: high
+  rationale: It provides governed multi-party analysis inside Snowflake, which overlaps with matching but has a broader warehouse-native
+    buyer and output surface.
+market:
+  buyer:
+  - 'Inferred buyer: Snowflake data collaboration or marketing analytics leader; exact budget owner unknown'
+  user:
+  - 'Published user: clean room provider, consumer, analyst, or administrator'
+  trigger:
+  - 'Published use case: Snowflake organizations need governed joint analysis or audience collaboration'
+  jobs_to_be_done:
+  - Publish datasets and templates
+  - Approve analyses
+  - Receive policy-governed results
+  current_alternatives:
+  - Snowflake data sharing
+  - AWS or BigQuery data room
+  - Trusted analyst
+  pricing:
+    public: false
+    model: unknown
+    amount: unknown
+    source: ''
+  deployment_lead_time: unknown
+product:
+  inputs:
+  - Snowflake tables or linked datasets
+  - Templates and policies
+  outputs:
+  - Results permitted by approved templates and policies
+  workflow:
+  - Install or access the native clean room
+  - Link data
+  - Configure templates and policies
+  - Run approved analysis
+  deployment:
+  - Snowflake Native App in participating Snowflake accounts
+  prerequisites:
+  - Supported Snowflake accounts and regions
+  - Provider and consumer setup
+  - Warehouse compute
+  data_movement: Documentation describes linking or importing data into the clean-room workflow; the path depends on account
+    and cloud configuration.
+  data_retention: unknown
+privacy_and_security:
+  published_technologies:
+  - Snowflake Native Apps
+  - Policy templates
+  - Differential privacy options
+  trust_model: Snowflake platform and native-app controls plus participant policy approval.
+  attacker_model: unknown
+  raw_data_access: Documentation states consumers run permitted analyses rather than unrestricted queries against provider
+    raw data.
+  metadata_leakage:
+  - Account, template, and execution metadata
+  - Query-specific leakage depends on the approved template and policy
+  repeated_query_controls: Policy and differential-privacy configuration dependent.
+  minimum_aggregation_controls: Template and policy dependent.
+  audit_and_assurance:
+  - Snowflake product documentation and prerequisites were reviewed.
+  - 'Evidence reviewed: vendor-published material only; no independent reproduction was reviewed.'
+assessment:
+  strengths:
+  - Native to existing Snowflake estates
+  - Supports UI and programmatic workflows
+  limitations_or_unknowns:
+  - Exact public price for a deployment was not found
+  - Region and account prerequisites apply
+  - Independent capability reproduction was not performed
+  implications_for_private_match:
+  - Private Match should focus on decisions that do not warrant warehouse-native collaboration
+  - Time-to-first-result should be measured against Snowflake setup
+  claim_types:
+    facts:
+    - Snowflake documentation describes provider and consumer workflows using templates and policies.
+    - Snowflake documents account and region prerequisites.
+    inferences:
+    - Existing Snowflake customers can treat this as an adjacent default for recurring analytics.
+    hypotheses:
+    - A bilateral preflight can serve teams that cannot require both parties to use Snowflake.
+sources:
+  primary:
+  - url: https://docs.snowflake.com/en/user-guide/cleanrooms/introduction
+    title: Introduction to Snowflake Data Clean Rooms
+    publisher: Snowflake
+    published_at: null
+    accessed_at: '2026-07-18'
+  - url: https://docs.snowflake.com/en/user-guide/cleanrooms/getting-started
+    title: Getting started with Snowflake Data Clean Rooms
+    publisher: Snowflake
+    published_at: null
+    accessed_at: '2026-07-18'
+  secondary: []
+publication:
+  classification: public
+  source_check: approved
+  freshness_check: approved
+  ip_review: not-required
+  security_review: not-required
+  privacy_review: approved
+  claims_review: approved
+  reproducibility_review: approved

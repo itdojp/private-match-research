@@ -4,6 +4,11 @@ Observed at: 2026-07-18
 Status: preliminary / public-source scan  
 Scope: adjacent products and substitutes for privacy-preserving cross-organization matching and analysis
 
+Structured follow-up: [`competitor-index.md`](competitor-index.md) contains 29
+schema-validated records with buyer, user, trigger, output, deployment, pricing,
+trust, assurance, source, and review-date fields. The structured records
+supersede this preliminary scan when details differ.
+
 ## 1. Interpretation boundary
 
 This document does not establish that a direct competitor does or does not exist.
@@ -35,7 +40,7 @@ Implication:
 Primary sources:
 
 - https://docs.aws.amazon.com/clean-rooms/latest/userguide/crypto-computing.html
-- https://docs.aws.amazon.com/clean-rooms/latest/userguide/crypto-computing-guidelines.html
+- <https://docs.aws.amazon.com/clean-rooms/latest/userguide/crypto-computing-considerations.html>
 - https://github.com/aws/c3r
 
 ### Snowflake Data Clean Rooms
@@ -56,7 +61,7 @@ Implication:
 
 Primary sources:
 
-- https://docs.snowflake.com/en/user-guide/cleanrooms/about
+- <https://docs.snowflake.com/en/user-guide/cleanrooms/introduction>
 - https://docs.snowflake.com/en/user-guide/cleanrooms/overview
 
 ### BigQuery Data Clean Rooms
@@ -103,7 +108,8 @@ Implication:
 
 Primary source:
 
-- https://www.infosum.com/products/secure-data-clean-room
+- <https://www.infosum.com/platform/privacy>
+- <https://support.infosum.com/hc/en-us/articles/20230364634258-Introducing-the-InfoSum-Data-Clean-Room>
 
 ### Decentriq
 
@@ -150,9 +156,9 @@ Implication:
 
 Primary sources:
 
-- https://dualitytech.com/platform/
-- https://dualitytech.com/platform/duality-technology/
-- https://dualitytech.com/platform/open-source/
+- <https://dualitytech.com/>
+- <https://dualitytech.com/wp-content/uploads/2023/06/pagerFinCrime_v10.pdf>
+- <https://dualitytech.com/wp-content/uploads/2024/01/Installation-Guide-v3.1-AWS-Market-Place_support.pdf>
 
 ## 4. Japan market
 
@@ -228,6 +234,9 @@ Primary sources:
 - General-purpose and warehouse-native data clean rooms are mature commercial categories.
 - Confidential computing, MPC, FHE, differential privacy, and client-side cryptographic preprocessing are already used or marketed in commercial offerings.
 - Protected ID matching is offered in Japan by established vendors.
+- The structured index includes three dedicated privacy-first matching
+  candidates—ZERONEAR, Heyoosh Engine, and Voxhu—reviewed from official sources
+  on 2026-07-20; none is designated as a direct competitor.
 
 ### Inferences
 
@@ -244,8 +253,11 @@ Primary sources:
 
 ## 6. Next research actions
 
-1. Add direct and non-cryptographic substitutes: conflict-check services, NDA/manual matching, trusted third-party analysis, consulting engagements.
-2. Record buyer, trigger, implementation time, pricing, and output for every product.
-3. Separate vendor claims from independently reproduced findings.
+1. Review and refresh the
+   [structured competitor index](competitor-index.md) on each record's
+   `next_review_at` date.
+2. Obtain human review before assigning any material `direct` classification.
+3. Add independent reproduction evidence when a product or OSS implementation
+   is exercised; retain vendor-only labels until then.
 4. Interview target users for H1 conflict preflight and H2 customer-overlap preflight.
 5. Conduct a technology bake-off including at least one PSI/OPRF approach and one TEE approach.

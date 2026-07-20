@@ -1,40 +1,147 @@
 # Research Quality Checks
 
-## Scope
+## Scope and claim boundary
 
-The quality validator checks public research artifacts without deciding whether a cryptographic, security, market, or legal claim is substantively true.
+The quality validator checks public research structure, review metadata, link
+targets, source availability observations, and risky wording. It does not decide
+whether a factual, cryptographic, security, market, privacy, or legal claim is
+substantively true.
 
-## Required checks
-
-The command validates:
+The required local checks cover:
 
 - YAML syntax across the repository
 - structured records under `records/`
-- competitor, technology, and public use-case finding schemas
-- required observation and review dates
-- competitor classification and confidence vocabulary
-- at least one primary source per structured record
-- public publication-gate status
-- date ordering and overdue review dates
-- Markdown local-link existence and external-link syntax
+- deterministic competitor-index generation and the 25-record acceptance floor
+- generated-index identity normalization, table-cell escaping, and link-label escaping
+- competitor, technology, and public use-case finding JSON Schemas
+- observation, verification, and review dates
+- classification and confidence vocabulary
+- record-scoped human approval metadata for every `direct` designation
+- primary-source presence
+- publication-gate status
+- Markdown local-link existence and external-link structural safety
 - risky claim wording
-- optional external URL availability
+
+External URL availability is a separate trusted observation mode.
+
+## Supported CI environment
+
+The reviewed lock and CI support boundary is:
+
+- GitHub-hosted `ubuntu-24.04`
+- x86_64
+- CPython 3.12.13
+- the default Python Package Index
+
+The lock is resolved for CPython 3.12.13 on
+`x86_64-unknown-linux-gnu`. It may install on another CPython 3.12 patch release,
+but other operating systems, architectures, Python implementations, and Python
+minor versions are not reviewed CI targets.
+
+## Integrity-locked dependencies
+
+`requirements-dev.in` contains the direct validation tools:
+
+- jsonschema 4.26.0
+- PyYAML 6.0.3
+- REUSE 6.2.0
+
+`requirements-dev.txt` contains their complete reviewed transitive graph and
+allowed distribution hashes. `requirements-build.in` and
+`requirements-build.txt` separately lock Poetry Core 2.3.2, which is required to
+build the REUSE source distribution without an unpinned isolated build
+environment.
+
+Install into a clean environment:
+
+```bash
+python -m pip install --require-hashes -r requirements-build.txt
+python -m pip install \
+  --require-hashes \
+  --no-build-isolation \
+  -r requirements-dev.txt
+```
+
+CI uses only those commands. Exact version pins alone are not treated as an
+integrity control.
+
+### Lock renewal and deterministic regeneration
+
+The current locks were generated with uv 0.8.22 and a cutoff that excludes
+artifacts uploaded after 2026-07-19 00:00:00 UTC:
+
+```bash
+uv pip compile \
+  --python-version 3.12.13 \
+  --python-platform x86_64-unknown-linux-gnu \
+  --exclude-newer 2026-07-19T00:00:00Z \
+  --generate-hashes \
+  requirements-build.in \
+  --output-file requirements-build.txt
+
+uv pip compile \
+  --python-version 3.12.13 \
+  --python-platform x86_64-unknown-linux-gnu \
+  --exclude-newer 2026-07-19T00:00:00Z \
+  --generate-hashes \
+  requirements-dev.in \
+  --output-file requirements-dev.txt
+```
+
+A renewal must deliberately update the direct input, cutoff, or resolver version;
+review direct and transitive version/license/provenance changes; regenerate twice
+and compare byte-for-byte; install into a clean supported environment with
+`--require-hashes`; and rerun the complete validation suite. A lock generated for
+another platform is not a substitute for a separate reviewed platform lock.
+
+## Workflow trust separation
+
+`.github/workflows/research-quality.yml` runs on pull requests, pushes to `main`,
+and manual dispatch. Its validator invocation performs syntax, schema,
+publication-gate, local-link, local external-URL structure, and claim validation
+only. The local URL check rejects non-HTTPS schemes, userinfo, unapproved ports,
+localhost names, and non-public literal IP addresses without resolving hostnames.
+The workflow does not pass `--check-urls` and therefore makes no external
+requests based on repository URLs.
+
+`.github/workflows/research-url-observation.yml` has no `pull_request` or
+`pull_request_target` trigger. It observes URLs only after trusted content is
+selected by one of these events:
+
+- push to `main`
+- weekly scheduled run
+- explicitly initiated `workflow_dispatch`
+
+The CLI adds a second guard: `--check-urls` requires
+`--trusted-url-observation` and refuses to run when `GITHUB_EVENT_NAME` is
+`pull_request` or any unapproved GitHub event.
+
+Both workflows retain `permissions: contents: read`, pin third-party Actions to
+reviewed full commit SHAs, disable persisted checkout credentials, and install
+from the same hash locks. Neither workflow publishes or deploys repository
+content.
 
 ## Commands
 
-Install the validation dependencies:
+Run unit and negative URL-safety tests:
 
 ```bash
-python -m pip install -r requirements-dev.txt
+python -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-Run unit tests:
+Regenerate the structured competitor index after changing competitor records:
 
 ```bash
-python -m unittest discover -s tests -p 'test_*.py'
+python scripts/generate_competitor_index.py --root .
 ```
 
-Run required repository validation:
+Verify that the committed index is current:
+
+```bash
+python scripts/generate_competitor_index.py --root . --check
+```
+
+Run required local-only repository validation:
 
 ```bash
 python scripts/validate_research.py \
@@ -43,7 +150,8 @@ python scripts/validate_research.py \
   --stale-policy warn
 ```
 
-Run external URL observation:
+Run trusted external URL observation only after the repository content and event
+are trusted:
 
 ```bash
 python scripts/validate_research.py \
@@ -51,7 +159,9 @@ python scripts/validate_research.py \
   --report-dir artifacts \
   --stale-policy warn \
   --check-urls \
-  --url-policy warn
+  --trusted-url-observation \
+  --url-policy warn \
+  --url-timeout 5
 ```
 
 Generated reports:
@@ -59,56 +169,109 @@ Generated reports:
 - `artifacts/research-quality-report.json`
 - `artifacts/research-quality-report.md`
 
-## Policy
+Reports contain status, HTTP status or bounded error detail, and source URL. They
+do not contain response bodies. URL userinfo is removed before a URL is written
+to a finding.
 
-### CI errors
+## URL destination safety
+
+Trusted observation applies all of the following before the initial request and
+every redirect request:
+
+- HTTPS is mandatory;
+- URL userinfo is forbidden;
+- only port 443 is approved;
+- hostnames are IDNA-normalized and trailing root dots are removed before
+  localhost and literal-address checks;
+- `localhost`, scoped addresses, and missing/invalid hosts are rejected;
+- literal and DNS-resolved loopback, private, link-local, multicast, reserved,
+  unspecified, and otherwise non-global IP addresses are rejected;
+- a hostname is rejected if any usable DNS answer is non-public;
+- validated public addresses are used directly for the connection while the
+  original hostname is retained for TLS and HTTP, preventing an unvalidated
+  second DNS lookup;
+- environment HTTP proxies are disabled for the observer;
+- redirects are handled manually and capped at 5;
+- each request timeout is capped at 15 seconds and CI uses 5 seconds;
+- a bounded GET fallback for servers that reject HEAD reads at most 64 KiB;
+- response bodies are never included in reports.
+
+Unsafe destination, excessive redirect, and oversized response findings are
+always errors. `--url-policy warn` can make ordinary HTTP availability failures
+warnings, but it cannot downgrade a destination-safety failure.
+
+Unit tests inject mocked DNS and HTTP behavior. Tests never connect to loopback,
+RFC1918, link-local, cloud metadata, or any other internal address.
+
+## Finding policy
+
+### Errors
 
 The validator exits non-zero for:
 
-- invalid YAML
+- invalid YAML or JSON Schema usage
 - unknown record types
-- JSON Schema violations
-- missing observation date
-- invalid competitor classification or confidence
-- missing primary source
+- missing or invalid required research metadata
 - invalid or escaping local links
 - incomplete public publication gate
 - inconsistent or future verification dates
+- missing, invalid, misplaced, or future-dated `direct` designation approval
+- unsafe external URL structure or literal destination
+- unsafe external URL destination
+- redirect limit or response-size limit violations
 
-### CI warnings
+### Warnings
 
 The initial policy emits warnings for:
 
 - overdue `next_review_at`
-- external HTTP failure
-- temporary network or DNS failure
-- non-HTTPS external links
+- ordinary external HTTP failure when URL policy is `warn`
+- DNS, TLS, timeout, and other network failure
 - risky claim wording
 
-This makes source staleness and network instability visible without making normal pull requests depend on a reliable external network. The stale or URL policy can be changed to `fail` through an explicit reviewed decision.
+An availability failure does not prove that a source or product no longer exists.
+Researchers must review and update `source_status` when evidence is superseded or
+unavailable.
 
 ## Publication gate
 
 Structured records under `records/` are public artifacts. Before merge:
 
-- `source_check`, `freshness_check`, `privacy_review`, and `claims_review` must be `approved`
-- `ip_review` and `security_review` must be `approved` or `not-required`
-- public use-case findings also require `anonymization_review: approved`
+- `source_check`, `freshness_check`, `privacy_review`, `claims_review`, and
+  `reproducibility_review` must be `approved`;
+- `ip_review` and `security_review` must be `approved` or `not-required`;
+- public use-case findings also require `anonymization_review: approved`.
 
-Templates are YAML-parse checked but are not treated as publishable records.
+A competitor record classified as `direct` additionally requires
+`classification.direct_designation_approval`. Its status must be `approved`, its
+authority must use the stable `authorized-itdo-human` role, and its approval date
+must be valid and not in the future. The evidence URL must point to a concrete
+review or comment fragment under `itdojp/private-match-research`; a PR or Issue
+root URL is insufficient. Non-`direct` records must not carry this field, and a
+generic `publication.claims_review: approved` does not substitute for it.
 
-## URL status
+The Schema, repository validator, and generator fail closed on this metadata.
+They validate structure, repository scope, reference shape, and date only. Before
+merge, a human reviewer must verify the referenced author's authorization and
+the approval's record-specific scope. An agent must not create, infer, or approve
+`direct_designation_approval` autonomously. Semantic failures use the stable
+finding code `direct-designation-approval`.
 
-The URL checker reports:
+The competitor Schema remains version `0.1`. This fail-closed hardening is part
+of the active Draft PR, all 29 current in-repository records are non-`direct` and
+remain valid without migration, and the repository does not currently define an
+external Schema compatibility policy. It narrows acceptance of hypothetical
+`direct` records. Before declaring the Schema stable or relying on external
+compatibility, human maintainers must establish and apply a versioning policy.
 
-- `http-failure` for HTTP errors, including missing or gone resources
-- `network-failure` for timeout, DNS, TLS, connection, or temporary network errors
-
-A URL failure does not prove that a product or source no longer exists. Researchers must review and update `source_status` when evidence is superseded or unavailable.
+Templates are syntax checked but are not treated as published findings.
+Patent-sensitive or trade-secret candidates stay private or embargoed until a
+separate human IP and publication approval.
 
 ## Risky claim lint
 
-The linter highlights a maintained vocabulary of high-risk assurance and market claims. The vocabulary is shown below for documentation only:
+The linter highlights a maintained vocabulary of high-risk assurance and market
+claims. The vocabulary is shown below for documentation only:
 
 <!-- claim-lint: ignore-start -->
 - secure
@@ -121,7 +284,11 @@ The linter highlights a maintained vocabulary of high-risk assurance and market 
 - production ready
 <!-- claim-lint: ignore-end -->
 
-A warning requires human claims review and narrower wording or supporting evidence. Negated statements such as `not production ready` are ignored where the simple context detector recognizes them. Fenced code blocks and explicit `claim-lint` documentation blocks are excluded from linting; those exclusions must not be used to suppress substantive claims.
+A warning requires human claims review and narrower wording or supporting
+evidence. Negated statements are ignored where the bounded context detector
+recognizes them. HTTP/HTTPS URL tokens, fenced code blocks, and explicit
+documentation-ignore blocks are excluded; those exclusions must not suppress
+substantive claims.
 
 ## Record locations
 
@@ -140,9 +307,11 @@ Record validation is selected by `record_type`, not only by directory.
 
 The checks do not:
 
-- prove vendor claims
-- establish cryptographic security
-- establish legal compliance
-- decide competitor classification from technology similarity
-- promote a market hypothesis
-- publish private customer evidence
+- verify vendor claims;
+- verify market demand;
+- establish cryptographic security;
+- establish legal compliance;
+- establish privacy properties;
+- establish production readiness;
+- decide competitor classification from technology similarity;
+- publish private customer evidence.

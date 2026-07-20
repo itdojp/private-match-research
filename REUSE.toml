@@ -1,0 +1,39 @@
+version = 1
+SPDX-PackageName = "private-match-research"
+SPDX-PackageSupplier = "ITDO Inc. / 株式会社アイティードゥ"
+
+[[annotations]]
+path = [
+  ".github/workflows/*.yml",
+  ".gitignore",
+  "REUSE.toml",
+  "requirements-build.in",
+  "requirements-build.txt",
+  "requirements-dev.in",
+  "requirements-dev.txt",
+  "schema/*.json",
+  "scripts/*.py",
+  "tests/*.py",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 ITDO Inc. / 株式会社アイティードゥ"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = [
+  "AGENTS.md",
+  "CONTRIBUTING.md",
+  "GOVERNANCE.md",
+  "LICENSE.md",
+  "README.md",
+  "ROADMAP.md",
+  "docs/*.md",
+  "docs/decisions/*.md",
+  "landscape/*.md",
+  "templates/*.yaml",
+  "records/**/*.yaml",
+  "records/**/*.yml",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 ITDO Inc. / 株式会社アイティードゥ"
+SPDX-License-Identifier = "CC-BY-4.0"
